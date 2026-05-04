@@ -22,6 +22,7 @@ import 'package:uzme/core/services/auth_service.dart';
 import 'package:uzme/core/services/deep_link_service.dart';
 import 'package:uzme/core/services/notification_navigation_service.dart';
 import 'package:uzme/core/services/notification_service.dart';
+import 'package:uzme/core/services/pioneer_service.dart';
 import 'package:uzme/core/services/recent_accounts_service.dart';
 import 'package:uzme/core/utils/app_logger.dart';
 import 'package:uzme/core/utils/crashlytics_bloc_observer.dart';
@@ -51,6 +52,10 @@ final deepLinkService = DeepLinkService();
 
 /// Service de sessions d'appareils global.
 final deviceSessionService = BaseDeviceSessionService();
+
+/// Pioneer service global — call les Cloud Functions du module pioneer
+/// (création/distribution programmes, recordUserActive).
+final pioneerService = PioneerService();
 
 /// CalendarBloc global (needed for deep link callbacks).
 late CalendarBloc globalCalendarBloc;
@@ -345,6 +350,12 @@ class _UseMeAppState extends State<UseMeApp> {
 
                     // Create device session
                     _createDeviceSession(user.uid);
+
+                    // Record activity — bumps activeDaysCount once per UTC
+                    // day (Pioneer engagement metric). Fire-and-forget;
+                    // PioneerService swallows errors so a network blip
+                    // doesn't block the auth flow.
+                    pioneerService.recordUserActive();
 
                     // Load calendar status for studios
                     if (user.role.isStudio || user.role.isSuperAdmin) {

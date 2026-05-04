@@ -97,6 +97,18 @@ class AppUser extends BaseUser {
   /// Pioneer status (first 5 studios + first 5 pros).
   final PioneerStatus? pioneer;
 
+  /// IDs of every Pioneer cohort the user has won (history). Updated by
+  /// the smoothbackend `distributePioneerProgram` callable.
+  final List<String> pioneerProgramIds;
+
+  /// Engagement counters that feed the Pioneer ranking algorithm. Updated
+  /// by Firestore triggers on session confirmation / message creation,
+  /// and by the recordUserActive callable on app launch.
+  final int confirmedSessionsCount;
+  final int messagesSentCount;
+  final int activeDaysCount;
+  final DateTime? lastActiveDate;
+
   /// DevMaster a accès à la config Stripe et système.
   final bool isDevMaster;
 
@@ -126,6 +138,11 @@ class AppUser extends BaseUser {
     this.subscription,
     this.proProfile,
     this.pioneer,
+    this.pioneerProgramIds = const [],
+    this.confirmedSessionsCount = 0,
+    this.messagesSentCount = 0,
+    this.activeDaysCount = 0,
+    this.lastActiveDate,
     this.isDevMaster = false,
   });
 
@@ -167,6 +184,12 @@ class AppUser extends BaseUser {
       pioneer: map['pioneer'] != null
           ? PioneerStatus.fromMap(map['pioneer'] as Map<String, dynamic>)
           : null,
+      pioneerProgramIds:
+          List<String>.from(map['pioneerProgramIds'] ?? const []),
+      confirmedSessionsCount: (map['confirmedSessionsCount'] as num?)?.toInt() ?? 0,
+      messagesSentCount: (map['messagesSentCount'] as num?)?.toInt() ?? 0,
+      activeDaysCount: (map['activeDaysCount'] as num?)?.toInt() ?? 0,
+      lastActiveDate: FirestoreModel.dateTimeFromFirestore(map['lastActiveDate']),
       isDevMaster: map['isDevMaster'] ?? false,
     );
   }
@@ -188,6 +211,11 @@ class AppUser extends BaseUser {
       'subscription': subscription?.toMap(),
       'proProfile': proProfile?.toMap(),
       if (pioneer != null) 'pioneer': pioneer!.toMap(),
+      'pioneerProgramIds': pioneerProgramIds,
+      'confirmedSessionsCount': confirmedSessionsCount,
+      'messagesSentCount': messagesSentCount,
+      'activeDaysCount': activeDaysCount,
+      'lastActiveDate': lastActiveDate,
       'isDevMaster': isDevMaster,
     };
   }
@@ -219,6 +247,11 @@ class AppUser extends BaseUser {
     StudioSubscription? subscription,
     ProProfile? proProfile,
     PioneerStatus? pioneer,
+    List<String>? pioneerProgramIds,
+    int? confirmedSessionsCount,
+    int? messagesSentCount,
+    int? activeDaysCount,
+    DateTime? lastActiveDate,
     bool? isDevMaster,
   }) {
     return AppUser(
@@ -247,6 +280,12 @@ class AppUser extends BaseUser {
       subscription: subscription ?? this.subscription,
       proProfile: proProfile ?? this.proProfile,
       pioneer: pioneer ?? this.pioneer,
+      pioneerProgramIds: pioneerProgramIds ?? this.pioneerProgramIds,
+      confirmedSessionsCount:
+          confirmedSessionsCount ?? this.confirmedSessionsCount,
+      messagesSentCount: messagesSentCount ?? this.messagesSentCount,
+      activeDaysCount: activeDaysCount ?? this.activeDaysCount,
+      lastActiveDate: lastActiveDate ?? this.lastActiveDate,
       isDevMaster: isDevMaster ?? this.isDevMaster,
     );
   }
