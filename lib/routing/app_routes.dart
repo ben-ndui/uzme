@@ -5,6 +5,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String onboarding = '/onboarding';
+  static const String lock = '/lock';
 
   // Studio (Admin) routes
   static const String home = '/home';

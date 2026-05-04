@@ -78,6 +78,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _hasNavigated = true;
 
+    if (state is AuthLockedState) {
+      // Tokens still alive — gate the dashboard behind biometric.
+      appLog('🚀 Splash: Navigating to lock screen');
+      context.go(AppRoutes.lock);
+      return;
+    }
+
     if (state is AuthAuthenticatedState) {
       final user = state.user as AppUser;
 

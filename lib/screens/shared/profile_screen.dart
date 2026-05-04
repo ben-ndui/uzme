@@ -12,6 +12,7 @@ import 'package:uzme/core/services/profile_photo_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart';
 import 'package:uzme/routing/app_routes.dart';
+import 'package:uzme/widgets/auth/lock_or_signout_sheet.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
@@ -449,9 +450,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _signOut() {
-    context.read<AuthBloc>().add(const SignOutEvent());
-    context.go(AppRoutes.login);
+  Future<void> _signOut() async {
+    final authBloc = context.read<AuthBloc>();
+    final router = GoRouter.of(context);
+    final email = (authBloc.state is AuthAuthenticatedState)
+        ? (authBloc.state as AuthAuthenticatedState).user.email
+        : '';
+
+    await showLockOrSignOutSheet(
+      context,
+      email: email,
+      onSignOut: () async {
+        authBloc.add(const SignOutEvent());
+        router.go(AppRoutes.login);
+      },
+      onLock: () async {
+        authBloc.add(const LockAppEvent());
+        router.go(AppRoutes.lock);
+      },
+    );
   }
 
   void _showDeleteAccountDialog() {

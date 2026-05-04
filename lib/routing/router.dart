@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/models/app_user.dart';
+import 'package:uzme/screens/auth/biometric_lock_screen.dart';
 import 'package:uzme/screens/auth/login_screen.dart';
 import 'package:uzme/screens/auth/register_screen.dart';
 import 'package:uzme/screens/auth/splash_screen.dart';
@@ -80,6 +81,10 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.signup,
           builder: (context, state) => const RegisterScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.lock,
+          builder: (context, state) => const BiometricLockScreen(),
         ),
 
         // Onboarding
