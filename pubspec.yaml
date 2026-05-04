@@ -2,7 +2,7 @@ name: uzme
 description: "UZME — réservation de sessions studio entre artistes, ingénieurs son et propriétaires de studios."
 publish_to: 'none'
 
-version: 1.4.4+23
+version: 1.4.5+24
 
 environment:
   sdk: ^3.9.0
