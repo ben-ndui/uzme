@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -54,65 +55,102 @@ final deviceSessionService = BaseDeviceSessionService();
 /// CalendarBloc global (needed for deep link callbacks).
 late CalendarBloc globalCalendarBloc;
 
+/// Boot-time logger visible in release: print() goes to stdout (terminal of
+/// `flutter run --release`) and to iOS unified logging (Console.app).
+/// Also pushed as a Crashlytics breadcrumb so it surfaces in any crash report
+/// once Firebase is initialized.
+void _bootLog(String message) {
+  // ignore: avoid_print
+  print('UZME_BOOT: $message');
+  developer.log(message, name: 'uzme.boot');
+  try {
+    FirebaseCrashlytics.instance.log('boot: $message');
+  } catch (_) {}
+}
+
 void main() {
   runZonedGuarded<Future<void>>(
     () async {
+      _bootLog('start');
       WidgetsFlutterBinding.ensureInitialized();
+      _bootLog('bindings');
 
-      // Load environment variables (optional - for dev only)
       try {
         await dotenv.load(fileName: 'assets/.env');
+        _bootLog('dotenv:ok');
       } catch (_) {
-        // .env file not found in production - this is expected
+        _bootLog('dotenv:skipped');
       }
 
-      // Initialize Firebase
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      try {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+        _bootLog('firebase:ok');
+      } catch (e, st) {
+        _bootLog('firebase:FAIL: $e');
+        _bootLog('firebase:STACK: $st');
+        rethrow;
+      }
 
-      // Initialize SmoothFirebase with default app
-      SmoothFirebase.initializeWithDefault();
+      try {
+        SmoothFirebase.initializeWithDefault();
+        _bootLog('smoothfirebase:ok');
+      } catch (e, st) {
+        _bootLog('smoothfirebase:FAIL: $e');
+        _bootLog('smoothfirebase:STACK: $st');
+        rethrow;
+      }
 
-      // Crashlytics — capture Flutter framework errors
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-      // BLoC observer — breadcrumbs + erreurs BLoC vers Crashlytics
       Bloc.observer = CrashlyticsBlocObserver();
-
-      // Crashlytics — capture async errors outside Flutter (Platform, isolates)
       PlatformDispatcher.instance.onError = (error, stack) {
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         return true;
       };
+      _bootLog('errorhandlers:ok');
 
-      // Initialize French locale for date formatting
-      await initializeDateFormatting('fr_FR', null);
+      try {
+        await initializeDateFormatting('fr_FR', null);
+        _bootLog('dateformat:ok');
+      } catch (e, st) {
+        _bootLog('dateformat:FAIL: $e');
+        _bootLog('dateformat:STACK: $st');
+      }
 
-      // Allow all orientations for tablet/desktop support
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
+      _bootLog('orientations:ok');
 
-      // Load recent accounts
-      await recentAccountsService.load();
+      try {
+        await recentAccountsService.load();
+        _bootLog('recentaccounts:ok');
+      } catch (e, st) {
+        _bootLog('recentaccounts:FAIL: $e');
+        _bootLog('recentaccounts:STACK: $st');
+      }
 
-      // Initialize CalendarBloc globally
       globalCalendarBloc = CalendarBloc();
+      _bootLog('calendarbloc:ok');
 
+      _bootLog('about-to-runApp');
       runApp(const UseMeApp());
+      _bootLog('runApp-returned');
 
-      // Initialize notification listeners after app is running (non-blocking)
       _initializeNotificationListeners();
-
-      // Initialize deep link service
       _initializeDeepLinks();
     },
-    (error, stack) =>
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+    (error, stack) {
+      _bootLog('ZONE-ERROR: $error');
+      _bootLog('ZONE-STACK: $stack');
+      try {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      } catch (_) {}
+    },
   );
 }
 

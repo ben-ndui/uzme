@@ -66,7 +66,7 @@
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBQFkJ6oG4RTRRb6RbJ3Tk0MfrA1seHTqM"/>
+            android:value="AIzaSyCtRI9lPe3hDWVcbFwtyfEXw8rHnBBNFo0"/>
 
         <!-- FCM Default Notification Channel -->
         <meta-data

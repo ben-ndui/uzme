@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class EnvService {
   EnvService._();
 
-  static const _defaultGoogleMapsKey = 'AIzaSyBQFkJ6oG4RTRRb6RbJ3Tk0MfrA1seHTqM';
+  static const _defaultGoogleMapsKey = 'AIzaSyCDM7T8ul3hwmhWHYOH_PvDmITY_g0dMPY';
 
   /// Google Maps API Key pour Places API et Maps SDK.
   /// En dev, chargée depuis assets/.env. En prod, fallback sur la clé
