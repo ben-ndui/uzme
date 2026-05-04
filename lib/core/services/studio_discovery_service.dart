@@ -122,6 +122,7 @@ class StudioDiscoveryService {
       phoneNumber: profile.phone ?? user.phoneNumber,
       website: profile.website,
       isPartner: true,
+      isPioneer: user.pioneer?.isPioneer ?? false,
       services: profile.services,
     );
   }
