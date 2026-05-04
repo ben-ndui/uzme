@@ -46,6 +46,12 @@ class AdminSettingsSection extends StatelessWidget {
             onTap: () => context.push(AppRoutes.pioneerPrograms),
           ),
           SettingsTile(
+            icon: FontAwesomeIcons.toggleOn,
+            title: 'Feature flags',
+            subtitle: 'Activer / rollout des fonctionnalités',
+            onTap: () => context.push(AppRoutes.featureFlags),
+          ),
+          SettingsTile(
             icon: FontAwesomeIcons.mobile,
             title: 'Screenshots Store',
             subtitle: 'Générer les captures App Store',

@@ -71,6 +71,7 @@ class AppRoutes {
   static const String studioClaims = '/admin/studio-claims';
   static const String pioneerPrograms = '/admin/pioneer';
   static String pioneerProgramDetail(String id) => '/admin/pioneer/$id';
+  static const String featureFlags = '/admin/feature-flags';
   static const String storeScreenshots = '/dev/screenshots';
 
   // Notifications
