@@ -3781,33 +3781,33 @@ class AppLocalizationsSg extends AppLocalizations {
   String get rememberMe => 'Bâa mbi';
 
   @override
-  String get selectRoleFirst => 'Choisis d\'abord ton rôle';
+  String get selectRoleFirst => 'Soro rôle tî mo kôzo';
 
   @override
-  String get biometricEnableTitle => 'Activer la connexion biométrique ?';
+  String get biometricEnableTitle => 'Zîa connexion biométrique?';
 
   @override
   String get biometricEnableMessage =>
-      'Connectez-vous en un instant avec Face ID, Touch ID ou votre empreinte la prochaine fois.';
+      'Duti hîo na Face ID, Touch ID wala empreinte tî mo na ngoi sô agäe.';
 
   @override
-  String get biometricEnableAction => 'Activer';
+  String get biometricEnableAction => 'Zîa';
 
   @override
-  String get biometricEnableSkip => 'Plus tard';
+  String get biometricEnableSkip => 'Mbï sô';
 
   @override
-  String get biometricEnabledToast => 'Connexion biométrique activée';
+  String get biometricEnabledToast => 'Connexion biométrique a-zîa';
 
   @override
-  String get biometricReason => 'Authentifiez-vous pour vous connecter';
+  String get biometricReason => 'Sara authentification tî duti';
 
   @override
-  String get biometricFailed => 'Échec de l\'authentification biométrique';
+  String get biometricFailed => 'Authentification biométrique a-sara pëpe';
 
   @override
   String biometricLoginWith(String name) {
-    return 'Déverrouiller avec $name';
+    return 'Lungûla na $name';
   }
 
   @override

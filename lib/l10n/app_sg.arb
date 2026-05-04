@@ -1609,6 +1609,24 @@
   },
   "rememberMe": "Bâa mbi",
 
+  "selectRoleFirst": "Soro rôle tî mo kôzo",
+
+  "biometricEnableTitle": "Zîa connexion biométrique?",
+  "biometricEnableMessage": "Duti hîo na Face ID, Touch ID wala empreinte tî mo na ngoi sô agäe.",
+  "biometricEnableAction": "Zîa",
+  "biometricEnableSkip": "Mbï sô",
+  "biometricEnabledToast": "Connexion biométrique a-zîa",
+  "biometricReason": "Sara authentification tî duti",
+  "biometricFailed": "Authentification biométrique a-sara pëpe",
+  "biometricLoginWith": "Lungûla na {name}",
+  "@biometricLoginWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
   "tipQuickLoginTitle": "Connexion vîte",
   "tipQuickLoginDesc": "Tî mo cocher 'Bâa mbi' tî mo sü, tî kôzo zo na compte tî mo vîte na ndo ôko.",
   "tipSearchCityTitle": "Gï na ville",
