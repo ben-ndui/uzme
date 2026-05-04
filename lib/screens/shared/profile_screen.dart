@@ -466,7 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       onLock: () async {
         authBloc.add(const LockAppEvent());
-        router.go(AppRoutes.lock);
+        router.go(AppRoutes.lock, extra: const {'auto': false});
       },
     );
   }

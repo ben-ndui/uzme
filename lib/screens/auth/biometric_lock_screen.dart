@@ -12,8 +12,16 @@ import 'package:uzme/routing/router.dart';
 /// alive but the user must pass a biometric prompt before reaching the
 /// dashboard. On success → UnlockAppEvent. On user-driven fallback →
 /// SignOutEvent (full logout, returns to /login).
+///
+/// [autoRun] controls whether the biometric prompt fires on mount. We pass
+/// `false` when the user just tapped "Verrouiller" — otherwise Face ID
+/// scans the user's face immediately (since they're literally looking at
+/// the screen) and the lock is undone instantly. Cold-start lock screens
+/// keep `true` for the quick-relogin UX.
 class BiometricLockScreen extends StatefulWidget {
-  const BiometricLockScreen({super.key});
+  final bool autoRun;
+
+  const BiometricLockScreen({super.key, this.autoRun = true});
 
   @override
   State<BiometricLockScreen> createState() => _BiometricLockScreenState();
@@ -25,7 +33,9 @@ class _BiometricLockScreenState extends State<BiometricLockScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _runBiometric());
+    if (widget.autoRun) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _runBiometric());
+    }
   }
 
   Future<void> _runBiometric() async {

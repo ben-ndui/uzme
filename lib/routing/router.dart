@@ -84,7 +84,14 @@ class AppRouter {
         ),
         GoRoute(
           path: AppRoutes.lock,
-          builder: (context, state) => const BiometricLockScreen(),
+          builder: (context, state) {
+            // extra: {'auto': false} when navigating from a user-triggered
+            // lock (Settings → Verrouiller) so we don't auto-fire Face ID
+            // while the user is still staring at the screen.
+            final extra = state.extra;
+            final autoRun = !(extra is Map && extra['auto'] == false);
+            return BiometricLockScreen(autoRun: autoRun);
+          },
         ),
 
         // Onboarding
