@@ -322,7 +322,11 @@ class _UseMeAppState extends State<UseMeApp> {
             builder: (context, localeState) {
               return BlocListener<AuthBloc, AuthState>(
                 listenWhen: (prev, curr) {
-                  // Detect auth state changes for notification token management
+                  // Skip transitions toward AuthLockedState — locking is a soft
+                  // gate, not a sign-out. Keep the FCM token, calendar bloc,
+                  // device session, etc. alive so notifications keep flowing
+                  // and the unlock is instant.
+                  if (curr is AuthLockedState) return false;
                   final wasAuth = prev is AuthAuthenticatedState;
                   final isAuth = curr is AuthAuthenticatedState;
                   return wasAuth != isAuth;
