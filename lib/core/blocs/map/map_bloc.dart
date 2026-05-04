@@ -143,7 +143,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       searchQuery: event.address,
     ));
 
-    // Check if query matches a studio already on the map
+    // 1. Local match — already-loaded studio with the same name. Cheapest
+    //    path, highlights instantly without a network round-trip.
     final matchedStudio = _findStudioByName(event.address);
     if (matchedStudio != null) {
       emit(state.copyWith(
@@ -156,6 +157,26 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     }
 
     try {
+      // 2. Places Text Search — finds a studio by approximate name across
+      //    cities (e.g. "Studio La Source" wherever it is). Returns a
+      //    DiscoveredStudio we can highlight immediately.
+      final foundStudio = await _studioService.searchByText(event.address);
+      if (foundStudio != null) {
+        emit(state.copyWith(
+          isSearchingAddress: false,
+          searchCenter: foundStudio.position,
+          selectedStudio: foundStudio,
+          hasCameraMoved: false,
+        ));
+        // Load other studios in the area too so the user can browse around.
+        add(SearchInAreaEvent(center: foundStudio.position, radius: event.radius));
+        return;
+      }
+
+      // 3. Geocode fallback — typed a city/address rather than a studio
+      //    name. Centre the map there and load nearby studios. A post-load
+      //    pass will auto-select if the searchQuery happens to match one
+      //    of the newly loaded studios.
       final position = await _studioService.geocodeAddress(event.address);
 
       if (position == null) {
@@ -172,7 +193,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         hasCameraMoved: false,
       ));
 
-      // Load studios at the new location
       add(SearchInAreaEvent(center: position, radius: event.radius));
     } catch (e) {
       emit(state.copyWith(
@@ -211,9 +231,28 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         radius: event.radius,
       );
 
+      // If we still have an active search query and didn't already pick a
+      // studio (e.g. user typed "Studio X" and we fell back to geocoding
+      // its city), try to highlight a matching studio in the freshly
+      // loaded list.
+      DiscoveredStudio? autoSelected;
+      final query = state.searchQuery;
+      if (state.selectedStudio == null && query != null && query.isNotEmpty) {
+        final q = query.toLowerCase().trim();
+        autoSelected = studios
+            .where((s) => s.name.toLowerCase() == q)
+            .firstOrNull ??
+            studios
+                .where((s) =>
+                    s.name.toLowerCase().contains(q) ||
+                    q.contains(s.name.toLowerCase()))
+                .firstOrNull;
+      }
+
       emit(state.copyWith(
         isLoading: false,
         nearbyStudios: studios,
+        selectedStudio: autoSelected,
       ));
     } catch (e) {
       emit(state.copyWith(

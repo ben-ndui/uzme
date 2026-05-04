@@ -239,6 +239,10 @@ class StudioDiscoveryService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      // Google returns HTTP 200 with status:REQUEST_DENIED / OVER_QUERY_LIMIT
+      // when the API key is rejected / quota exceeded — surface those so we
+      // don't keep debugging a silent empty list.
+      _logGoogleStatusIfError(data, requestType: 'NearbySearch');
       final results = data['results'] as List? ?? [];
 
       return results
@@ -248,6 +252,56 @@ class StudioDiscoveryService {
     }
 
     throw Exception('Failed to fetch studios: ${response.statusCode}');
+  }
+
+  /// Find a place (typically a studio) by free-text query using the Google
+  /// Places Text Search API. Used when the user types a studio name that
+  /// isn't in the currently loaded nearby list — Text Search ranks by
+  /// relevance worldwide and tolerates approximate / unaccented spellings.
+  Future<DiscoveredStudio?> searchByText(String query) async {
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/textsearch/json'
+      '?query=${Uri.encodeComponent(query)}'
+      '&key=$_apiKey',
+    );
+
+    try {
+      final response =
+          await _httpClient.get(url).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode != 200) {
+        appLog('⚠️ Places TextSearch HTTP ${response.statusCode}');
+        return null;
+      }
+
+      final data = json.decode(response.body);
+      _logGoogleStatusIfError(data, requestType: 'TextSearch');
+
+      final results = data['results'] as List? ?? [];
+      if (results.isEmpty) return null;
+
+      // Top result — Text Search ranks by relevance.
+      return DiscoveredStudio.fromGooglePlace(results.first);
+    } catch (e) {
+      appLog('⚠️ Places TextSearch error: $e');
+      return null;
+    }
+  }
+
+  /// Log Google API non-OK statuses so we can debug REQUEST_DENIED /
+  /// OVER_QUERY_LIMIT / INVALID_REQUEST without rebuilds. ZERO_RESULTS is
+  /// a normal "not found" outcome and is intentionally silent.
+  void _logGoogleStatusIfError(
+    dynamic data, {
+    required String requestType,
+  }) {
+    final status = data['status']?.toString();
+    if (status == null || status == 'OK' || status == 'ZERO_RESULTS') return;
+    final errorMessage = data['error_message']?.toString() ?? '';
+    appLog(
+      '⚠️ Google Places $requestType non-OK: $status'
+      '${errorMessage.isNotEmpty ? ' — $errorMessage' : ''}',
+    );
   }
 
   List<DiscoveredStudio> _updateDistances(
@@ -319,6 +373,7 @@ class StudioDiscoveryService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        _logGoogleStatusIfError(data, requestType: 'Geocoding');
         final results = data['results'] as List?;
 
         if (results != null && results.isNotEmpty) {

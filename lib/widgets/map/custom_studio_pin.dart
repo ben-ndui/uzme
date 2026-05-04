@@ -20,7 +20,7 @@ class CustomStudioPin {
   }) async {
     // Selected pins are 30% larger with a glow ring
     final double effectiveSize = isSelected ? size * 1.3 : size;
-    final double glowPadding = isSelected ? effectiveSize * 0.12 : 0;
+    final double glowPadding = isSelected ? effectiveSize * 0.20 : 0;
     final double totalSize = effectiveSize + glowPadding * 2;
 
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
@@ -34,23 +34,32 @@ class CustomStudioPin {
     final double pinHeight = effectiveSize;
     final double imageSize = effectiveSize * 0.55;
 
-    // Draw glow ring behind pin when selected
+    // Draw a circular halo around the pin head when selected — replaces
+    // the previous rectangular glow which read as a "white square" behind
+    // the pin. Two stacked circles (soft outer + sharper inner) give a
+    // spotlight feel while keeping a tight footprint.
     if (isSelected) {
-      final glowColor = isDark
-          ? Colors.white.withValues(alpha: 0.7)
-          : pinColor.withValues(alpha: 0.5);
-      final Paint glowPaint = Paint()
-        ..color = glowColor
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, glowPadding);
+      final double centerX = pinWidth / 2;
+      final double centerY = pinHeight * 0.375; // centre of the rect head
+      final double haloRadius = effectiveSize * 0.5;
 
-      final Path glowPath = Path()
-        ..addRRect(RRect.fromRectAndRadius(
-          Rect.fromLTWH(-glowPadding / 2, -glowPadding / 2,
-              pinWidth + glowPadding, pinHeight * 0.75 + glowPadding),
-          Radius.circular(pinWidth * 0.25),
-        ));
+      // Outer halo — soft, large, low alpha.
+      canvas.drawCircle(
+        Offset(centerX, centerY),
+        haloRadius,
+        Paint()
+          ..color = pinColor.withValues(alpha: isDark ? 0.45 : 0.30)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, glowPadding * 1.6),
+      );
 
-      canvas.drawPath(glowPath, glowPaint);
+      // Inner halo — tighter, brighter accent ring.
+      canvas.drawCircle(
+        Offset(centerX, centerY),
+        haloRadius * 0.78,
+        Paint()
+          ..color = pinColor.withValues(alpha: isDark ? 0.65 : 0.45)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, glowPadding * 0.7),
+      );
     }
 
     // Draw shadow
