@@ -12,6 +12,7 @@ import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/permission_dialog.dart';
 import 'package:uzme/widgets/map/custom_studio_pin.dart';
 import 'package:uzme/widgets/map/map_search_bar.dart';
+import 'package:uzme/widgets/map/studios_count_chip.dart';
 
 /// Google Maps view showing nearby studios with custom pins
 class StudioMapView extends StatefulWidget {
@@ -196,6 +197,12 @@ class _StudioMapViewState extends State<StudioMapView> {
               left: 16,
               right: 16,
               child: const MapSearchBar(),
+            ),
+            // Studios count chip (sits just under the search bar, right side)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 60 + 48 + 12,
+              right: 16,
+              child: const StudiosCountChip(),
             ),
             // Location button
             Positioned(
