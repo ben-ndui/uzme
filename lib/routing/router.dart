@@ -39,6 +39,8 @@ import 'package:uzme/screens/shared/account_screen.dart';
 import 'package:uzme/screens/shared/favorites_screen.dart';
 import 'package:uzme/screens/shared/discover_map_screen.dart';
 import 'package:uzme/screens/shared/network_screen.dart';
+import 'package:uzme/screens/admin/pioneer_program_detail_screen.dart';
+import 'package:uzme/screens/admin/pioneer_programs_list_screen.dart';
 import 'package:uzme/screens/admin/studio_claims_screen.dart';
 import 'package:uzme/screens/admin/subscription_tiers_screen.dart';
 import 'package:uzme/screens/admin/stripe_config_screen.dart';
@@ -308,6 +310,16 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.studioClaims,
           builder: (context, state) => const StudioClaimsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.pioneerPrograms,
+          builder: (context, state) => const PioneerProgramsListScreen(),
+        ),
+        GoRoute(
+          path: '/admin/pioneer/:id',
+          builder: (context, state) => PioneerProgramDetailScreen(
+            programId: state.pathParameters['id']!,
+          ),
         ),
         GoRoute(
           path: '/admin/subscription-tiers',

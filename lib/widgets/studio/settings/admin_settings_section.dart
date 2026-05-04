@@ -40,6 +40,12 @@ class AdminSettingsSection extends StatelessWidget {
             onTap: () => context.push('/admin/subscription-tiers'),
           ),
           SettingsTile(
+            icon: FontAwesomeIcons.rocket,
+            title: 'Programme Pioneer',
+            subtitle: 'Cohorts, leaderboard, distribution',
+            onTap: () => context.push(AppRoutes.pioneerPrograms),
+          ),
+          SettingsTile(
             icon: FontAwesomeIcons.mobile,
             title: 'Screenshots Store',
             subtitle: 'Générer les captures App Store',
