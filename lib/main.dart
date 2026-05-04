@@ -21,6 +21,7 @@ import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/services/auth_service.dart';
 import 'package:uzme/core/services/deep_link_service.dart';
 import 'package:uzme/core/services/notification_navigation_service.dart';
+import 'package:uzme/core/services/feature_flags_service.dart';
 import 'package:uzme/core/services/notification_service.dart';
 import 'package:uzme/core/services/pioneer_service.dart';
 import 'package:uzme/core/services/recent_accounts_service.dart';
@@ -56,6 +57,12 @@ final deviceSessionService = BaseDeviceSessionService();
 /// Pioneer service global — call les Cloud Functions du module pioneer
 /// (création/distribution programmes, recordUserActive).
 final pioneerService = PioneerService();
+
+/// Feature flags service global — résout dynamiquement quelles features
+/// sont visibles selon le rollout state (disabled / pioneer / beta /
+/// enabled). Initialisé au boot pour que les UIs aient un snapshot dès
+/// le premier render.
+final featureFlagsService = FeatureFlagsService();
 
 /// CalendarBloc global (needed for deep link callbacks).
 late CalendarBloc globalCalendarBloc;
@@ -106,6 +113,12 @@ void main() {
         _bootLog('smoothfirebase:STACK: $st');
         rethrow;
       }
+
+      // Subscribe to feature_flags collection — runs in background, won't
+      // block boot. UIs that need to gate on a flag at first render
+      // should `await featureFlagsService.whenReady()` themselves.
+      featureFlagsService.initialize();
+      _bootLog('featureflags:subscribed');
 
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
       Bloc.observer = CrashlyticsBlocObserver();
