@@ -4482,4 +4482,145 @@ class AppLocalizationsSg extends AppLocalizations {
   @override
   String get pioneerNormalRates =>
       'Tarif normal a-gï sô. Badge Pioneer tî mo a-dûru na sâra ôse.';
+
+  @override
+  String get featureAnnouncementSheetHeader => 'Tene tî app (optionnel)';
+
+  @override
+  String get featureAnnouncementSheetHelp =>
+      'Si mo lë, sêse mîngi a-yêkë na bottomsheet kôzo na ngoï tî kûkûâ na fonctionnalité.';
+
+  @override
+  String get featureAnnouncementSheetTitleLabel => 'Titre tî tene';
+
+  @override
+  String get featureAnnouncementSheetTitleHint => 'ex. Fini : Carte digitale';
+
+  @override
+  String get featureAnnouncementSheetBodyLabel => 'Sêse tî tene';
+
+  @override
+  String get featureAnnouncementSheetBodyHint =>
+      'Tene tî fonctionnalité na phrases 2-3';
+
+  @override
+  String get featureAnnouncementBadge => 'Fini';
+
+  @override
+  String get featureAnnouncementCta => 'Mo bâa';
+
+  @override
+  String get featureFlagsScreenTitle => 'Feature flags';
+
+  @override
+  String get featureFlagsCreateButton => 'Flag tî fini';
+
+  @override
+  String featureFlagSavedSnack(String key) {
+    return 'Flag « $key » a-zî';
+  }
+
+  @override
+  String get featureFlagsEmptyTitle => 'Flag pëpe';
+
+  @override
+  String get featureFlagsEmptyDesc =>
+      'Zîa flag tî pikangö fonctionnalité wala tî sû na pëpëe.';
+
+  @override
+  String get featureFlagCataloguedTooltip => 'Flag a-yêkë na catalogue';
+
+  @override
+  String get featureFlagSheetEditTitle => 'Sêwa flag';
+
+  @override
+  String get featureFlagSheetCreateTitle => 'Flag tî fini';
+
+  @override
+  String get featureFlagKeyLabel => 'Clé technique (a-changé pëpe)';
+
+  @override
+  String get featureFlagKeyHint => 'ex. auto_publish_insta';
+
+  @override
+  String get featureFlagKeyValidatorRequired => 'A-lîngbi';
+
+  @override
+  String get featureFlagKeyValidatorPattern => 'minuscules + bê + _';
+
+  @override
+  String get featureFlagTitleLabel => 'Titre';
+
+  @override
+  String get featureFlagTitleHint => 'ex. Auto-publish Instagram';
+
+  @override
+  String get featureFlagDescriptionLabel => 'Description (optionnel)';
+
+  @override
+  String get featureFlagCategoryLabel => 'Catégorie (optionnel)';
+
+  @override
+  String get featureFlagCategoryHint => 'ex. social, premium, ai';
+
+  @override
+  String get featureFlagRolloutLabel => 'Rollout';
+
+  @override
+  String get featureFlagBetaTestersTitle => 'Beta testers (UIDs)';
+
+  @override
+  String get featureFlagBetaUidHint => 'Sû UID';
+
+  @override
+  String get featureFlagSubmitting => 'A-zî…';
+
+  @override
+  String get featureFlagSubmitCreate => 'Zîa flag';
+
+  @override
+  String get featureFlagSubmitUpdate => 'Sêwa';
+
+  @override
+  String featureFlagSubmitError(String error) {
+    return 'Erreur : $error';
+  }
+
+  @override
+  String get featureFlagCatalogSelectorTitle => 'Sêlê na catalogue';
+
+  @override
+  String get featureFlagCatalogSelectorHint => 'Flag tî code…';
+
+  @override
+  String get featureRolloutDisabled => 'A-pikangö';
+
+  @override
+  String get featureRolloutPioneer => 'Pioneer';
+
+  @override
+  String get featureRolloutBeta => 'Beta';
+
+  @override
+  String get featureRolloutEnabled => 'A-ngangö';
+
+  @override
+  String studiosCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'studio $countString',
+      one: 'studio 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String studiosCountRadiusSuffix(String radius) {
+    return ' · $radius km';
+  }
 }

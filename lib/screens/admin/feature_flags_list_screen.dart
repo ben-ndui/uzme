@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/feature_flag.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/widgets/admin/feature_flag_edit_sheet.dart';
+import 'package:uzme/widgets/admin/feature_rollout_l10n.dart';
 
 /// SuperAdmin screen — manage every feature flag of the app: rollout
 /// state (disabled / pioneer / beta / enabled), beta tester list,
@@ -14,9 +16,10 @@ class FeatureFlagsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feature flags'),
+        title: Text(l10n.featureFlagsScreenTitle),
       ),
       body: StreamBuilder<Map<String, FeatureFlag>>(
         stream: featureFlagsService.watchAll(),
@@ -42,13 +45,14 @@ class FeatureFlagsListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openSheet(context, null),
         icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
-        label: const Text('Nouveau flag'),
+        label: Text(l10n.featureFlagsCreateButton),
       ),
     );
   }
 
   Future<void> _openSheet(BuildContext context, FeatureFlag? existing) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final result = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
@@ -57,7 +61,7 @@ class FeatureFlagsListScreen extends StatelessWidget {
     );
     if (result != null) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Flag « $result » enregistré')),
+        SnackBar(content: Text(l10n.featureFlagSavedSnack(result))),
       );
     }
   }
@@ -70,6 +74,7 @@ class _FlagTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -88,7 +93,7 @@ class _FlagTile extends StatelessWidget {
           );
           if (result != null) {
             messenger.showSnackBar(
-              SnackBar(content: Text('Flag « $result » enregistré')),
+              SnackBar(content: Text(l10n.featureFlagSavedSnack(result))),
             );
           }
         },
@@ -114,8 +119,7 @@ class _FlagTile extends StatelessWidget {
                         if (FeatureFlagKeys.isCatalogued(flag.key)) ...[
                           const SizedBox(width: 6),
                           Tooltip(
-                            message:
-                                'Flag déclaré dans le catalogue (lib/core/constants/feature_flag_keys.dart)',
+                            message: l10n.featureFlagCataloguedTooltip,
                             child: FaIcon(
                               FontAwesomeIcons.bookOpen,
                               size: 12,
@@ -161,6 +165,7 @@ class _RolloutChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final color = switch (rollout) {
       FeatureRollout.disabled => Colors.grey,
       FeatureRollout.pioneer => const Color(0xFFFFD700),
@@ -175,7 +180,7 @@ class _RolloutChip extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Text(
-        rollout.label,
+        featureRolloutLabel(l10n, rollout),
         style: TextStyle(
           color: color == const Color(0xFFFFD700)
               ? Colors.brown.shade700
@@ -194,6 +199,7 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -207,12 +213,12 @@ class _EmptyView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun feature flag',
+              l10n.featureFlagsEmptyTitle,
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Crée un flag pour gater une fonctionnalité ou faire un rollout progressif.',
+              l10n.featureFlagsEmptyDesc,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.outline,

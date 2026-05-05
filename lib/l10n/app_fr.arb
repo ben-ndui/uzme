@@ -2057,5 +2057,59 @@
       "days": {"type": "String"}
     }
   },
-  "pioneerNormalRates": "Les tarifs standards s'appliquent désormais. Votre badge Pioneer reste permanent."
+  "pioneerNormalRates": "Les tarifs standards s'appliquent désormais. Votre badge Pioneer reste permanent.",
+
+  "featureAnnouncementSheetHeader": "Annonce in-app (optionnel)",
+  "featureAnnouncementSheetHelp": "Si remplies, ces infos s'affichent dans un bottomsheet la première fois que l'utilisateur accède à la feature.",
+  "featureAnnouncementSheetTitleLabel": "Titre de l'annonce",
+  "featureAnnouncementSheetTitleHint": "ex. Nouveau : Carte digitale",
+  "featureAnnouncementSheetBodyLabel": "Corps du message",
+  "featureAnnouncementSheetBodyHint": "Décris la feature en 2-3 phrases",
+  "featureAnnouncementBadge": "Nouveauté",
+  "featureAnnouncementCta": "C'est noté",
+
+  "featureFlagsScreenTitle": "Feature flags",
+  "featureFlagsCreateButton": "Nouveau flag",
+  "featureFlagSavedSnack": "Flag « {key} » enregistré",
+  "@featureFlagSavedSnack": {
+    "placeholders": {"key": {"type": "String"}}
+  },
+  "featureFlagsEmptyTitle": "Aucun feature flag",
+  "featureFlagsEmptyDesc": "Crée un flag pour gater une fonctionnalité ou faire un rollout progressif.",
+  "featureFlagCataloguedTooltip": "Flag déclaré dans le catalogue",
+  "featureFlagSheetEditTitle": "Modifier le flag",
+  "featureFlagSheetCreateTitle": "Nouveau flag",
+  "featureFlagKeyLabel": "Clé technique (immutable)",
+  "featureFlagKeyHint": "ex. auto_publish_insta",
+  "featureFlagKeyValidatorRequired": "Requis",
+  "featureFlagKeyValidatorPattern": "minuscules + chiffres + _",
+  "featureFlagTitleLabel": "Titre lisible",
+  "featureFlagTitleHint": "ex. Auto-publish Instagram",
+  "featureFlagDescriptionLabel": "Description (optionnel)",
+  "featureFlagCategoryLabel": "Catégorie (optionnel)",
+  "featureFlagCategoryHint": "ex. social, premium, ai",
+  "featureFlagRolloutLabel": "Rollout",
+  "featureFlagBetaTestersTitle": "Beta testers (UIDs)",
+  "featureFlagBetaUidHint": "Coller un UID",
+  "featureFlagSubmitting": "Enregistrement…",
+  "featureFlagSubmitCreate": "Créer le flag",
+  "featureFlagSubmitUpdate": "Mettre à jour",
+  "featureFlagSubmitError": "Erreur : {error}",
+  "@featureFlagSubmitError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "featureFlagCatalogSelectorTitle": "Choisir depuis le catalogue",
+  "featureFlagCatalogSelectorHint": "Flag pré-défini par le code…",
+  "featureRolloutDisabled": "Désactivé",
+  "featureRolloutPioneer": "Pioneer",
+  "featureRolloutBeta": "Beta",
+  "featureRolloutEnabled": "Activé",
+  "studiosCount": "{count, plural, =1{1 studio} other{{count} studios}}",
+  "@studiosCount": {
+    "placeholders": {"count": {"type": "int", "format": "decimalPattern"}}
+  },
+  "studiosCountRadiusSuffix": " · {radius} km",
+  "@studiosCountRadiusSuffix": {
+    "placeholders": {"radius": {"type": "String"}}
+  }
 }

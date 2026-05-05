@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/feature_flag.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart' show featureFlagsService;
+import 'package:uzme/widgets/admin/feature_rollout_l10n.dart';
 
 /// Modal sheet to create or edit a feature flag.
 /// Pass [existing] to edit, leave null to create.
@@ -23,6 +25,8 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
   final _descController = TextEditingController();
   final _categoryController = TextEditingController();
   final _betaUidController = TextEditingController();
+  final _announcementTitleController = TextEditingController();
+  final _announcementBodyController = TextEditingController();
   FeatureRollout _rollout = FeatureRollout.disabled;
   List<String> _betaUserIds = [];
   bool _submitting = false;
@@ -38,6 +42,8 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
       _titleController.text = f.title;
       _descController.text = f.description;
       _categoryController.text = f.category ?? '';
+      _announcementTitleController.text = f.announcementTitle;
+      _announcementBodyController.text = f.announcementBody;
       _rollout = f.rollout;
       _betaUserIds = List.of(f.betaUserIds);
     }
@@ -50,6 +56,8 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
     _descController.dispose();
     _categoryController.dispose();
     _betaUidController.dispose();
+    _announcementTitleController.dispose();
+    _announcementBodyController.dispose();
     super.dispose();
   }
 
@@ -78,6 +86,7 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
     setState(() => _submitting = true);
     final messenger = ScaffoldMessenger.of(context);
     final errorColor = Theme.of(context).colorScheme.error;
+    final l10n = AppLocalizations.of(context)!;
     try {
       await featureFlagsService.upsertFlag(
         key: _keyController.text.trim(),
@@ -88,13 +97,15 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
         metadata: _categoryController.text.trim().isEmpty
             ? const {}
             : {'category': _categoryController.text.trim()},
+        announcementTitle: _announcementTitleController.text.trim(),
+        announcementBody: _announcementBodyController.text.trim(),
       );
       if (mounted) Navigator.of(context).pop(_keyController.text.trim());
     } catch (e) {
       if (mounted) setState(() => _submitting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Erreur : $e'),
+          content: Text(l10n.featureFlagSubmitError(e.toString())),
           backgroundColor: errorColor,
         ),
       );
@@ -105,6 +116,7 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final viewInsets = MediaQuery.of(context).viewInsets;
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + viewInsets.bottom),
       child: Form(
@@ -115,7 +127,9 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                _isEdit ? 'Modifier le flag' : 'Nouveau flag',
+                _isEdit
+                    ? l10n.featureFlagSheetEditTitle
+                    : l10n.featureFlagSheetCreateTitle,
                 style: theme.textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
@@ -126,9 +140,9 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
               TextFormField(
                 controller: _keyController,
                 enabled: !_isEdit,
-                decoration: const InputDecoration(
-                  labelText: 'Clé technique (immutable)',
-                  hintText: 'ex. auto_publish_insta',
+                decoration: InputDecoration(
+                  labelText: l10n.featureFlagKeyLabel,
+                  hintText: l10n.featureFlagKeyHint,
                 ),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(
@@ -137,9 +151,9 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
                 ],
                 validator: (v) {
                   final s = v?.trim() ?? '';
-                  if (s.isEmpty) return 'Requis';
+                  if (s.isEmpty) return l10n.featureFlagKeyValidatorRequired;
                   if (!RegExp(r'^[a-z0-9_]+$').hasMatch(s)) {
-                    return 'minuscules + chiffres + _';
+                    return l10n.featureFlagKeyValidatorPattern;
                   }
                   return null;
                 },
@@ -147,36 +161,45 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Titre lisible',
-                  hintText: 'ex. Auto-publish Instagram',
+                decoration: InputDecoration(
+                  labelText: l10n.featureFlagTitleLabel,
+                  hintText: l10n.featureFlagTitleHint,
                 ),
                 textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _descController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optionnel)',
+                decoration: InputDecoration(
+                  labelText: l10n.featureFlagDescriptionLabel,
                 ),
                 maxLines: 2,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _categoryController,
-                decoration: const InputDecoration(
-                  labelText: 'Catégorie (optionnel)',
-                  hintText: 'ex. social, premium, ai',
+                decoration: InputDecoration(
+                  labelText: l10n.featureFlagCategoryLabel,
+                  hintText: l10n.featureFlagCategoryHint,
                 ),
+              ),
+              const SizedBox(height: 20),
+              // Announcement section — collapsible block separated from
+              // the technical config. Empty title = silent activation.
+              _AnnouncementBlock(
+                titleController: _announcementTitleController,
+                bodyController: _announcementBodyController,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<FeatureRollout>(
                 initialValue: _rollout,
-                decoration: const InputDecoration(labelText: 'Rollout'),
+                decoration: InputDecoration(
+                  labelText: l10n.featureFlagRolloutLabel,
+                ),
                 items: FeatureRollout.values
                     .map((r) => DropdownMenuItem(
                           value: r,
-                          child: Text(r.label),
+                          child: Text(featureRolloutLabel(l10n, r)),
                         ))
                     .toList(),
                 onChanged: (v) => setState(() => _rollout = v ?? _rollout),
@@ -184,7 +207,7 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
               if (_rollout == FeatureRollout.beta) ...[
                 const SizedBox(height: 16),
                 Text(
-                  'Beta testers (UIDs)',
+                  l10n.featureFlagBetaTestersTitle,
                   style: theme.textTheme.titleSmall,
                 ),
                 const SizedBox(height: 8),
@@ -193,8 +216,8 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
                     Expanded(
                       child: TextField(
                         controller: _betaUidController,
-                        decoration: const InputDecoration(
-                          hintText: 'Coller un UID',
+                        decoration: InputDecoration(
+                          hintText: l10n.featureFlagBetaUidHint,
                           isDense: true,
                         ),
                         onSubmitted: (_) => _addBetaUid(),
@@ -233,8 +256,10 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
                       )
                     : const FaIcon(FontAwesomeIcons.check, size: 14),
                 label: Text(_submitting
-                    ? 'Enregistrement…'
-                    : (_isEdit ? 'Mettre à jour' : 'Créer le flag')),
+                    ? l10n.featureFlagSubmitting
+                    : (_isEdit
+                        ? l10n.featureFlagSubmitUpdate
+                        : l10n.featureFlagSubmitCreate)),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -265,6 +290,7 @@ class _CatalogSelectorState extends State<_CatalogSelector> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     // Group specs by category for the dropdown sections.
     final groups = <String, List<FeatureFlagSpec>>{};
     for (final spec in FeatureFlagKeys.all) {
@@ -293,7 +319,7 @@ class _CatalogSelectorState extends State<_CatalogSelector> {
               ),
               const SizedBox(width: 8),
               Text(
-                'Choisir depuis le catalogue',
+                l10n.featureFlagCatalogSelectorTitle,
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.primary,
                   fontWeight: FontWeight.w600,
@@ -305,8 +331,8 @@ class _CatalogSelectorState extends State<_CatalogSelector> {
           DropdownButtonFormField<FeatureFlagSpec>(
             initialValue: _value,
             isExpanded: true,
-            decoration: const InputDecoration(
-              hintText: 'Flag pré-défini par le code…',
+            decoration: InputDecoration(
+              hintText: l10n.featureFlagCatalogSelectorHint,
               isDense: true,
             ),
             items: [
@@ -342,6 +368,115 @@ class _CatalogSelectorState extends State<_CatalogSelector> {
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Section "Annonce in-app" du formulaire admin — un titre + un body
+/// optionnels qui, s'ils sont remplis, déclenchent un bottomsheet
+/// "Nouvelle fonctionnalité" la première fois qu'un user accède au
+/// flag. Affichage replié par défaut pour ne pas cluttrer le form.
+class _AnnouncementBlock extends StatefulWidget {
+  final TextEditingController titleController;
+  final TextEditingController bodyController;
+  const _AnnouncementBlock({
+    required this.titleController,
+    required this.bodyController,
+  });
+
+  @override
+  State<_AnnouncementBlock> createState() => _AnnouncementBlockState();
+}
+
+class _AnnouncementBlockState extends State<_AnnouncementBlock> {
+  late bool _expanded;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-expand if either field already has content (edit mode).
+    _expanded = widget.titleController.text.trim().isNotEmpty ||
+        widget.bodyController.text.trim().isNotEmpty;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.tertiaryContainer.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.bullhorn,
+                    size: 12,
+                    color: theme.colorScheme.tertiary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.featureAnnouncementSheetHeader,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.tertiary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  FaIcon(
+                    _expanded
+                        ? FontAwesomeIcons.chevronUp
+                        : FontAwesomeIcons.chevronDown,
+                    size: 12,
+                    color: theme.colorScheme.outline,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_expanded) ...[
+            const SizedBox(height: 8),
+            Text(
+              l10n.featureAnnouncementSheetHelp,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: widget.titleController,
+              decoration: InputDecoration(
+                labelText: l10n.featureAnnouncementSheetTitleLabel,
+                hintText: l10n.featureAnnouncementSheetTitleHint,
+                isDense: true,
+              ),
+              textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: widget.bodyController,
+              decoration: InputDecoration(
+                labelText: l10n.featureAnnouncementSheetBodyLabel,
+                hintText: l10n.featureAnnouncementSheetBodyHint,
+                isDense: true,
+              ),
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
             ),
           ],
         ],

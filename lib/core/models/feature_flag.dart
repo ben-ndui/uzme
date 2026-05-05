@@ -32,18 +32,10 @@ enum FeatureRollout {
 
   String get key => name;
 
-  String get label {
-    switch (this) {
-      case FeatureRollout.disabled:
-        return 'Désactivé';
-      case FeatureRollout.pioneer:
-        return 'Pioneer';
-      case FeatureRollout.beta:
-        return 'Beta';
-      case FeatureRollout.enabled:
-        return 'Activé';
-    }
-  }
+  // Display label intentionally NOT defined here — the model stays
+  // free of l10n / Flutter dependencies. Use
+  // `widgets/admin/feature_rollout_l10n.dart > featureRolloutLabel`
+  // from any UI surface that needs to render the rollout state.
 }
 
 /// A feature flag describes one toggleable surface in the app. Stored in
@@ -69,6 +61,15 @@ class FeatureFlag extends Equatable {
   /// Free-form admin metadata (category, iosMinVersion, releasedAt, etc.).
   final Map<String, dynamic> metadata;
 
+  /// Optional in-app announcement shown to users the first time they
+  /// have access to a feature whose rollout makes it visible to them.
+  /// When [announcementTitle] is empty the activation is silent.
+  final String announcementTitle;
+
+  /// Markdown-light body of the announcement (rendered as plain text in
+  /// the bottomsheet for now). See [announcementTitle].
+  final String announcementBody;
+
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? updatedBy;
@@ -80,6 +81,8 @@ class FeatureFlag extends Equatable {
     this.rollout = FeatureRollout.disabled,
     this.betaUserIds = const [],
     this.metadata = const {},
+    this.announcementTitle = '',
+    this.announcementBody = '',
     this.createdAt,
     this.updatedAt,
     this.updatedBy,
@@ -95,11 +98,16 @@ class FeatureFlag extends Equatable {
       metadata: map['metadata'] is Map
           ? Map<String, dynamic>.from(map['metadata'])
           : const {},
+      announcementTitle: map['announcementTitle'] ?? '',
+      announcementBody: map['announcementBody'] ?? '',
       createdAt: _parseDate(map['createdAt']),
       updatedAt: _parseDate(map['updatedAt']),
       updatedBy: map['updatedBy'],
     );
   }
+
+  /// Whether this flag carries an announcement worth showing.
+  bool get hasAnnouncement => announcementTitle.trim().isNotEmpty;
 
   static DateTime? _parseDate(dynamic value) {
     if (value == null) return null;
@@ -123,6 +131,8 @@ class FeatureFlag extends Equatable {
         rollout,
         betaUserIds,
         metadata,
+        announcementTitle,
+        announcementBody,
         updatedAt,
       ];
 }

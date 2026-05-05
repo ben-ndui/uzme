@@ -29,6 +29,7 @@ import 'package:uzme/core/utils/app_logger.dart';
 import 'package:uzme/core/utils/crashlytics_bloc_observer.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/routing/router.dart';
+import 'package:uzme/widgets/feature_flags/feature_announcement_watcher.dart';
 
 /// Global navigator key for notification navigation
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -408,6 +409,13 @@ class _UseMeAppState extends State<UseMeApp> {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   routerConfig: _router,
+                  // Watcher mounted once near the root so any
+                  // newly-available feature with an announcement pops
+                  // its bottomsheet, regardless of which scaffold the
+                  // user lands on.
+                  builder: (context, child) => FeatureAnnouncementWatcher(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 ),
               );
             },

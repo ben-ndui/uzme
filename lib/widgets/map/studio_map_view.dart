@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smoothandesign_package/core/widgets/common/common_exports.dart';
 import 'package:uzme/config/map_styles.dart';
 import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/blocs/map/map_bloc.dart';
@@ -198,10 +199,12 @@ class _StudioMapViewState extends State<StudioMapView> {
               right: 16,
               child: const MapSearchBar(),
             ),
-            // Studios count chip (sits just under the search bar, right side)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 60 + 48 + 12,
-              right: 16,
+            // Studios count chip — draggable libre, position initiale
+            // sous la search bar côté droit. Width estimée ~180px → on
+            // calcule l'X pour rester aligné droite par défaut.
+            DraggableWidget(
+              initialX: MediaQuery.of(context).size.width - 180 - 16,
+              initialY: MediaQuery.of(context).padding.top + 60 + 48 + 12,
               child: const StudiosCountChip(),
             ),
             // Location button

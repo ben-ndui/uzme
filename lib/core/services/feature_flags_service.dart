@@ -163,6 +163,8 @@ class FeatureFlagsService {
     FeatureRollout rollout = FeatureRollout.disabled,
     List<String> betaUserIds = const [],
     Map<String, dynamic> metadata = const {},
+    String announcementTitle = '',
+    String announcementBody = '',
   }) async {
     await _functions.httpsCallable('upsertFeatureFlag').call({
       'key': key,
@@ -171,6 +173,8 @@ class FeatureFlagsService {
       'rollout': rollout.key,
       'betaUserIds': betaUserIds,
       'metadata': metadata,
+      'announcementTitle': announcementTitle,
+      'announcementBody': announcementBody,
     });
   }
 

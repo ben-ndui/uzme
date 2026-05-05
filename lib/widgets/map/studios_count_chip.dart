@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/core/blocs/map/map_state.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 
 /// Floating chip on the studio map that shows how many studios are
 /// currently visible around the user, and within what radius. Updates
@@ -15,6 +16,7 @@ class StudiosCountChip extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<MapBloc, MapState>(
       buildWhen: (prev, curr) =>
@@ -67,14 +69,14 @@ class StudiosCountChip extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: '$count studio${count > 1 ? 's' : ''}',
+                        text: l10n.studiosCount(count),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: cs.onSurface,
                         ),
                       ),
                       TextSpan(
-                        text: ' · $radiusKm km',
+                        text: l10n.studiosCountRadiusSuffix(radiusKm),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.6),
                         ),

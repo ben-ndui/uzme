@@ -4499,4 +4499,145 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pioneerNormalRates =>
       'Standard rates now apply. Your Pioneer badge is permanent.';
+
+  @override
+  String get featureAnnouncementSheetHeader => 'In-app announcement (optional)';
+
+  @override
+  String get featureAnnouncementSheetHelp =>
+      'If filled in, this information is shown in a bottom sheet the first time the user accesses the feature.';
+
+  @override
+  String get featureAnnouncementSheetTitleLabel => 'Announcement title';
+
+  @override
+  String get featureAnnouncementSheetTitleHint => 'e.g. New: Digital card';
+
+  @override
+  String get featureAnnouncementSheetBodyLabel => 'Body';
+
+  @override
+  String get featureAnnouncementSheetBodyHint =>
+      'Describe the feature in 2-3 sentences';
+
+  @override
+  String get featureAnnouncementBadge => 'New';
+
+  @override
+  String get featureAnnouncementCta => 'Got it';
+
+  @override
+  String get featureFlagsScreenTitle => 'Feature flags';
+
+  @override
+  String get featureFlagsCreateButton => 'New flag';
+
+  @override
+  String featureFlagSavedSnack(String key) {
+    return 'Flag \"$key\" saved';
+  }
+
+  @override
+  String get featureFlagsEmptyTitle => 'No feature flag';
+
+  @override
+  String get featureFlagsEmptyDesc =>
+      'Create a flag to gate a feature or run a progressive rollout.';
+
+  @override
+  String get featureFlagCataloguedTooltip => 'Flag declared in the catalogue';
+
+  @override
+  String get featureFlagSheetEditTitle => 'Edit flag';
+
+  @override
+  String get featureFlagSheetCreateTitle => 'New flag';
+
+  @override
+  String get featureFlagKeyLabel => 'Technical key (immutable)';
+
+  @override
+  String get featureFlagKeyHint => 'e.g. auto_publish_insta';
+
+  @override
+  String get featureFlagKeyValidatorRequired => 'Required';
+
+  @override
+  String get featureFlagKeyValidatorPattern => 'lowercase + digits + _';
+
+  @override
+  String get featureFlagTitleLabel => 'Readable title';
+
+  @override
+  String get featureFlagTitleHint => 'e.g. Auto-publish Instagram';
+
+  @override
+  String get featureFlagDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get featureFlagCategoryLabel => 'Category (optional)';
+
+  @override
+  String get featureFlagCategoryHint => 'e.g. social, premium, ai';
+
+  @override
+  String get featureFlagRolloutLabel => 'Rollout';
+
+  @override
+  String get featureFlagBetaTestersTitle => 'Beta testers (UIDs)';
+
+  @override
+  String get featureFlagBetaUidHint => 'Paste a UID';
+
+  @override
+  String get featureFlagSubmitting => 'Saving…';
+
+  @override
+  String get featureFlagSubmitCreate => 'Create flag';
+
+  @override
+  String get featureFlagSubmitUpdate => 'Update';
+
+  @override
+  String featureFlagSubmitError(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get featureFlagCatalogSelectorTitle => 'Pick from the catalogue';
+
+  @override
+  String get featureFlagCatalogSelectorHint => 'Code-defined flag…';
+
+  @override
+  String get featureRolloutDisabled => 'Disabled';
+
+  @override
+  String get featureRolloutPioneer => 'Pioneer';
+
+  @override
+  String get featureRolloutBeta => 'Beta';
+
+  @override
+  String get featureRolloutEnabled => 'Enabled';
+
+  @override
+  String studiosCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString studios',
+      one: '1 studio',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String studiosCountRadiusSuffix(String radius) {
+    return ' · $radius km';
+  }
 }

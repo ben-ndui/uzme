@@ -2050,5 +2050,59 @@
   "nfc": "NFC",
   "nfcWritten": "Profil a-surango na tag NFC",
   "removeAccount": "Zîa compte",
-  "removeAccountConfirm": "Mo a-yê tî zîa compte tî mo?"
+  "removeAccountConfirm": "Mo a-yê tî zîa compte tî mo?",
+
+  "featureAnnouncementSheetHeader": "Tene tî app (optionnel)",
+  "featureAnnouncementSheetHelp": "Si mo lë, sêse mîngi a-yêkë na bottomsheet kôzo na ngoï tî kûkûâ na fonctionnalité.",
+  "featureAnnouncementSheetTitleLabel": "Titre tî tene",
+  "featureAnnouncementSheetTitleHint": "ex. Fini : Carte digitale",
+  "featureAnnouncementSheetBodyLabel": "Sêse tî tene",
+  "featureAnnouncementSheetBodyHint": "Tene tî fonctionnalité na phrases 2-3",
+  "featureAnnouncementBadge": "Fini",
+  "featureAnnouncementCta": "Mo bâa",
+
+  "featureFlagsScreenTitle": "Feature flags",
+  "featureFlagsCreateButton": "Flag tî fini",
+  "featureFlagSavedSnack": "Flag « {key} » a-zî",
+  "@featureFlagSavedSnack": {
+    "placeholders": {"key": {"type": "String"}}
+  },
+  "featureFlagsEmptyTitle": "Flag pëpe",
+  "featureFlagsEmptyDesc": "Zîa flag tî pikangö fonctionnalité wala tî sû na pëpëe.",
+  "featureFlagCataloguedTooltip": "Flag a-yêkë na catalogue",
+  "featureFlagSheetEditTitle": "Sêwa flag",
+  "featureFlagSheetCreateTitle": "Flag tî fini",
+  "featureFlagKeyLabel": "Clé technique (a-changé pëpe)",
+  "featureFlagKeyHint": "ex. auto_publish_insta",
+  "featureFlagKeyValidatorRequired": "A-lîngbi",
+  "featureFlagKeyValidatorPattern": "minuscules + bê + _",
+  "featureFlagTitleLabel": "Titre",
+  "featureFlagTitleHint": "ex. Auto-publish Instagram",
+  "featureFlagDescriptionLabel": "Description (optionnel)",
+  "featureFlagCategoryLabel": "Catégorie (optionnel)",
+  "featureFlagCategoryHint": "ex. social, premium, ai",
+  "featureFlagRolloutLabel": "Rollout",
+  "featureFlagBetaTestersTitle": "Beta testers (UIDs)",
+  "featureFlagBetaUidHint": "Sû UID",
+  "featureFlagSubmitting": "A-zî…",
+  "featureFlagSubmitCreate": "Zîa flag",
+  "featureFlagSubmitUpdate": "Sêwa",
+  "featureFlagSubmitError": "Erreur : {error}",
+  "@featureFlagSubmitError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "featureFlagCatalogSelectorTitle": "Sêlê na catalogue",
+  "featureFlagCatalogSelectorHint": "Flag tî code…",
+  "featureRolloutDisabled": "A-pikangö",
+  "featureRolloutPioneer": "Pioneer",
+  "featureRolloutBeta": "Beta",
+  "featureRolloutEnabled": "A-ngangö",
+  "studiosCount": "{count, plural, =1{studio 1} other{studio {count}}}",
+  "@studiosCount": {
+    "placeholders": {"count": {"type": "int", "format": "decimalPattern"}}
+  },
+  "studiosCountRadiusSuffix": " · {radius} km",
+  "@studiosCountRadiusSuffix": {
+    "placeholders": {"radius": {"type": "String"}}
+  }
 }

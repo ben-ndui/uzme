@@ -1865,5 +1865,59 @@
       "days": {"type": "String"}
     }
   },
-  "pioneerNormalRates": "Standard rates now apply. Your Pioneer badge is permanent."
+  "pioneerNormalRates": "Standard rates now apply. Your Pioneer badge is permanent.",
+
+  "featureAnnouncementSheetHeader": "In-app announcement (optional)",
+  "featureAnnouncementSheetHelp": "If filled in, this information is shown in a bottom sheet the first time the user accesses the feature.",
+  "featureAnnouncementSheetTitleLabel": "Announcement title",
+  "featureAnnouncementSheetTitleHint": "e.g. New: Digital card",
+  "featureAnnouncementSheetBodyLabel": "Body",
+  "featureAnnouncementSheetBodyHint": "Describe the feature in 2-3 sentences",
+  "featureAnnouncementBadge": "New",
+  "featureAnnouncementCta": "Got it",
+
+  "featureFlagsScreenTitle": "Feature flags",
+  "featureFlagsCreateButton": "New flag",
+  "featureFlagSavedSnack": "Flag \"{key}\" saved",
+  "@featureFlagSavedSnack": {
+    "placeholders": {"key": {"type": "String"}}
+  },
+  "featureFlagsEmptyTitle": "No feature flag",
+  "featureFlagsEmptyDesc": "Create a flag to gate a feature or run a progressive rollout.",
+  "featureFlagCataloguedTooltip": "Flag declared in the catalogue",
+  "featureFlagSheetEditTitle": "Edit flag",
+  "featureFlagSheetCreateTitle": "New flag",
+  "featureFlagKeyLabel": "Technical key (immutable)",
+  "featureFlagKeyHint": "e.g. auto_publish_insta",
+  "featureFlagKeyValidatorRequired": "Required",
+  "featureFlagKeyValidatorPattern": "lowercase + digits + _",
+  "featureFlagTitleLabel": "Readable title",
+  "featureFlagTitleHint": "e.g. Auto-publish Instagram",
+  "featureFlagDescriptionLabel": "Description (optional)",
+  "featureFlagCategoryLabel": "Category (optional)",
+  "featureFlagCategoryHint": "e.g. social, premium, ai",
+  "featureFlagRolloutLabel": "Rollout",
+  "featureFlagBetaTestersTitle": "Beta testers (UIDs)",
+  "featureFlagBetaUidHint": "Paste a UID",
+  "featureFlagSubmitting": "Saving…",
+  "featureFlagSubmitCreate": "Create flag",
+  "featureFlagSubmitUpdate": "Update",
+  "featureFlagSubmitError": "Error: {error}",
+  "@featureFlagSubmitError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "featureFlagCatalogSelectorTitle": "Pick from the catalogue",
+  "featureFlagCatalogSelectorHint": "Code-defined flag…",
+  "featureRolloutDisabled": "Disabled",
+  "featureRolloutPioneer": "Pioneer",
+  "featureRolloutBeta": "Beta",
+  "featureRolloutEnabled": "Enabled",
+  "studiosCount": "{count, plural, =1{1 studio} other{{count} studios}}",
+  "@studiosCount": {
+    "placeholders": {"count": {"type": "int", "format": "decimalPattern"}}
+  },
+  "studiosCountRadiusSuffix": " · {radius} km",
+  "@studiosCountRadiusSuffix": {
+    "placeholders": {"radius": {"type": "String"}}
+  }
 }

@@ -8421,6 +8421,246 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les tarifs standards s\'appliquent désormais. Votre badge Pioneer reste permanent.'**
   String get pioneerNormalRates;
+
+  /// No description provided for @featureAnnouncementSheetHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annonce in-app (optionnel)'**
+  String get featureAnnouncementSheetHeader;
+
+  /// No description provided for @featureAnnouncementSheetHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si remplies, ces infos s\'affichent dans un bottomsheet la première fois que l\'utilisateur accède à la feature.'**
+  String get featureAnnouncementSheetHelp;
+
+  /// No description provided for @featureAnnouncementSheetTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre de l\'annonce'**
+  String get featureAnnouncementSheetTitleLabel;
+
+  /// No description provided for @featureAnnouncementSheetTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. Nouveau : Carte digitale'**
+  String get featureAnnouncementSheetTitleHint;
+
+  /// No description provided for @featureAnnouncementSheetBodyLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Corps du message'**
+  String get featureAnnouncementSheetBodyLabel;
+
+  /// No description provided for @featureAnnouncementSheetBodyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décris la feature en 2-3 phrases'**
+  String get featureAnnouncementSheetBodyHint;
+
+  /// No description provided for @featureAnnouncementBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveauté'**
+  String get featureAnnouncementBadge;
+
+  /// No description provided for @featureAnnouncementCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'C\'est noté'**
+  String get featureAnnouncementCta;
+
+  /// No description provided for @featureFlagsScreenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Feature flags'**
+  String get featureFlagsScreenTitle;
+
+  /// No description provided for @featureFlagsCreateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau flag'**
+  String get featureFlagsCreateButton;
+
+  /// No description provided for @featureFlagSavedSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Flag « {key} » enregistré'**
+  String featureFlagSavedSnack(String key);
+
+  /// No description provided for @featureFlagsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun feature flag'**
+  String get featureFlagsEmptyTitle;
+
+  /// No description provided for @featureFlagsEmptyDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crée un flag pour gater une fonctionnalité ou faire un rollout progressif.'**
+  String get featureFlagsEmptyDesc;
+
+  /// No description provided for @featureFlagCataloguedTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Flag déclaré dans le catalogue'**
+  String get featureFlagCataloguedTooltip;
+
+  /// No description provided for @featureFlagSheetEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le flag'**
+  String get featureFlagSheetEditTitle;
+
+  /// No description provided for @featureFlagSheetCreateTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau flag'**
+  String get featureFlagSheetCreateTitle;
+
+  /// No description provided for @featureFlagKeyLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé technique (immutable)'**
+  String get featureFlagKeyLabel;
+
+  /// No description provided for @featureFlagKeyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. auto_publish_insta'**
+  String get featureFlagKeyHint;
+
+  /// No description provided for @featureFlagKeyValidatorRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Requis'**
+  String get featureFlagKeyValidatorRequired;
+
+  /// No description provided for @featureFlagKeyValidatorPattern.
+  ///
+  /// In fr, this message translates to:
+  /// **'minuscules + chiffres + _'**
+  String get featureFlagKeyValidatorPattern;
+
+  /// No description provided for @featureFlagTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre lisible'**
+  String get featureFlagTitleLabel;
+
+  /// No description provided for @featureFlagTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. Auto-publish Instagram'**
+  String get featureFlagTitleHint;
+
+  /// No description provided for @featureFlagDescriptionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (optionnel)'**
+  String get featureFlagDescriptionLabel;
+
+  /// No description provided for @featureFlagCategoryLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie (optionnel)'**
+  String get featureFlagCategoryLabel;
+
+  /// No description provided for @featureFlagCategoryHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. social, premium, ai'**
+  String get featureFlagCategoryHint;
+
+  /// No description provided for @featureFlagRolloutLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rollout'**
+  String get featureFlagRolloutLabel;
+
+  /// No description provided for @featureFlagBetaTestersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Beta testers (UIDs)'**
+  String get featureFlagBetaTestersTitle;
+
+  /// No description provided for @featureFlagBetaUidHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coller un UID'**
+  String get featureFlagBetaUidHint;
+
+  /// No description provided for @featureFlagSubmitting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrement…'**
+  String get featureFlagSubmitting;
+
+  /// No description provided for @featureFlagSubmitCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le flag'**
+  String get featureFlagSubmitCreate;
+
+  /// No description provided for @featureFlagSubmitUpdate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get featureFlagSubmitUpdate;
+
+  /// No description provided for @featureFlagSubmitError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur : {error}'**
+  String featureFlagSubmitError(String error);
+
+  /// No description provided for @featureFlagCatalogSelectorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir depuis le catalogue'**
+  String get featureFlagCatalogSelectorTitle;
+
+  /// No description provided for @featureFlagCatalogSelectorHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Flag pré-défini par le code…'**
+  String get featureFlagCatalogSelectorHint;
+
+  /// No description provided for @featureRolloutDisabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivé'**
+  String get featureRolloutDisabled;
+
+  /// No description provided for @featureRolloutPioneer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pioneer'**
+  String get featureRolloutPioneer;
+
+  /// No description provided for @featureRolloutBeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Beta'**
+  String get featureRolloutBeta;
+
+  /// No description provided for @featureRolloutEnabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activé'**
+  String get featureRolloutEnabled;
+
+  /// No description provided for @studiosCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 studio} other{{count} studios}}'**
+  String studiosCount(int count);
+
+  /// No description provided for @studiosCountRadiusSuffix.
+  ///
+  /// In fr, this message translates to:
+  /// **' · {radius} km'**
+  String studiosCountRadiusSuffix(String radius);
 }
 
 class _AppLocalizationsDelegate
