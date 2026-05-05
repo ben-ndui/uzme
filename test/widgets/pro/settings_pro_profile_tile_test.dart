@@ -10,6 +10,7 @@ void main() {
   late MockAuthBloc mockAuthBloc;
 
   setUp(() {
+    enableAllFeatureFlagsForTesting();
     mockAuthBloc = MockAuthBloc();
   });
 

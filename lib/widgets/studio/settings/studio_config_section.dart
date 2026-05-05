@@ -31,6 +31,10 @@ class StudioConfigSection extends StatelessWidget {
       user,
       FeatureFlagKeys.stripeConnectOnboarding.key,
     );
+    final teamManagementEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.teamManagement.key,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,12 +58,13 @@ class StudioConfigSection extends StatelessWidget {
           subtitle: l10n.createRoomsHint,
           onTap: () => context.push(AppRoutes.rooms),
         ),
-        SettingsTile(
-          icon: FontAwesomeIcons.userTie,
-          title: l10n.team,
-          subtitle: l10n.manageEngineers,
-          onTap: () => context.push(AppRoutes.teamManagement),
-        ),
+        if (teamManagementEnabled)
+          SettingsTile(
+            icon: FontAwesomeIcons.userTie,
+            title: l10n.team,
+            subtitle: l10n.manageEngineers,
+            onTap: () => context.push(AppRoutes.teamManagement),
+          ),
         SettingsTile(
           icon: FontAwesomeIcons.creditCard,
           title: l10n.paymentMethods,

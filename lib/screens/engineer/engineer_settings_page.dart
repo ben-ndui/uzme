@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/data/ai_guide_data.dart';
 import 'package:uzme/core/data/tips_data.dart';
+import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/screens/common/ai_guide_screen.dart';
 import 'package:uzme/screens/common/tips_screen.dart';
@@ -19,6 +24,14 @@ class EngineerSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthBloc>().state;
+    final user = authState is AuthAuthenticatedState
+        ? authState.user as AppUser?
+        : null;
+    final teamManagementEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.teamManagement.key,
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -42,12 +55,13 @@ class EngineerSettingsPage extends StatelessWidget {
             subtitle: l10n.manageSlots,
             onTap: () => context.push(AppRoutes.engineerAvailability),
           ),
-          SettingsTile(
-            icon: FontAwesomeIcons.userPlus,
-            title: l10n.teamInvitations,
-            subtitle: l10n.pendingInvitations,
-            onTap: () => context.push(AppRoutes.engineerInvitations),
-          ),
+          if (teamManagementEnabled)
+            SettingsTile(
+              icon: FontAwesomeIcons.userPlus,
+              title: l10n.teamInvitations,
+              subtitle: l10n.pendingInvitations,
+              onTap: () => context.push(AppRoutes.engineerInvitations),
+            ),
 
           const Divider(height: 32),
 

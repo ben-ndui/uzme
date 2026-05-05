@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/feature_flag.dart';
 
@@ -25,12 +26,23 @@ import 'package:uzme/core/models/feature_flag.dart';
 ///
 /// Unknown / non-existent flag keys default to `false` (deny by default).
 class FeatureFlagsService {
+  /// Constructor accepts injected dependencies (used by tests / DI).
+  /// When omitted, the service lazily resolves the live Firebase
+  /// instances on first use — so simply instantiating the service
+  /// (e.g. as a top-level singleton in `main.dart`) does NOT trigger
+  /// Firebase access. This matters for widget tests that import the
+  /// singleton just to seed flags via [setFlagsForTesting] without
+  /// running Firebase.initializeApp().
   FeatureFlagsService({FirebaseFirestore? firestore, FirebaseFunctions? functions})
-      : _firestore = firestore ?? FirebaseFirestore.instance,
-        _functions = functions ?? FirebaseFunctions.instance;
+      : _firestoreOverride = firestore,
+        _functionsOverride = functions;
 
-  final FirebaseFirestore _firestore;
-  final FirebaseFunctions _functions;
+  final FirebaseFirestore? _firestoreOverride;
+  final FirebaseFunctions? _functionsOverride;
+  FirebaseFirestore get _firestore =>
+      _firestoreOverride ?? FirebaseFirestore.instance;
+  FirebaseFunctions get _functions =>
+      _functionsOverride ?? FirebaseFunctions.instance;
   static const _collection = 'feature_flags';
 
   StreamSubscription? _subscription;
@@ -108,6 +120,24 @@ class FeatureFlagsService {
   Future<bool> isEnabledAsync(AppUser? user, String key) async {
     if (!_initialised) await whenReady();
     return isEnabled(user, key);
+  }
+
+  /// Test-only injection of flag state. Lets widget tests force a known
+  /// rollout for a given flag without touching Firestore. Marked
+  /// [visibleForTesting] so production code can't accidentally bypass
+  /// the snapshot pipeline.
+  @visibleForTesting
+  void setFlagsForTesting(Map<String, FeatureFlag> flags) {
+    _flags = Map.unmodifiable(flags);
+    _initialised = true;
+  }
+
+  /// Test-only reset — clears the cached flags so a subsequent test
+  /// starts from a clean state.
+  @visibleForTesting
+  void resetForTesting() {
+    _flags = const {};
+    _initialised = false;
   }
 
   // ===== Admin callables (superAdmin only — server enforces) =====

@@ -58,5 +58,17 @@ void main() {
       expect(FeatureFlagKeys.calendarGoogleSync.key, 'calendar_google_sync');
       expect(FeatureFlagKeys.digitalCard.key, 'digital_card');
     });
+
+    test('B3.3 marketplace gates are present in the catalogue', () {
+      // Referenced by settings_pro_profile_tile, settings_pro_bookings_tile,
+      // pro_discovery_carousel, quick_actions_section, studio_config_section,
+      // and engineer_settings_page. Same protection contract.
+      expect(FeatureFlagKeys.proProfile.key, 'pro_profile');
+      expect(FeatureFlagKeys.teamManagement.key, 'team_management');
+      // auto_publish_insta is a forward-declaration with no UI surface
+      // yet — keeping it in the catalogue ensures the admin can pre-flag
+      // it before the feature ships.
+      expect(FeatureFlagKeys.autoPublishInsta.key, 'auto_publish_insta');
+    });
   });
 }

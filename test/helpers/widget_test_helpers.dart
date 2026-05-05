@@ -3,8 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/app_user.dart';
+import 'package:uzme/core/models/feature_flag.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
+
+/// Seeds the global [featureFlagsService] with every catalogued flag
+/// rolled out as `enabled`. Use in the `setUp` of any widget test that
+/// renders a UI gated by `featureFlagsService.isEnabled(...)`.
+///
+/// Why a helper: the service is a top-level singleton wired from
+/// `main.dart` and would otherwise return `false` for every flag in
+/// tests (no Firestore snapshot has landed). Tests that explicitly want
+/// a feature off can call [featureFlagsService.setFlagsForTesting]
+/// directly with a custom map.
+void enableAllFeatureFlagsForTesting() {
+  featureFlagsService.setFlagsForTesting({
+    for (final spec in FeatureFlagKeys.all)
+      spec.key: FeatureFlag(
+        key: spec.key,
+        title: spec.title,
+        description: spec.description,
+        rollout: FeatureRollout.enabled,
+      ),
+  });
+}
 
 /// Mock BLoCs for widget testing.
 class MockAuthBloc extends MockBloc<AuthEvent, AuthState>

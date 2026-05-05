@@ -29,6 +29,10 @@ class QuickActionsSection extends StatelessWidget {
       user,
       FeatureFlagKeys.digitalCard.key,
     );
+    final proProfileEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.proProfile.key,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,11 +71,12 @@ class QuickActionsSection extends StatelessWidget {
                 label: l10n.messages,
                 onTap: () => context.push('/messages'),
               ),
-              QuickActionPill(
-                icon: FontAwesomeIcons.userGroup,
-                label: l10n.proDiscovery,
-                onTap: () => context.push(AppRoutes.proDiscovery),
-              ),
+              if (proProfileEnabled)
+                QuickActionPill(
+                  icon: FontAwesomeIcons.userGroup,
+                  label: l10n.proDiscovery,
+                  onTap: () => context.push(AppRoutes.proDiscovery),
+                ),
               QuickActionPill(
                 icon: FontAwesomeIcons.solidHeart,
                 label: l10n.favoritesLabel,

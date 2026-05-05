@@ -4,8 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/routing/app_routes.dart';
 
 /// Tile in settings to access pro booking requests received.
@@ -23,6 +25,12 @@ class SettingsProBookingsTile extends StatelessWidget {
         if (state is! AuthAuthenticatedState) return const SizedBox.shrink();
 
         final user = state.user as AppUser;
+        if (!featureFlagsService.isEnabled(
+          user,
+          FeatureFlagKeys.proProfile.key,
+        )) {
+          return const SizedBox.shrink();
+        }
         if (!user.isPro) return const SizedBox.shrink();
 
         return BlocBuilder<SessionBloc, SessionState>(

@@ -35,6 +35,7 @@ void main() {
   );
 
   setUp(() {
+    enableAllFeatureFlagsForTesting();
     mockAuthBloc = MockAuthBloc();
     mockProProfileBloc = MockProProfileBloc();
     mockFavoriteBloc = MockFavoriteBloc();

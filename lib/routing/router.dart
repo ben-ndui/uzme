@@ -226,6 +226,8 @@ class AppRouter {
         ),
         GoRoute(
           path: AppRoutes.engineerInvitations,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.teamManagement.key),
           builder: (context, state) => const TeamInvitationsScreen(),
         ),
 
@@ -271,27 +273,32 @@ class AppRouter {
           builder: (context, state) => const ProfileScreen(),
         ),
 
-        // Pro Profile setup
+        // Pro marketplace — setup, discover, bookings — all under
+        // pro_profile flag.
         GoRoute(
           path: AppRoutes.proProfileSetup,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.proProfile.key),
           builder: (context, state) => const ProProfileSetupScreen(),
         ),
-
-        // Pro Discovery
         GoRoute(
           path: AppRoutes.proDiscovery,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.proProfile.key),
           builder: (context, state) => const ProDiscoveryScreen(),
         ),
-
-        // Pro Bookings received
         GoRoute(
           path: AppRoutes.proBookingsReceived,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.proProfile.key),
           builder: (context, state) => const ProBookingsReceivedScreen(),
         ),
 
-        // Team management
+        // Team management — gated under team_management.
         GoRoute(
           path: AppRoutes.teamManagement,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.teamManagement.key),
           builder: (context, state) => const TeamManagementScreen(),
         ),
 
