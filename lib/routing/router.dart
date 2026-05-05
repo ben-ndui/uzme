@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/app_user.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/screens/auth/biometric_lock_screen.dart';
 import 'package:uzme/screens/auth/login_screen.dart';
 import 'package:uzme/screens/auth/register_screen.dart';
@@ -415,13 +417,19 @@ class AppRouter {
           builder: (context, state) => const NetworkScreen(),
         ),
 
-        // AI Assistant
+        // AI Assistant — gated by ai_assistant flag (route-level
+        // defense-in-depth, in addition to the entry tile in
+        // conversations_screen). Disabled flag → bounce to home.
         GoRoute(
           path: AppRoutes.aiAssistant,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.aiAssistant.key),
           builder: (context, state) => const AIAssistantScreen(),
         ),
         GoRoute(
           path: AppRoutes.aiSettings,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.aiAssistantPro.key),
           builder: (context, state) {
             final studioId = state.uri.queryParameters['studioId'] ?? '';
             return AISettingsScreen(studioId: studioId);
@@ -516,4 +524,28 @@ class _NotFoundScreen extends StatelessWidget {
       },
     );
   }
+}
+
+/// Returns a redirect path when [flagKey] is **not** enabled for the
+/// current user — used by `redirect:` on gated GoRoutes. Returning null
+/// means "allow navigation". The redirect target is the user's home
+/// route if authenticated, otherwise login.
+///
+/// Note: relies on `featureFlagsService` having received its first
+/// snapshot (initialized at boot in `main.dart`). Before the snapshot
+/// lands, every flag resolves to `false`, so the redirect would block
+/// AI routes for a brief moment after cold start. Acceptable trade-off
+/// vs leaving a gated feature reachable during boot.
+String? _featureGuard(BuildContext context, String flagKey) {
+  final authState = context.read<AuthBloc>().state;
+  final user = authState is AuthAuthenticatedState
+      ? authState.user as AppUser?
+      : null;
+  if (featureFlagsService.isEnabled(user, flagKey)) {
+    return null;
+  }
+  if (authState is AuthAuthenticatedState) {
+    return AppRouter.getHomeRouteForUser(authState.user);
+  }
+  return AppRoutes.login;
 }

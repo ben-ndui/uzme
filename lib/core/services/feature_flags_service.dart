@@ -84,8 +84,12 @@ class FeatureFlagsService {
   /// Synchronous resolution. Returns `false` if the service hasn't loaded
   /// its first snapshot yet — call [whenReady] beforehand if you need to
   /// gate on a feature at app launch.
-  bool isEnabled(AppUser? user, String key) {
-    final flag = _flags[key];
+  bool isEnabled(AppUser? user, String key) => resolve(_flags[key], user);
+
+  /// Pure resolution rule for a single flag. Extracted as static so the
+  /// gating logic is unit-testable without mocking Firestore. Unknown
+  /// flag (`null`) defaults to `false` (deny by default).
+  static bool resolve(FeatureFlag? flag, AppUser? user) {
     if (flag == null) return false;
     switch (flag.rollout) {
       case FeatureRollout.disabled:

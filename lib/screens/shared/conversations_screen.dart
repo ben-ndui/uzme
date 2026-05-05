@@ -5,7 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/config/useme_theme.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
+import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/core/services/block_service.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
@@ -279,6 +282,21 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   }
 
   Widget _buildAIAssistantTile() {
+    // Gate behind the ai_assistant feature flag — admin can flip rollout
+    // (disabled/pioneer/beta/enabled) from /admin/feature-flags without
+    // a rebuild. Hidden = SizedBox.shrink so the surrounding ListView /
+    // Column don't end up with a phantom slot.
+    final authState = context.read<AuthBloc>().state;
+    final user = authState is AuthAuthenticatedState
+        ? authState.user as AppUser?
+        : null;
+    if (!featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.aiAssistant.key,
+    )) {
+      return const SizedBox.shrink();
+    }
+
     final theme = Theme.of(context);
 
     return Column(
