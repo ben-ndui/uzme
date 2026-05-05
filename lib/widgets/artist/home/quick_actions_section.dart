@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
+import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/artist/studio_selector_bottom_sheet.dart';
 import 'package:uzme/widgets/card/digital_card_sheet.dart';
@@ -16,6 +21,14 @@ class QuickActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final padding = isWideLayout ? 24.0 : 16.0;
+    final authState = context.watch<AuthBloc>().state;
+    final user = authState is AuthAuthenticatedState
+        ? authState.user as AppUser?
+        : null;
+    final digitalCardEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.digitalCard.key,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,11 +77,12 @@ class QuickActionsSection extends StatelessWidget {
                 label: l10n.favoritesLabel,
                 onTap: () => context.push('/artist/favorites'),
               ),
-              QuickActionPill(
-                icon: FontAwesomeIcons.idCard,
-                label: l10n.myCard,
-                onTap: () => DigitalCardSheet.show(context),
-              ),
+              if (digitalCardEnabled)
+                QuickActionPill(
+                  icon: FontAwesomeIcons.idCard,
+                  label: l10n.myCard,
+                  onTap: () => DigitalCardSheet.show(context),
+                ),
               QuickActionPill(
                 icon: FontAwesomeIcons.sliders,
                 label: l10n.preferencesLabel,

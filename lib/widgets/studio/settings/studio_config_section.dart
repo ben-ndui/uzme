@@ -27,6 +27,10 @@ class StudioConfigSection extends StatelessWidget {
       user,
       FeatureFlagKeys.aiAssistantPro.key,
     );
+    final stripeConnectEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.stripeConnectOnboarding.key,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,12 +66,13 @@ class StudioConfigSection extends StatelessWidget {
           subtitle: l10n.paymentMethodsSubtitle,
           onTap: () => context.push(AppRoutes.paymentMethods),
         ),
-        SettingsTile(
-          icon: FontAwesomeIcons.stripe,
-          title: l10n.stripeConnect,
-          subtitle: l10n.stripeConnectSubtitle,
-          onTap: () => context.push(AppRoutes.stripeConnect),
-        ),
+        if (stripeConnectEnabled)
+          SettingsTile(
+            icon: FontAwesomeIcons.stripe,
+            title: l10n.stripeConnect,
+            subtitle: l10n.stripeConnectSubtitle,
+            onTap: () => context.push(AppRoutes.stripeConnect),
+          ),
         if (aiProEnabled)
           SettingsTile(
             icon: FontAwesomeIcons.robot,

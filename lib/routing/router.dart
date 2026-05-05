@@ -342,16 +342,25 @@ class AppRouter {
           path: '/upgrade',
           builder: (context, state) => const UpgradeScreen(),
         ),
+        // Digital card + customization + QR scanner — all gated under
+        // a single flag. Each route checks individually so deep-linking
+        // any of them is blocked when the feature is off.
         GoRoute(
           path: AppRoutes.digitalCard,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.digitalCard.key),
           builder: (context, state) => const DigitalCardScreen(),
         ),
         GoRoute(
           path: AppRoutes.cardCustomize,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.digitalCard.key),
           builder: (context, state) => const CardCustomizationScreen(),
         ),
         GoRoute(
           path: AppRoutes.qrScanner,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.digitalCard.key),
           builder: (context, state) => const QrScannerScreen(),
         ),
 
@@ -399,9 +408,12 @@ class AppRouter {
           builder: (context, state) => const FavoritesScreen(),
         ),
 
-        // Stripe Connect onboarding (Studio)
+        // Stripe Connect onboarding (Studio) — sensitive vis-à-vis
+        // App Review Apple, defaults to disabled until rollout.
         GoRoute(
           path: AppRoutes.stripeConnect,
+          redirect: (context, state) => _featureGuard(
+              context, FeatureFlagKeys.stripeConnectOnboarding.key),
           builder: (context, state) => const StripeConnectScreen(),
         ),
 
@@ -436,9 +448,12 @@ class AppRouter {
           },
         ),
 
-        // Calendar Import Review
+        // Calendar Import Review — child of the calendar_google_sync
+        // feature; useless without the connection.
         GoRoute(
           path: AppRoutes.calendarImportReview,
+          redirect: (context, state) =>
+              _featureGuard(context, FeatureFlagKeys.calendarGoogleSync.key),
           builder: (context, state) {
             final userId = state.uri.queryParameters['userId'] ?? '';
             return CalendarImportReviewScreen(userId: userId);

@@ -3,9 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:smoothandesign_package/smoothandesign.dart';
 import '../../core/blocs/calendar/calendar_exports.dart';
 import 'package:smoothandesign_package/core/models/unavailability.dart';
+import '../../core/constants/feature_flag_keys.dart';
+import '../../core/models/app_user.dart';
 import '../../l10n/app_localizations.dart';
+import '../../main.dart' show featureFlagsService;
 import '../../routing/app_routes.dart';
 import '../../widgets/common/snackbar/app_snackbar.dart';
 
@@ -17,6 +21,22 @@ class CalendarConnectionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Gated by `calendar_google_sync` flag — hides both connected and
+    // disconnected states. If a user is already connected and the flag
+    // is later disabled, their backend connection persists but the
+    // section is hidden — admin should follow up with a server-side
+    // disconnect if true revocation is needed.
+    final authState = context.watch<AuthBloc>().state;
+    final user = authState is AuthAuthenticatedState
+        ? authState.user as AppUser?
+        : null;
+    if (!featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.calendarGoogleSync.key,
+    )) {
+      return const SizedBox.shrink();
+    }
+
     return BlocConsumer<CalendarBloc, CalendarState>(
       listener: (context, state) {
         final l10n = AppLocalizations.of(context)!;

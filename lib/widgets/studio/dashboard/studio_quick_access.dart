@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/config/responsive_config.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
+import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/card/digital_card_sheet.dart';
 import 'package:uzme/widgets/common/dashboard/dashboard_exports.dart';
@@ -15,6 +20,15 @@ class StudioQuickAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state;
+    final user = authState is AuthAuthenticatedState
+        ? authState.user as AppUser?
+        : null;
+    final digitalCardEnabled = featureFlagsService.isEnabled(
+      user,
+      FeatureFlagKeys.digitalCard.key,
+    );
+
     final pills = [
       DashboardQuickPill(
         icon: FontAwesomeIcons.plus,
@@ -32,11 +46,12 @@ class StudioQuickAccess extends StatelessWidget {
         label: l10n.planning,
         onTap: () => context.push(AppRoutes.sessions),
       ),
-      DashboardQuickPill(
-        icon: FontAwesomeIcons.idCard,
-        label: l10n.myCard,
-        onTap: () => DigitalCardSheet.show(context),
-      ),
+      if (digitalCardEnabled)
+        DashboardQuickPill(
+          icon: FontAwesomeIcons.idCard,
+          label: l10n.myCard,
+          onTap: () => DigitalCardSheet.show(context),
+        ),
     ];
 
     // Sur tablet+, afficher en Row avec espacement uniforme

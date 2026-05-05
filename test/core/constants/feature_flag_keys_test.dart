@@ -48,5 +48,15 @@ void main() {
       expect(FeatureFlagKeys.aiAssistant.key, 'ai_assistant');
       expect(FeatureFlagKeys.aiAssistantPro.key, 'ai_assistant_pro');
     });
+
+    test('B3.2 premium gates are present in the catalogue', () {
+      // Referenced by studio_config_section, calendar_connection_section,
+      // settings_digital_card_tile, and the 3 home/dashboard quick-access
+      // pills. Same protection as the AI gate test above.
+      expect(FeatureFlagKeys.stripeConnectOnboarding.key,
+          'stripe_connect_onboarding');
+      expect(FeatureFlagKeys.calendarGoogleSync.key, 'calendar_google_sync');
+      expect(FeatureFlagKeys.digitalCard.key, 'digital_card');
+    });
   });
 }
