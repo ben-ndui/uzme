@@ -2,7 +2,7 @@ name: uzme
 description: "UZME — réservation de sessions studio entre artistes, ingénieurs son et propriétaires de studios."
 publish_to: 'none'
 
-version: 1.5.9+38
+version: 1.5.10+39
 
 environment:
   sdk: ^3.9.0
@@ -17,7 +17,7 @@ dependencies:
   smoothandesign_package:
     git:
       url: https://github.com/ben-ndui/smoothandesign_package.git
-      ref: master
+      ref: v1.2.2
 
   # Smooth & Design Biometric Auth (Face ID / Touch ID / fingerprint)
   smoothandesign_auth_biometric:
