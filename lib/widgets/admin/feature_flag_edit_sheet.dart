@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/feature_flag.dart';
 import 'package:uzme/main.dart' show featureFlagsService;
 
@@ -50,6 +51,17 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
     _categoryController.dispose();
     _betaUidController.dispose();
     super.dispose();
+  }
+
+  /// Pre-fill the form from a catalogue spec when the admin picks one.
+  /// Only invoked in create mode — the catalog selector is hidden on edit.
+  void _applySpec(FeatureFlagSpec spec) {
+    setState(() {
+      _keyController.text = spec.key;
+      _titleController.text = spec.title;
+      _descController.text = spec.description;
+      _categoryController.text = spec.category;
+    });
   }
 
   void _addBetaUid() {
@@ -107,6 +119,10 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
                 style: theme.textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
+              if (!_isEdit) ...[
+                _CatalogSelector(onSelected: _applySpec),
+                const SizedBox(height: 16),
+              ],
               TextFormField(
                 controller: _keyController,
                 enabled: !_isEdit,
@@ -226,6 +242,109 @@ class _FeatureFlagEditSheetState extends State<FeatureFlagEditSheet> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Dropdown that lets the admin pick a feature flag from the centralised
+/// catalogue ([FeatureFlagKeys.all]). Selecting a spec calls [onSelected]
+/// which pre-fills the parent form. Doesn't replace free-form input —
+/// admins can still type a custom key for flags pending future features.
+class _CatalogSelector extends StatefulWidget {
+  final ValueChanged<FeatureFlagSpec> onSelected;
+  const _CatalogSelector({required this.onSelected});
+
+  @override
+  State<_CatalogSelector> createState() => _CatalogSelectorState();
+}
+
+class _CatalogSelectorState extends State<_CatalogSelector> {
+  FeatureFlagSpec? _value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // Group specs by category for the dropdown sections.
+    final groups = <String, List<FeatureFlagSpec>>{};
+    for (final spec in FeatureFlagKeys.all) {
+      groups.putIfAbsent(spec.category, () => []).add(spec);
+    }
+    final categories = groups.keys.toList()..sort();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant,
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              FaIcon(
+                FontAwesomeIcons.list,
+                size: 12,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Choisir depuis le catalogue',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<FeatureFlagSpec>(
+            initialValue: _value,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              hintText: 'Flag pré-défini par le code…',
+              isDense: true,
+            ),
+            items: [
+              for (final cat in categories) ...[
+                DropdownMenuItem(
+                  enabled: false,
+                  child: Text(
+                    cat.toUpperCase(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                ...groups[cat]!.map(
+                  (spec) => DropdownMenuItem(
+                    value: spec,
+                    child: Text(spec.title, overflow: TextOverflow.ellipsis),
+                  ),
+                ),
+              ],
+            ],
+            onChanged: (spec) {
+              if (spec == null) return;
+              setState(() => _value = spec);
+              widget.onSelected(spec);
+            },
+          ),
+          if (_value != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              _value!.description,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

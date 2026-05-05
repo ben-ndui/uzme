@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uzme/core/constants/feature_flag_keys.dart';
 import 'package:uzme/core/models/feature_flag.dart';
 import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/widgets/admin/feature_flag_edit_sheet.dart';
@@ -110,6 +111,18 @@ class _FlagTile extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        if (FeatureFlagKeys.isCatalogued(flag.key)) ...[
+                          const SizedBox(width: 6),
+                          Tooltip(
+                            message:
+                                'Flag déclaré dans le catalogue (lib/core/constants/feature_flag_keys.dart)',
+                            child: FaIcon(
+                              FontAwesomeIcons.bookOpen,
+                              size: 12,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 2),
