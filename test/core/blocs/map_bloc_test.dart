@@ -44,6 +44,12 @@ void main() {
   setUp(() {
     mockLocationService = MockLocationService();
     mockStudioService = MockStudioDiscoveryService();
+    // Default: Places Text Search returns no studio match. Tests that
+    // need a hit can override. Without this default, mocktail throws on
+    // the unstubbed call and SearchByAddress falls into the catch
+    // branch ("Erreur lors de la recherche") before reaching geocode.
+    when(() => mockStudioService.searchByText(any()))
+        .thenAnswer((_) async => null);
   });
 
   MapBloc buildBloc() => MapBloc(

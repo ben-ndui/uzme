@@ -23,7 +23,11 @@ void main() {
     String artistName = 'John Doe',
     String? notes,
   }) {
-    final start = DateTime(2026, 4, 10, 14, 0);
+    // 30 days in the future — keeps `displayStatus` aligned with the
+    // raw `status` (no auto-promotion to `completed` for past sessions).
+    // Don't hardcode a calendar date here, otherwise the test rots once
+    // the wall clock crosses it.
+    final start = DateTime.now().add(const Duration(days: 30));
     return SessionFactory.create(
       id: id,
       studioId: '',
