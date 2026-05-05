@@ -27,8 +27,7 @@ import 'package:uzme/core/models/feature_flag.dart';
 class FeatureFlagsService {
   FeatureFlagsService({FirebaseFirestore? firestore, FirebaseFunctions? functions})
       : _firestore = firestore ?? FirebaseFirestore.instance,
-        _functions = functions ??
-            FirebaseFunctions.instanceFor(region: 'europe-west1');
+        _functions = functions ?? FirebaseFunctions.instance;
 
   final FirebaseFirestore _firestore;
   final FirebaseFunctions _functions;
