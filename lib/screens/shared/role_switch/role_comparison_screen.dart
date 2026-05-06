@@ -40,7 +40,6 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     final authState = context.watch<AuthBloc>().state;
     final currentRole = authState is AuthAuthenticatedState
@@ -66,9 +65,30 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.roleSwitchScreenTitle)),
+      appBar: AppBar(
+        title: Text(l10n.roleSwitchScreenTitle),
+        actions: [
+          // "Comparer" remonté en AppBar action — auparavant en
+          // bottomSheet où il chevauchait le FAB advisor. Une icône
+          // tableau + label texte garde l'affordance sans coût d'espace.
+          TextButton.icon(
+            icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
+            onPressed: () => RoleCompareModal.show(
+              context: context,
+              presentations: RolePresentation.switchableRoles
+                  .map((r) => RolePresentation.forRole(r, l10n))
+                  .toList(),
+            ),
+            label: Text(l10n.roleSwitchCompareCta),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+        // Bottom padding = espace pour le FAB + safe area + une marge
+        // confortable pour qu'on puisse scroller jusqu'à la dernière
+        // card sans que le FAB la masque.
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         children: [
           _Header(l10n: l10n),
           const SizedBox(height: 16),
@@ -83,31 +103,6 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
             const SizedBox(height: 16),
           ],
         ],
-      ),
-      bottomSheet: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant)),
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
-              onPressed: () => RoleCompareModal.show(
-                context: context,
-                presentations: RolePresentation.switchableRoles
-                    .map((r) => RolePresentation.forRole(r, l10n))
-                    .toList(),
-              ),
-              label: Text(l10n.roleSwitchCompareCta),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
-          ),
-        ),
       ),
       // Phase AI-2.5 — dual-mode FAB :
       //   tap        → ouvre /ai-assistant?prompt=... pour engager une
