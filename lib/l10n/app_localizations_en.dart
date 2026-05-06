@@ -5054,4 +5054,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get roleSwitchAdvisorInitialPrompt =>
       'Hi! Can you analyse my UZME profile and tell me which role (Artist, Studio, Sound engineer) fits me best given my activity? Walk me through your reasoning and suggest a switch if it makes sense.';
+
+  @override
+  String get whatsNewTileTitle => 'What\'s new for you';
+
+  @override
+  String get whatsNewTileSubtitle => 'AI recap of features unlocked for you';
+
+  @override
+  String get whatsNewScreenTitle => 'What\'s new for you';
+
+  @override
+  String get whatsNewLoadingLabel => 'AI is preparing your recap…';
+
+  @override
+  String get whatsNewEmptyTitle => 'You\'re up to date';
+
+  @override
+  String get whatsNewEmptySubtitle =>
+      'No new feature unlocked right now. Come back after the next rollout!';
+
+  @override
+  String get whatsNewActionLabel => 'Action:';
+
+  @override
+  String get whatsNewSeenBadge => 'Already seen';
+
+  @override
+  String get whatsNewRefresh => 'Regenerate recap';
+
+  @override
+  String whatsNewError(String error) {
+    return 'Couldn\'t generate recap: $error';
+  }
 }

@@ -44,6 +44,7 @@ import 'package:uzme/screens/shared/network_screen.dart';
 import 'package:uzme/screens/admin/feature_flags_list_screen.dart';
 import 'package:uzme/screens/admin/role_switch_requests_screen.dart';
 import 'package:uzme/screens/shared/role_switch/role_comparison_screen.dart';
+import 'package:uzme/screens/shared/whats_new_screen.dart';
 import 'package:uzme/screens/admin/pioneer_program_detail_screen.dart';
 import 'package:uzme/screens/admin/pioneer_programs_list_screen.dart';
 import 'package:uzme/screens/admin/studio_claims_screen.dart';
@@ -341,6 +342,11 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.roleSwitch,
           builder: (context, state) => const RoleComparisonScreen(),
+        ),
+        // What's-new for me (Phase AI-3) — personalized AI recap.
+        GoRoute(
+          path: AppRoutes.whatsNew,
+          builder: (context, state) => const WhatsNewScreen(),
         ),
         // Admin (Phase E5): list of pending role-switch requests.
         GoRoute(

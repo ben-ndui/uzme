@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/feature_flag.dart';
+import 'package:uzme/core/models/whats_new_summary.dart';
 
 /// Centralised feature flag resolver. Subscribes once to the
 /// `feature_flags` collection and exposes both a synchronous `isEnabled`
@@ -189,5 +190,18 @@ class FeatureFlagsService {
   /// references the key.
   Future<void> deleteFlag(String key) async {
     await _functions.httpsCallable('deleteFeatureFlag').call({'key': key});
+  }
+
+  /// Personalized AI recap of features the calling user has unlocked.
+  /// Backend filters by enabled-for-user + cross-references with
+  /// `users/{uid}.seenFeatureAnnouncements`. Returns ≤3 items + an
+  /// intro greeting. Falls back to a deterministic list (no AI flair)
+  /// on Anthropic outage.
+  Future<WhatsNewSummary> getWhatsNewForMe() async {
+    final result =
+        await _functions.httpsCallable('getWhatsNewForMe').call();
+    return WhatsNewSummary.fromMap(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 }

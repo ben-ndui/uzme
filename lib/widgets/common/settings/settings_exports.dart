@@ -9,3 +9,4 @@ export 'settings_pro_bookings_tile.dart';
 export 'settings_pro_profile_tile.dart';
 export 'settings_role_switch_tile.dart';
 export 'settings_theme_tile.dart';
+export 'settings_whats_new_tile.dart';

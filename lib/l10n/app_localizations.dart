@@ -9339,6 +9339,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Salut ! Peux-tu analyser mon profil UZME et me dire quel rôle (Artiste, Studio, Ingé son) me correspond le mieux selon mon activité ? Détaille ton raisonnement et propose une bascule si elle est pertinente.'**
   String get roleSwitchAdvisorInitialPrompt;
+
+  /// No description provided for @whatsNewTileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes nouveautés'**
+  String get whatsNewTileTitle;
+
+  /// No description provided for @whatsNewTileSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résumé IA des fonctionnalités débloquées pour toi'**
+  String get whatsNewTileSubtitle;
+
+  /// No description provided for @whatsNewScreenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveautés pour toi'**
+  String get whatsNewScreenTitle;
+
+  /// No description provided for @whatsNewLoadingLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'IA prépare ton résumé…'**
+  String get whatsNewLoadingLabel;
+
+  /// No description provided for @whatsNewEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es à jour'**
+  String get whatsNewEmptyTitle;
+
+  /// No description provided for @whatsNewEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune nouvelle fonctionnalité débloquée pour le moment. Reviens après le prochain rollout !'**
+  String get whatsNewEmptySubtitle;
+
+  /// No description provided for @whatsNewActionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action :'**
+  String get whatsNewActionLabel;
+
+  /// No description provided for @whatsNewSeenBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà vu'**
+  String get whatsNewSeenBadge;
+
+  /// No description provided for @whatsNewRefresh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régénérer le résumé'**
+  String get whatsNewRefresh;
+
+  /// No description provided for @whatsNewError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de générer le résumé : {error}'**
+  String whatsNewError(String error);
 }
 
 class _AppLocalizationsDelegate

@@ -5027,4 +5027,37 @@ class AppLocalizationsSg extends AppLocalizations {
   @override
   String get roleSwitchAdvisorInitialPrompt =>
       'Salut ! Mo wara tî bâa profil tî mo na UZME na tene rôle (Artiste, Studio, Ingé son) ti mo ? Bâa raisonnement tî mo na propose bascule si a-yêkë gera.';
+
+  @override
+  String get whatsNewTileTitle => 'Sêse tî fini tî mo';
+
+  @override
+  String get whatsNewTileSubtitle => 'Résumé IA tî fonctionnalité';
+
+  @override
+  String get whatsNewScreenTitle => 'Sêse tî fini tî mo';
+
+  @override
+  String get whatsNewLoadingLabel => 'IA a-prêt résumé…';
+
+  @override
+  String get whatsNewEmptyTitle => 'Mo yêkë na lekû';
+
+  @override
+  String get whatsNewEmptySubtitle =>
+      'Sêse tî fini pëpe na ngoï sô. Kîri na peko rollout !';
+
+  @override
+  String get whatsNewActionLabel => 'Action :';
+
+  @override
+  String get whatsNewSeenBadge => 'A-bâa awê';
+
+  @override
+  String get whatsNewRefresh => 'Sêwa résumé';
+
+  @override
+  String whatsNewError(String error) {
+    return 'A-lîngbi pëpe : $error';
+  }
 }

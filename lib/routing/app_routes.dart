@@ -74,6 +74,7 @@ class AppRoutes {
   static const String featureFlags = '/admin/feature-flags';
   static const String roleSwitchRequests = '/admin/role-switch-requests';
   static const String roleSwitch = '/settings/role-switch';
+  static const String whatsNew = '/settings/whats-new';
   static const String storeScreenshots = '/dev/screenshots';
 
   // Notifications

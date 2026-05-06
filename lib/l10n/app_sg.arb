@@ -2271,5 +2271,19 @@
     "placeholders": {"role": {"type": "String"}}
   },
   "roleSwitchAdvisorDismiss": "Kîri",
-  "roleSwitchAdvisorInitialPrompt": "Salut ! Mo wara tî bâa profil tî mo na UZME na tene rôle (Artiste, Studio, Ingé son) ti mo ? Bâa raisonnement tî mo na propose bascule si a-yêkë gera."
+  "roleSwitchAdvisorInitialPrompt": "Salut ! Mo wara tî bâa profil tî mo na UZME na tene rôle (Artiste, Studio, Ingé son) ti mo ? Bâa raisonnement tî mo na propose bascule si a-yêkë gera.",
+
+  "whatsNewTileTitle": "Sêse tî fini tî mo",
+  "whatsNewTileSubtitle": "Résumé IA tî fonctionnalité",
+  "whatsNewScreenTitle": "Sêse tî fini tî mo",
+  "whatsNewLoadingLabel": "IA a-prêt résumé…",
+  "whatsNewEmptyTitle": "Mo yêkë na lekû",
+  "whatsNewEmptySubtitle": "Sêse tî fini pëpe na ngoï sô. Kîri na peko rollout !",
+  "whatsNewActionLabel": "Action :",
+  "whatsNewSeenBadge": "A-bâa awê",
+  "whatsNewRefresh": "Sêwa résumé",
+  "whatsNewError": "A-lîngbi pëpe : {error}",
+  "@whatsNewError": {
+    "placeholders": {"error": {"type": "String"}}
+  }
 }

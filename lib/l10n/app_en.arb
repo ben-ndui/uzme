@@ -2086,5 +2086,19 @@
     "placeholders": {"role": {"type": "String"}}
   },
   "roleSwitchAdvisorDismiss": "Close",
-  "roleSwitchAdvisorInitialPrompt": "Hi! Can you analyse my UZME profile and tell me which role (Artist, Studio, Sound engineer) fits me best given my activity? Walk me through your reasoning and suggest a switch if it makes sense."
+  "roleSwitchAdvisorInitialPrompt": "Hi! Can you analyse my UZME profile and tell me which role (Artist, Studio, Sound engineer) fits me best given my activity? Walk me through your reasoning and suggest a switch if it makes sense.",
+
+  "whatsNewTileTitle": "What's new for you",
+  "whatsNewTileSubtitle": "AI recap of features unlocked for you",
+  "whatsNewScreenTitle": "What's new for you",
+  "whatsNewLoadingLabel": "AI is preparing your recap…",
+  "whatsNewEmptyTitle": "You're up to date",
+  "whatsNewEmptySubtitle": "No new feature unlocked right now. Come back after the next rollout!",
+  "whatsNewActionLabel": "Action:",
+  "whatsNewSeenBadge": "Already seen",
+  "whatsNewRefresh": "Regenerate recap",
+  "whatsNewError": "Couldn't generate recap: {error}",
+  "@whatsNewError": {
+    "placeholders": {"error": {"type": "String"}}
+  }
 }

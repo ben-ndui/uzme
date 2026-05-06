@@ -5096,4 +5096,38 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get roleSwitchAdvisorInitialPrompt =>
       'Salut ! Peux-tu analyser mon profil UZME et me dire quel rôle (Artiste, Studio, Ingé son) me correspond le mieux selon mon activité ? Détaille ton raisonnement et propose une bascule si elle est pertinente.';
+
+  @override
+  String get whatsNewTileTitle => 'Tes nouveautés';
+
+  @override
+  String get whatsNewTileSubtitle =>
+      'Résumé IA des fonctionnalités débloquées pour toi';
+
+  @override
+  String get whatsNewScreenTitle => 'Nouveautés pour toi';
+
+  @override
+  String get whatsNewLoadingLabel => 'L\'IA prépare ton résumé…';
+
+  @override
+  String get whatsNewEmptyTitle => 'Tu es à jour';
+
+  @override
+  String get whatsNewEmptySubtitle =>
+      'Aucune nouvelle fonctionnalité débloquée pour le moment. Reviens après le prochain rollout !';
+
+  @override
+  String get whatsNewActionLabel => 'Action :';
+
+  @override
+  String get whatsNewSeenBadge => 'Déjà vu';
+
+  @override
+  String get whatsNewRefresh => 'Régénérer le résumé';
+
+  @override
+  String whatsNewError(String error) {
+    return 'Impossible de générer le résumé : $error';
+  }
 }

@@ -95,6 +95,8 @@ class _StudioSettingsPageState extends State<StudioSettingsPage> {
           // Role comparator (Phase E) — visually emphasized so users
           // discover they can switch role from here.
           const SettingsRoleSwitchTile(),
+          // What's new for me (Phase AI-3) — personalized AI recap.
+          const SettingsWhatsNewTile(),
           const Divider(height: 32),
 
           // Security
