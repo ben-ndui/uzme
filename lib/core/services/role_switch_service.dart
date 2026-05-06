@@ -47,10 +47,15 @@ class RoleSwitchResult {
 
 /// Bridge to the smoothbackend `role-switch` module.
 class RoleSwitchService {
+  /// Lazy resolution: the constructor never touches Firebase, so the
+  /// service can be instantiated in widget tests / DI graphs without
+  /// `Firebase.initializeApp()` being called first.
   RoleSwitchService({FirebaseFunctions? functions})
-      : _functions = functions ?? FirebaseFunctions.instance;
+      : _functionsOverride = functions;
 
-  final FirebaseFunctions _functions;
+  final FirebaseFunctions? _functionsOverride;
+  FirebaseFunctions get _functions =>
+      _functionsOverride ?? FirebaseFunctions.instance;
 
   /// Attempt to switch the current user to [targetRole]. The callable
   /// either performs the switch atomically (success) or returns

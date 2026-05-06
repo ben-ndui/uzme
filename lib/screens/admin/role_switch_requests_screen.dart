@@ -30,7 +30,12 @@ class _RoleSwitchRequestsScreenState extends State<RoleSwitchRequestsScreen> {
   }
 
   void _refresh() {
-    setState(() => _future = _service.listRequests(status: _filter));
+    // Block body — arrow form returns the Future-typed assignment
+    // value, which trips Flutter's setState assertion. See
+    // whats_new_screen smoke-test fix for the canonical example.
+    setState(() {
+      _future = _service.listRequests(status: _filter);
+    });
   }
 
   @override
