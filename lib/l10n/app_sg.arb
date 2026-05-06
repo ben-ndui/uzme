@@ -2104,5 +2104,154 @@
   "studiosCountRadiusSuffix": " · {radius} km",
   "@studiosCountRadiusSuffix": {
     "placeholders": {"radius": {"type": "String"}}
-  }
+  },
+
+  "roleSwitchTileTitle": "Comparateur tî rôle",
+  "roleSwitchTileSubtitle": "Bâa ambeni mode UZME na changer si mo yê",
+  "roleSwitchScreenTitle": "Rôle tî mo na UZME",
+  "roleSwitchHeaderIntro": "Mo yêkë Artiste na default. Bascule na Studio wala Ingé son si mo yê — sêse tî mo a-zîa, a-yêkë gera si mo kîri na rôle tî mo.",
+  "roleSwitchYouAreHere": "Mo yêkë gï",
+  "roleSwitchCompareCta": "Bâa comparatif",
+  "roleSwitchCompareModalTitle": "Comparer rôle akë",
+  "roleSwitchCompareClose": "Kîri",
+  "roleSwitchAnnualLimitNote": "Limite : 3 changement na ngu na ngu, ndâ marketplace.",
+
+  "roleArtistSubtitle": "Réserver session, bâa studio na ingé",
+  "roleArtistIntro": "Mode Artiste a-mbi mo tî gï studio na pëpëe, tene na ingé, réserver session tî mo.",
+  "roleArtistFeature1": "Map studio na geoloc",
+  "roleArtistFeature2": "Réservation wala demande devis",
+  "roleArtistFeature3": "Messagerie chiffrée",
+  "roleArtistFeature4": "Carte digitale tî zîa",
+  "roleArtistAdvantage1": "Commission 0% na paiement tî mo",
+  "roleArtistAdvantage2": "Bâa pro na marketplace",
+  "roleArtistAdvantage3": "Sauvegarder favori na historique",
+  "roleArtistConstraint1": "Mo a-lîngbi pëpe tî sêse réservation",
+  "roleArtistConstraint2": "Outils studio a-yêkë pëpe",
+  "roleArtistCta": "Duti Artiste",
+  "roleArtistCompareAudience": "Artiste / musicien",
+  "roleArtistComparePricing": "Gratuit + paiement artiste",
+  "roleArtistCompareTools": "Map, réservation, messagerie",
+  "roleArtistCompareIdeal": "Mo gï studio wala ingé",
+
+  "roleStudioSubtitle": "Manyer studio, session, équipe",
+  "roleStudioIntro": "Mode Studio a-mu na mo dashboard pro : services, agenda, équipe, factures, paiements.",
+  "roleStudioFeature1": "Catalogue services + tarifs",
+  "roleStudioFeature2": "Sallê, agenda, sync Google Calendar",
+  "roleStudioFeature3": "Stripe Connect tî paiement",
+  "roleStudioFeature4": "Équipe ingé (team management)",
+  "roleStudioFeature5": "Profil studio na map",
+  "roleStudioAdvantage1": "Visibilité na artiste UZME",
+  "roleStudioAdvantage2": "Outils pro : devis, factures, agenda",
+  "roleStudioAdvantage3": "Pioneer : 0% commission permanent",
+  "roleStudioConstraint1": "Commission marketplace si Pioneer pëpe",
+  "roleStudioConstraint2": "Vérification identité (Stripe Connect)",
+  "roleStudioConstraint3": "Implication temps réel",
+  "roleStudioCta": "Duti Studio",
+  "roleStudioCompareAudience": "Propriétaire studio",
+  "roleStudioComparePricing": "Abonnement Pro + commission",
+  "roleStudioCompareTools": "Dashboard, services, équipe, paiement",
+  "roleStudioCompareIdeal": "Mo manyer studio",
+
+  "roleEngineerSubtitle": "Travailler na studio, manyer dispo, duti Pro",
+  "roleEngineerIntro": "Mode Ingé son a-tene mo na studio + a-mu mo profil Pro freelance.",
+  "roleEngineerFeature1": "Calendrier disponibilité",
+  "roleEngineerFeature2": "Invitation équipe studio",
+  "roleEngineerFeature3": "Profil Pro freelance",
+  "roleEngineerFeature4": "Session a-zîa + tracking",
+  "roleEngineerAdvantage1": "Gï mission na sêngö",
+  "roleEngineerAdvantage2": "Bâa expertise (genres, DAWs)",
+  "roleEngineerAdvantage3": "Cumul na ambeni studio",
+  "roleEngineerConstraint1": "Réponse na 24h na invitation",
+  "roleEngineerConstraint2": "Commission na booking Pro",
+  "roleEngineerCta": "Duti Ingé son",
+  "roleEngineerCompareAudience": "Ingé son freelance",
+  "roleEngineerComparePricing": "Gratuit (commission Pro)",
+  "roleEngineerCompareTools": "Dispo, invitation, profil Pro",
+  "roleEngineerCompareIdeal": "Mo travailler son na studio",
+
+  "roleCompareColAudience": "Public",
+  "roleCompareColPricing": "Tarif",
+  "roleCompareColTools": "Outils principaux",
+  "roleCompareColIdeal": "Idéal si",
+
+  "roleSwitchSectionFeatures": "Fonctionnalité",
+  "roleSwitchSectionAdvantages": "Avantage",
+  "roleSwitchSectionConstraints": "Contrainte",
+
+  "roleSwitchConfirmTitle": "Bascule na mode {role} ?",
+  "@roleSwitchConfirmTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchConfirmBody": "Sêse tî mo a-zîa na archive na a-yêkë gera si mo kîri. Mo a-go na onboarding tî mode tî fini.",
+  "roleSwitchConfirmCta": "Eee, bascule",
+  "roleSwitchConfirmCancel": "Bê pëpe",
+
+  "roleSwitchSuccessTitle": "Mode {role} a-yêkë",
+  "@roleSwitchSuccessTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchSuccessRestored": "E-zîa sêse tî mode {role} tî mo.",
+  "@roleSwitchSuccessRestored": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+
+  "roleSwitchBlockedTitle": "Mo a-lîngbi pëpe tî bascule fadë sô",
+  "roleSwitchBlockedIntro": "Kôzo na changement, e-bâa sêse akë :",
+  "roleSwitchBlockedReasonUpcomingSessions": "{count, plural, =1{1 session a-yêkë gera} other{{count} session a-yêkë gera}}",
+  "@roleSwitchBlockedReasonUpcomingSessions": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedReasonActiveServices": "{count, plural, =1{1 service a-zîa} other{{count} service a-zîa}}",
+  "@roleSwitchBlockedReasonActiveServices": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedReasonInvitations": "{count, plural, =1{1 invitation équipe} other{{count} invitation équipe}}",
+  "@roleSwitchBlockedReasonInvitations": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedRequestCta": "Demander admin tî zîa",
+  "roleSwitchBlockedDismissCta": "Na pekö",
+  "roleSwitchBlockedRequestSent": "Demande a-go. Admin a-yê tî réponse.",
+  "roleSwitchBlockedRequestDuplicate": "Mo dëja na demande na cours tî mode sô.",
+
+  "roleSwitchAnnualLimitReached": "Mo wara limite : 3 changement rôle na ngu.",
+  "roleSwitchGenericError": "Erreur na changement : {error}",
+  "@roleSwitchGenericError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+
+  "adminRoleSwitchRequestsTitle": "Demande tî changement rôle",
+  "adminRoleSwitchRequestsAdminTile": "Demande switch rôle",
+  "adminRoleSwitchRequestsAdminTileSubtitle": "Yê / kê na archive",
+  "adminRoleSwitchFilterAll": "Kûê",
+  "adminRoleSwitchFilterPending": "Na lêkû",
+  "adminRoleSwitchFilterApproved": "A-yê",
+  "adminRoleSwitchFilterRejected": "A-kê",
+  "adminRoleSwitchEmpty": "Demande pëpe na filtre sô",
+  "adminRoleSwitchUserPrefix": "User : {uid}",
+  "@adminRoleSwitchUserPrefix": {
+    "placeholders": {"uid": {"type": "String"}}
+  },
+  "adminRoleSwitchFromTo": "{from} → {to}",
+  "@adminRoleSwitchFromTo": {
+    "placeholders": {
+      "from": {"type": "String"},
+      "to": {"type": "String"}
+    }
+  },
+  "adminRoleSwitchReasonsLabel": "A-pikangö na :",
+  "adminRoleSwitchApproveCta": "Yê",
+  "adminRoleSwitchRejectCta": "Kê",
+  "adminRoleSwitchApproveConfirmTitle": "Yê na zîa na archive ?",
+  "adminRoleSwitchApproveConfirmBody": "Session, service na invitation a-zîa na archive. Rôle tî user a-changer, a-tene na user.",
+  "adminRoleSwitchRejectConfirmTitle": "Kê demande",
+  "adminRoleSwitchRejectReasonHint": "Raison (optionnel, user a-bâa)",
+  "adminRoleSwitchApproveSuccess": "{count, plural, =0{Demande a-yê} =1{Demande a-yê + 1 doc archivé} other{Demande a-yê + {count} doc archivé}}",
+  "@adminRoleSwitchApproveSuccess": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminRoleSwitchRejectSuccess": "Demande a-kê",
+  "adminRoleSwitchStatusPending": "Na lêkû",
+  "adminRoleSwitchStatusApproved": "A-yê",
+  "adminRoleSwitchStatusRejected": "A-kê"
 }

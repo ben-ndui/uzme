@@ -42,6 +42,8 @@ import 'package:uzme/screens/shared/favorites_screen.dart';
 import 'package:uzme/screens/shared/discover_map_screen.dart';
 import 'package:uzme/screens/shared/network_screen.dart';
 import 'package:uzme/screens/admin/feature_flags_list_screen.dart';
+import 'package:uzme/screens/admin/role_switch_requests_screen.dart';
+import 'package:uzme/screens/shared/role_switch/role_comparison_screen.dart';
 import 'package:uzme/screens/admin/pioneer_program_detail_screen.dart';
 import 'package:uzme/screens/admin/pioneer_programs_list_screen.dart';
 import 'package:uzme/screens/admin/studio_claims_screen.dart';
@@ -334,6 +336,16 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.featureFlags,
           builder: (context, state) => const FeatureFlagsListScreen(),
+        ),
+        // Role comparator (Phase E) — accessible from every settings page.
+        GoRoute(
+          path: AppRoutes.roleSwitch,
+          builder: (context, state) => const RoleComparisonScreen(),
+        ),
+        // Admin (Phase E5): list of pending role-switch requests.
+        GoRoute(
+          path: AppRoutes.roleSwitchRequests,
+          builder: (context, state) => const RoleSwitchRequestsScreen(),
         ),
         GoRoute(
           path: '/admin/subscription-tiers',

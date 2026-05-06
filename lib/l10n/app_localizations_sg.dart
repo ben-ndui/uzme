@@ -4623,4 +4623,377 @@ class AppLocalizationsSg extends AppLocalizations {
   String studiosCountRadiusSuffix(String radius) {
     return ' · $radius km';
   }
+
+  @override
+  String get roleSwitchTileTitle => 'Comparateur tî rôle';
+
+  @override
+  String get roleSwitchTileSubtitle =>
+      'Bâa ambeni mode UZME na changer si mo yê';
+
+  @override
+  String get roleSwitchScreenTitle => 'Rôle tî mo na UZME';
+
+  @override
+  String get roleSwitchHeaderIntro =>
+      'Mo yêkë Artiste na default. Bascule na Studio wala Ingé son si mo yê — sêse tî mo a-zîa, a-yêkë gera si mo kîri na rôle tî mo.';
+
+  @override
+  String get roleSwitchYouAreHere => 'Mo yêkë gï';
+
+  @override
+  String get roleSwitchCompareCta => 'Bâa comparatif';
+
+  @override
+  String get roleSwitchCompareModalTitle => 'Comparer rôle akë';
+
+  @override
+  String get roleSwitchCompareClose => 'Kîri';
+
+  @override
+  String get roleSwitchAnnualLimitNote =>
+      'Limite : 3 changement na ngu na ngu, ndâ marketplace.';
+
+  @override
+  String get roleArtistSubtitle => 'Réserver session, bâa studio na ingé';
+
+  @override
+  String get roleArtistIntro =>
+      'Mode Artiste a-mbi mo tî gï studio na pëpëe, tene na ingé, réserver session tî mo.';
+
+  @override
+  String get roleArtistFeature1 => 'Map studio na geoloc';
+
+  @override
+  String get roleArtistFeature2 => 'Réservation wala demande devis';
+
+  @override
+  String get roleArtistFeature3 => 'Messagerie chiffrée';
+
+  @override
+  String get roleArtistFeature4 => 'Carte digitale tî zîa';
+
+  @override
+  String get roleArtistAdvantage1 => 'Commission 0% na paiement tî mo';
+
+  @override
+  String get roleArtistAdvantage2 => 'Bâa pro na marketplace';
+
+  @override
+  String get roleArtistAdvantage3 => 'Sauvegarder favori na historique';
+
+  @override
+  String get roleArtistConstraint1 => 'Mo a-lîngbi pëpe tî sêse réservation';
+
+  @override
+  String get roleArtistConstraint2 => 'Outils studio a-yêkë pëpe';
+
+  @override
+  String get roleArtistCta => 'Duti Artiste';
+
+  @override
+  String get roleArtistCompareAudience => 'Artiste / musicien';
+
+  @override
+  String get roleArtistComparePricing => 'Gratuit + paiement artiste';
+
+  @override
+  String get roleArtistCompareTools => 'Map, réservation, messagerie';
+
+  @override
+  String get roleArtistCompareIdeal => 'Mo gï studio wala ingé';
+
+  @override
+  String get roleStudioSubtitle => 'Manyer studio, session, équipe';
+
+  @override
+  String get roleStudioIntro =>
+      'Mode Studio a-mu na mo dashboard pro : services, agenda, équipe, factures, paiements.';
+
+  @override
+  String get roleStudioFeature1 => 'Catalogue services + tarifs';
+
+  @override
+  String get roleStudioFeature2 => 'Sallê, agenda, sync Google Calendar';
+
+  @override
+  String get roleStudioFeature3 => 'Stripe Connect tî paiement';
+
+  @override
+  String get roleStudioFeature4 => 'Équipe ingé (team management)';
+
+  @override
+  String get roleStudioFeature5 => 'Profil studio na map';
+
+  @override
+  String get roleStudioAdvantage1 => 'Visibilité na artiste UZME';
+
+  @override
+  String get roleStudioAdvantage2 => 'Outils pro : devis, factures, agenda';
+
+  @override
+  String get roleStudioAdvantage3 => 'Pioneer : 0% commission permanent';
+
+  @override
+  String get roleStudioConstraint1 => 'Commission marketplace si Pioneer pëpe';
+
+  @override
+  String get roleStudioConstraint2 => 'Vérification identité (Stripe Connect)';
+
+  @override
+  String get roleStudioConstraint3 => 'Implication temps réel';
+
+  @override
+  String get roleStudioCta => 'Duti Studio';
+
+  @override
+  String get roleStudioCompareAudience => 'Propriétaire studio';
+
+  @override
+  String get roleStudioComparePricing => 'Abonnement Pro + commission';
+
+  @override
+  String get roleStudioCompareTools => 'Dashboard, services, équipe, paiement';
+
+  @override
+  String get roleStudioCompareIdeal => 'Mo manyer studio';
+
+  @override
+  String get roleEngineerSubtitle =>
+      'Travailler na studio, manyer dispo, duti Pro';
+
+  @override
+  String get roleEngineerIntro =>
+      'Mode Ingé son a-tene mo na studio + a-mu mo profil Pro freelance.';
+
+  @override
+  String get roleEngineerFeature1 => 'Calendrier disponibilité';
+
+  @override
+  String get roleEngineerFeature2 => 'Invitation équipe studio';
+
+  @override
+  String get roleEngineerFeature3 => 'Profil Pro freelance';
+
+  @override
+  String get roleEngineerFeature4 => 'Session a-zîa + tracking';
+
+  @override
+  String get roleEngineerAdvantage1 => 'Gï mission na sêngö';
+
+  @override
+  String get roleEngineerAdvantage2 => 'Bâa expertise (genres, DAWs)';
+
+  @override
+  String get roleEngineerAdvantage3 => 'Cumul na ambeni studio';
+
+  @override
+  String get roleEngineerConstraint1 => 'Réponse na 24h na invitation';
+
+  @override
+  String get roleEngineerConstraint2 => 'Commission na booking Pro';
+
+  @override
+  String get roleEngineerCta => 'Duti Ingé son';
+
+  @override
+  String get roleEngineerCompareAudience => 'Ingé son freelance';
+
+  @override
+  String get roleEngineerComparePricing => 'Gratuit (commission Pro)';
+
+  @override
+  String get roleEngineerCompareTools => 'Dispo, invitation, profil Pro';
+
+  @override
+  String get roleEngineerCompareIdeal => 'Mo travailler son na studio';
+
+  @override
+  String get roleCompareColAudience => 'Public';
+
+  @override
+  String get roleCompareColPricing => 'Tarif';
+
+  @override
+  String get roleCompareColTools => 'Outils principaux';
+
+  @override
+  String get roleCompareColIdeal => 'Idéal si';
+
+  @override
+  String get roleSwitchSectionFeatures => 'Fonctionnalité';
+
+  @override
+  String get roleSwitchSectionAdvantages => 'Avantage';
+
+  @override
+  String get roleSwitchSectionConstraints => 'Contrainte';
+
+  @override
+  String roleSwitchConfirmTitle(String role) {
+    return 'Bascule na mode $role ?';
+  }
+
+  @override
+  String get roleSwitchConfirmBody =>
+      'Sêse tî mo a-zîa na archive na a-yêkë gera si mo kîri. Mo a-go na onboarding tî mode tî fini.';
+
+  @override
+  String get roleSwitchConfirmCta => 'Eee, bascule';
+
+  @override
+  String get roleSwitchConfirmCancel => 'Bê pëpe';
+
+  @override
+  String roleSwitchSuccessTitle(String role) {
+    return 'Mode $role a-yêkë';
+  }
+
+  @override
+  String roleSwitchSuccessRestored(String role) {
+    return 'E-zîa sêse tî mode $role tî mo.';
+  }
+
+  @override
+  String get roleSwitchBlockedTitle => 'Mo a-lîngbi pëpe tî bascule fadë sô';
+
+  @override
+  String get roleSwitchBlockedIntro => 'Kôzo na changement, e-bâa sêse akë :';
+
+  @override
+  String roleSwitchBlockedReasonUpcomingSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count session a-yêkë gera',
+      one: '1 session a-yêkë gera',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roleSwitchBlockedReasonActiveServices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count service a-zîa',
+      one: '1 service a-zîa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roleSwitchBlockedReasonInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invitation équipe',
+      one: '1 invitation équipe',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roleSwitchBlockedRequestCta => 'Demander admin tî zîa';
+
+  @override
+  String get roleSwitchBlockedDismissCta => 'Na pekö';
+
+  @override
+  String get roleSwitchBlockedRequestSent =>
+      'Demande a-go. Admin a-yê tî réponse.';
+
+  @override
+  String get roleSwitchBlockedRequestDuplicate =>
+      'Mo dëja na demande na cours tî mode sô.';
+
+  @override
+  String get roleSwitchAnnualLimitReached =>
+      'Mo wara limite : 3 changement rôle na ngu.';
+
+  @override
+  String roleSwitchGenericError(String error) {
+    return 'Erreur na changement : $error';
+  }
+
+  @override
+  String get adminRoleSwitchRequestsTitle => 'Demande tî changement rôle';
+
+  @override
+  String get adminRoleSwitchRequestsAdminTile => 'Demande switch rôle';
+
+  @override
+  String get adminRoleSwitchRequestsAdminTileSubtitle => 'Yê / kê na archive';
+
+  @override
+  String get adminRoleSwitchFilterAll => 'Kûê';
+
+  @override
+  String get adminRoleSwitchFilterPending => 'Na lêkû';
+
+  @override
+  String get adminRoleSwitchFilterApproved => 'A-yê';
+
+  @override
+  String get adminRoleSwitchFilterRejected => 'A-kê';
+
+  @override
+  String get adminRoleSwitchEmpty => 'Demande pëpe na filtre sô';
+
+  @override
+  String adminRoleSwitchUserPrefix(String uid) {
+    return 'User : $uid';
+  }
+
+  @override
+  String adminRoleSwitchFromTo(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get adminRoleSwitchReasonsLabel => 'A-pikangö na :';
+
+  @override
+  String get adminRoleSwitchApproveCta => 'Yê';
+
+  @override
+  String get adminRoleSwitchRejectCta => 'Kê';
+
+  @override
+  String get adminRoleSwitchApproveConfirmTitle => 'Yê na zîa na archive ?';
+
+  @override
+  String get adminRoleSwitchApproveConfirmBody =>
+      'Session, service na invitation a-zîa na archive. Rôle tî user a-changer, a-tene na user.';
+
+  @override
+  String get adminRoleSwitchRejectConfirmTitle => 'Kê demande';
+
+  @override
+  String get adminRoleSwitchRejectReasonHint =>
+      'Raison (optionnel, user a-bâa)';
+
+  @override
+  String adminRoleSwitchApproveSuccess(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Demande a-yê + $count doc archivé',
+      one: 'Demande a-yê + 1 doc archivé',
+      zero: 'Demande a-yê',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminRoleSwitchRejectSuccess => 'Demande a-kê';
+
+  @override
+  String get adminRoleSwitchStatusPending => 'Na lêkû';
+
+  @override
+  String get adminRoleSwitchStatusApproved => 'A-yê';
+
+  @override
+  String get adminRoleSwitchStatusRejected => 'A-kê';
 }

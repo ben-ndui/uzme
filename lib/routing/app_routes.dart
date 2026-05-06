@@ -72,6 +72,8 @@ class AppRoutes {
   static const String pioneerPrograms = '/admin/pioneer';
   static String pioneerProgramDetail(String id) => '/admin/pioneer/$id';
   static const String featureFlags = '/admin/feature-flags';
+  static const String roleSwitchRequests = '/admin/role-switch-requests';
+  static const String roleSwitch = '/settings/role-switch';
   static const String storeScreenshots = '/dev/screenshots';
 
   // Notifications

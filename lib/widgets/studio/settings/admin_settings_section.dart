@@ -52,6 +52,14 @@ class AdminSettingsSection extends StatelessWidget {
             onTap: () => context.push(AppRoutes.featureFlags),
           ),
           SettingsTile(
+            icon: FontAwesomeIcons.arrowsRotate,
+            title: AppLocalizations.of(context)!
+                .adminRoleSwitchRequestsAdminTile,
+            subtitle: AppLocalizations.of(context)!
+                .adminRoleSwitchRequestsAdminTileSubtitle,
+            onTap: () => context.push(AppRoutes.roleSwitchRequests),
+          ),
+          SettingsTile(
             icon: FontAwesomeIcons.mobile,
             title: 'Screenshots Store',
             subtitle: 'Générer les captures App Store',

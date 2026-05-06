@@ -92,6 +92,9 @@ class _StudioSettingsPageState extends State<StudioSettingsPage> {
 
           // Digital Card
           const SettingsDigitalCardTile(),
+          // Role comparator (Phase E) — visually emphasized so users
+          // discover they can switch role from here.
+          const SettingsRoleSwitchTile(),
           const Divider(height: 32),
 
           // Security

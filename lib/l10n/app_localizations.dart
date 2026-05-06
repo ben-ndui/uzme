@@ -8661,6 +8661,636 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **' · {radius} km'**
   String studiosCountRadiusSuffix(String radius);
+
+  /// No description provided for @roleSwitchTileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparateur de rôles'**
+  String get roleSwitchTileTitle;
+
+  /// No description provided for @roleSwitchTileSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvre les autres modes UZME et change si besoin'**
+  String get roleSwitchTileSubtitle;
+
+  /// No description provided for @roleSwitchScreenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes rôles UZME'**
+  String get roleSwitchScreenTitle;
+
+  /// No description provided for @roleSwitchHeaderIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es Artiste par défaut. Bascule en Studio ou Ingé son si ton activité change — tes données restent archivées et reviennent si tu fais demi-tour.'**
+  String get roleSwitchHeaderIntro;
+
+  /// No description provided for @roleSwitchYouAreHere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es ici'**
+  String get roleSwitchYouAreHere;
+
+  /// No description provided for @roleSwitchCompareCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le comparatif'**
+  String get roleSwitchCompareCta;
+
+  /// No description provided for @roleSwitchCompareModalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparer les rôles'**
+  String get roleSwitchCompareModalTitle;
+
+  /// No description provided for @roleSwitchCompareClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get roleSwitchCompareClose;
+
+  /// No description provided for @roleSwitchAnnualLimitNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite : 3 changements par an pour préserver l\'expérience marketplace.'**
+  String get roleSwitchAnnualLimitNote;
+
+  /// No description provided for @roleArtistSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réserve des sessions, découvre des studios et ingés'**
+  String get roleArtistSubtitle;
+
+  /// No description provided for @roleArtistIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mode Artiste te permet de rechercher des studios autour de toi, contacter des ingés et réserver tes sessions de prod ou mix.'**
+  String get roleArtistIntro;
+
+  /// No description provided for @roleArtistFeature1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Map de studios géolocalisée'**
+  String get roleArtistFeature1;
+
+  /// No description provided for @roleArtistFeature2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservation directe ou demande de devis'**
+  String get roleArtistFeature2;
+
+  /// No description provided for @roleArtistFeature3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messagerie chiffrée avec studios + ingés'**
+  String get roleArtistFeature3;
+
+  /// No description provided for @roleArtistFeature4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte digitale partageable (artiste)'**
+  String get roleArtistFeature4;
+
+  /// No description provided for @roleArtistAdvantage1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune commission sur tes paiements'**
+  String get roleArtistAdvantage1;
+
+  /// No description provided for @roleArtistAdvantage2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvre des pros via la marketplace'**
+  String get roleArtistAdvantage2;
+
+  /// No description provided for @roleArtistAdvantage3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde tes favoris et historiques'**
+  String get roleArtistAdvantage3;
+
+  /// No description provided for @roleArtistConstraint1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu ne peux pas recevoir de réservations'**
+  String get roleArtistConstraint1;
+
+  /// No description provided for @roleArtistConstraint2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas d\'accès aux outils de gestion studio'**
+  String get roleArtistConstraint2;
+
+  /// No description provided for @roleArtistCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenir Artiste'**
+  String get roleArtistCta;
+
+  /// No description provided for @roleArtistCompareAudience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Artistes / musiciens'**
+  String get roleArtistCompareAudience;
+
+  /// No description provided for @roleArtistComparePricing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gratuit + paiements artistes'**
+  String get roleArtistComparePricing;
+
+  /// No description provided for @roleArtistCompareTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Map, réservation, messagerie'**
+  String get roleArtistCompareTools;
+
+  /// No description provided for @roleArtistCompareIdeal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu cherches un studio ou un ingé'**
+  String get roleArtistCompareIdeal;
+
+  /// No description provided for @roleStudioSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gère ton studio, tes sessions, ta team'**
+  String get roleStudioSubtitle;
+
+  /// No description provided for @roleStudioIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mode Studio te donne ton dashboard pro : services publiés, agenda, équipe d\'ingés affiliés, factures et paiements clients.'**
+  String get roleStudioIntro;
+
+  /// No description provided for @roleStudioFeature1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue de services + tarifs'**
+  String get roleStudioFeature1;
+
+  /// No description provided for @roleStudioFeature2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Salles, agenda, sync Google Calendar'**
+  String get roleStudioFeature2;
+
+  /// No description provided for @roleStudioFeature3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stripe Connect pour paiements clients'**
+  String get roleStudioFeature3;
+
+  /// No description provided for @roleStudioFeature4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Équipe d\'ingés affiliés (team management)'**
+  String get roleStudioFeature4;
+
+  /// No description provided for @roleStudioFeature5.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page profil studio publique sur la map'**
+  String get roleStudioFeature5;
+
+  /// No description provided for @roleStudioAdvantage1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visibilité auprès des artistes UZME'**
+  String get roleStudioAdvantage1;
+
+  /// No description provided for @roleStudioAdvantage2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outils pro : devis, factures, agenda'**
+  String get roleStudioAdvantage2;
+
+  /// No description provided for @roleStudioAdvantage3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pioneer : 0% commission permanente'**
+  String get roleStudioAdvantage3;
+
+  /// No description provided for @roleStudioConstraint1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commission marketplace standard si non Pioneer'**
+  String get roleStudioConstraint1;
+
+  /// No description provided for @roleStudioConstraint2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification d\'identité requise (Stripe Connect)'**
+  String get roleStudioConstraint2;
+
+  /// No description provided for @roleStudioConstraint3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Implication temps réel (réponses aux demandes)'**
+  String get roleStudioConstraint3;
+
+  /// No description provided for @roleStudioCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenir Studio'**
+  String get roleStudioCta;
+
+  /// No description provided for @roleStudioCompareAudience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Propriétaires de studios'**
+  String get roleStudioCompareAudience;
+
+  /// No description provided for @roleStudioComparePricing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abonnement Pro + commission marketplace'**
+  String get roleStudioComparePricing;
+
+  /// No description provided for @roleStudioCompareTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dashboard, services, équipe, paiements'**
+  String get roleStudioCompareTools;
+
+  /// No description provided for @roleStudioCompareIdeal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu loues / opères un studio'**
+  String get roleStudioCompareIdeal;
+
+  /// No description provided for @roleEngineerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Travaille en studios, gère ta dispo, deviens Pro'**
+  String get roleEngineerSubtitle;
+
+  /// No description provided for @roleEngineerIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mode Ingé son te connecte aux studios qui cherchent du renfort + te permet de proposer tes services en direct via le profil Pro freelance.'**
+  String get roleEngineerIntro;
+
+  /// No description provided for @roleEngineerFeature1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calendrier de disponibilité'**
+  String get roleEngineerFeature1;
+
+  /// No description provided for @roleEngineerFeature2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Invitations d\'équipes studio'**
+  String get roleEngineerFeature2;
+
+  /// No description provided for @roleEngineerFeature3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil Pro freelance dans la marketplace'**
+  String get roleEngineerFeature3;
+
+  /// No description provided for @roleEngineerFeature4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sessions assignées + tracking'**
+  String get roleEngineerFeature4;
+
+  /// No description provided for @roleEngineerAdvantage1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouve des missions plus facilement'**
+  String get roleEngineerAdvantage1;
+
+  /// No description provided for @roleEngineerAdvantage2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mets ton expertise en avant (genres, DAWs)'**
+  String get roleEngineerAdvantage2;
+
+  /// No description provided for @roleEngineerAdvantage3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compatible cumul avec d\'autres studios'**
+  String get roleEngineerAdvantage3;
+
+  /// No description provided for @roleEngineerConstraint1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponses requises sous 24h aux invitations'**
+  String get roleEngineerConstraint1;
+
+  /// No description provided for @roleEngineerConstraint2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commission sur les bookings via Pro profile'**
+  String get roleEngineerConstraint2;
+
+  /// No description provided for @roleEngineerCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenir Ingé son'**
+  String get roleEngineerCta;
+
+  /// No description provided for @roleEngineerCompareAudience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ingés son freelance ou affiliés'**
+  String get roleEngineerCompareAudience;
+
+  /// No description provided for @roleEngineerComparePricing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gratuit (commission sur bookings Pro)'**
+  String get roleEngineerComparePricing;
+
+  /// No description provided for @roleEngineerCompareTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité, invitations, profil Pro'**
+  String get roleEngineerCompareTools;
+
+  /// No description provided for @roleEngineerCompareIdeal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu travailles le son en studio'**
+  String get roleEngineerCompareIdeal;
+
+  /// No description provided for @roleCompareColAudience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Public'**
+  String get roleCompareColAudience;
+
+  /// No description provided for @roleCompareColPricing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarification'**
+  String get roleCompareColPricing;
+
+  /// No description provided for @roleCompareColTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outils principaux'**
+  String get roleCompareColTools;
+
+  /// No description provided for @roleCompareColIdeal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Idéal si'**
+  String get roleCompareColIdeal;
+
+  /// No description provided for @roleSwitchSectionFeatures.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fonctionnalités'**
+  String get roleSwitchSectionFeatures;
+
+  /// No description provided for @roleSwitchSectionAdvantages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avantages'**
+  String get roleSwitchSectionAdvantages;
+
+  /// No description provided for @roleSwitchSectionConstraints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contraintes'**
+  String get roleSwitchSectionConstraints;
+
+  /// No description provided for @roleSwitchConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer en mode {role} ?'**
+  String roleSwitchConfirmTitle(String role);
+
+  /// No description provided for @roleSwitchConfirmBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes données actuelles seront archivées et restaurées si tu reviens à ton rôle d\'origine. Tu seras redirigé vers l\'onboarding du nouveau mode.'**
+  String get roleSwitchConfirmBody;
+
+  /// No description provided for @roleSwitchConfirmCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui, basculer'**
+  String get roleSwitchConfirmCta;
+
+  /// No description provided for @roleSwitchConfirmCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get roleSwitchConfirmCancel;
+
+  /// No description provided for @roleSwitchSuccessTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode {role} activé'**
+  String roleSwitchSuccessTitle(String role);
+
+  /// No description provided for @roleSwitchSuccessRestored.
+  ///
+  /// In fr, this message translates to:
+  /// **'On a restauré tes données précédentes du mode {role}.'**
+  String roleSwitchSuccessRestored(String role);
+
+  /// No description provided for @roleSwitchBlockedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu ne peux pas basculer maintenant'**
+  String get roleSwitchBlockedTitle;
+
+  /// No description provided for @roleSwitchBlockedIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avant de changer de rôle, on doit traiter ces éléments :'**
+  String get roleSwitchBlockedIntro;
+
+  /// No description provided for @roleSwitchBlockedReasonUpcomingSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 session à venir} other{{count} sessions à venir}}'**
+  String roleSwitchBlockedReasonUpcomingSessions(int count);
+
+  /// No description provided for @roleSwitchBlockedReasonActiveServices.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 service publié} other{{count} services publiés}}'**
+  String roleSwitchBlockedReasonActiveServices(int count);
+
+  /// No description provided for @roleSwitchBlockedReasonInvitations.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 invitation d\'équipe} other{{count} invitations d\'équipe}}'**
+  String roleSwitchBlockedReasonInvitations(int count);
+
+  /// No description provided for @roleSwitchBlockedRequestCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander à l\'admin d\'archiver'**
+  String get roleSwitchBlockedRequestCta;
+
+  /// No description provided for @roleSwitchBlockedDismissCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard'**
+  String get roleSwitchBlockedDismissCta;
+
+  /// No description provided for @roleSwitchBlockedRequestSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée. Un admin va te répondre.'**
+  String get roleSwitchBlockedRequestSent;
+
+  /// No description provided for @roleSwitchBlockedRequestDuplicate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as déjà une demande en cours pour ce mode.'**
+  String get roleSwitchBlockedRequestDuplicate;
+
+  /// No description provided for @roleSwitchAnnualLimitReached.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as atteint la limite de 3 changements de rôle par an.'**
+  String get roleSwitchAnnualLimitReached;
+
+  /// No description provided for @roleSwitchGenericError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors du changement : {error}'**
+  String roleSwitchGenericError(String error);
+
+  /// No description provided for @adminRoleSwitchRequestsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandes de changement de rôle'**
+  String get adminRoleSwitchRequestsTitle;
+
+  /// No description provided for @adminRoleSwitchRequestsAdminTile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandes de switch rôle'**
+  String get adminRoleSwitchRequestsAdminTile;
+
+  /// No description provided for @adminRoleSwitchRequestsAdminTileSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Approuver / refuser et archiver'**
+  String get adminRoleSwitchRequestsAdminTileSubtitle;
+
+  /// No description provided for @adminRoleSwitchFilterAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get adminRoleSwitchFilterAll;
+
+  /// No description provided for @adminRoleSwitchFilterPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get adminRoleSwitchFilterPending;
+
+  /// No description provided for @adminRoleSwitchFilterApproved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Approuvées'**
+  String get adminRoleSwitchFilterApproved;
+
+  /// No description provided for @adminRoleSwitchFilterRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusées'**
+  String get adminRoleSwitchFilterRejected;
+
+  /// No description provided for @adminRoleSwitchEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune demande pour ce filtre'**
+  String get adminRoleSwitchEmpty;
+
+  /// No description provided for @adminRoleSwitchUserPrefix.
+  ///
+  /// In fr, this message translates to:
+  /// **'User : {uid}'**
+  String adminRoleSwitchUserPrefix(String uid);
+
+  /// No description provided for @adminRoleSwitchFromTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'{from} → {to}'**
+  String adminRoleSwitchFromTo(String from, String to);
+
+  /// No description provided for @adminRoleSwitchReasonsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bloqué par :'**
+  String get adminRoleSwitchReasonsLabel;
+
+  /// No description provided for @adminRoleSwitchApproveCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Approuver'**
+  String get adminRoleSwitchApproveCta;
+
+  /// No description provided for @adminRoleSwitchRejectCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get adminRoleSwitchRejectCta;
+
+  /// No description provided for @adminRoleSwitchApproveConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Approuver et archiver ?'**
+  String get adminRoleSwitchApproveConfirmTitle;
+
+  /// No description provided for @adminRoleSwitchApproveConfirmBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les sessions, services et invitations bloquants seront soft-archivés. Le rôle de l\'utilisateur sera changé et il sera notifié.'**
+  String get adminRoleSwitchApproveConfirmBody;
+
+  /// No description provided for @adminRoleSwitchRejectConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser la demande'**
+  String get adminRoleSwitchRejectConfirmTitle;
+
+  /// No description provided for @adminRoleSwitchRejectReasonHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raison (facultatif, visible par le user)'**
+  String get adminRoleSwitchRejectReasonHint;
+
+  /// No description provided for @adminRoleSwitchApproveSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Demande approuvée} =1{Demande approuvée + 1 doc archivé} other{Demande approuvée + {count} docs archivés}}'**
+  String adminRoleSwitchApproveSuccess(int count);
+
+  /// No description provided for @adminRoleSwitchRejectSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande refusée'**
+  String get adminRoleSwitchRejectSuccess;
+
+  /// No description provided for @adminRoleSwitchStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get adminRoleSwitchStatusPending;
+
+  /// No description provided for @adminRoleSwitchStatusApproved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Approuvée'**
+  String get adminRoleSwitchStatusApproved;
+
+  /// No description provided for @adminRoleSwitchStatusRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusée'**
+  String get adminRoleSwitchStatusRejected;
 }
 
 class _AppLocalizationsDelegate

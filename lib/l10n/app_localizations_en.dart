@@ -4640,4 +4640,387 @@ class AppLocalizationsEn extends AppLocalizations {
   String studiosCountRadiusSuffix(String radius) {
     return ' · $radius km';
   }
+
+  @override
+  String get roleSwitchTileTitle => 'Role comparator';
+
+  @override
+  String get roleSwitchTileSubtitle =>
+      'Discover other UZME modes and switch if needed';
+
+  @override
+  String get roleSwitchScreenTitle => 'Your UZME roles';
+
+  @override
+  String get roleSwitchHeaderIntro =>
+      'You\'re an Artist by default. Switch to Studio or Sound engineer if your activity changes — your data is archived and restored if you switch back.';
+
+  @override
+  String get roleSwitchYouAreHere => 'You\'re here';
+
+  @override
+  String get roleSwitchCompareCta => 'See comparison';
+
+  @override
+  String get roleSwitchCompareModalTitle => 'Compare roles';
+
+  @override
+  String get roleSwitchCompareClose => 'Close';
+
+  @override
+  String get roleSwitchAnnualLimitNote =>
+      'Limit: 3 role changes per year to keep the marketplace experience healthy.';
+
+  @override
+  String get roleArtistSubtitle =>
+      'Book sessions, discover studios and engineers';
+
+  @override
+  String get roleArtistIntro =>
+      'Artist mode lets you search for studios near you, contact engineers, and book your production or mix sessions.';
+
+  @override
+  String get roleArtistFeature1 => 'Geolocated studio map';
+
+  @override
+  String get roleArtistFeature2 => 'Direct booking or quote request';
+
+  @override
+  String get roleArtistFeature3 =>
+      'Encrypted messaging with studios + engineers';
+
+  @override
+  String get roleArtistFeature4 => 'Shareable digital card (artist)';
+
+  @override
+  String get roleArtistAdvantage1 => 'No commission on your payments';
+
+  @override
+  String get roleArtistAdvantage2 => 'Discover pros via the marketplace';
+
+  @override
+  String get roleArtistAdvantage3 => 'Save your favourites and history';
+
+  @override
+  String get roleArtistConstraint1 => 'You can\'t receive bookings';
+
+  @override
+  String get roleArtistConstraint2 => 'No access to studio management tools';
+
+  @override
+  String get roleArtistCta => 'Become an Artist';
+
+  @override
+  String get roleArtistCompareAudience => 'Artists / musicians';
+
+  @override
+  String get roleArtistComparePricing => 'Free + artist payments';
+
+  @override
+  String get roleArtistCompareTools => 'Map, booking, messaging';
+
+  @override
+  String get roleArtistCompareIdeal =>
+      'You\'re looking for a studio or engineer';
+
+  @override
+  String get roleStudioSubtitle => 'Manage your studio, sessions, and team';
+
+  @override
+  String get roleStudioIntro =>
+      'Studio mode gives you a pro dashboard: published services, calendar, affiliated engineers team, invoices and client payments.';
+
+  @override
+  String get roleStudioFeature1 => 'Service catalogue + pricing';
+
+  @override
+  String get roleStudioFeature2 => 'Rooms, calendar, Google Calendar sync';
+
+  @override
+  String get roleStudioFeature3 => 'Stripe Connect for client payments';
+
+  @override
+  String get roleStudioFeature4 => 'Affiliated engineers (team management)';
+
+  @override
+  String get roleStudioFeature5 => 'Public studio profile on the map';
+
+  @override
+  String get roleStudioAdvantage1 => 'Visibility to UZME artists';
+
+  @override
+  String get roleStudioAdvantage2 => 'Pro tools: quotes, invoices, calendar';
+
+  @override
+  String get roleStudioAdvantage3 => 'Pioneer: 0% commission, permanent';
+
+  @override
+  String get roleStudioConstraint1 =>
+      'Standard marketplace commission if not Pioneer';
+
+  @override
+  String get roleStudioConstraint2 =>
+      'Identity verification required (Stripe Connect)';
+
+  @override
+  String get roleStudioConstraint3 =>
+      'Real-time involvement (replying to requests)';
+
+  @override
+  String get roleStudioCta => 'Become a Studio';
+
+  @override
+  String get roleStudioCompareAudience => 'Studio owners';
+
+  @override
+  String get roleStudioComparePricing => 'Pro subscription + marketplace fee';
+
+  @override
+  String get roleStudioCompareTools => 'Dashboard, services, team, payments';
+
+  @override
+  String get roleStudioCompareIdeal => 'You run / operate a studio';
+
+  @override
+  String get roleEngineerSubtitle =>
+      'Work in studios, manage availability, become a Pro';
+
+  @override
+  String get roleEngineerIntro =>
+      'Sound engineer mode connects you with studios looking for help + lets you offer your services directly via the freelance Pro profile.';
+
+  @override
+  String get roleEngineerFeature1 => 'Availability calendar';
+
+  @override
+  String get roleEngineerFeature2 => 'Studio team invitations';
+
+  @override
+  String get roleEngineerFeature3 => 'Freelance Pro profile on the marketplace';
+
+  @override
+  String get roleEngineerFeature4 => 'Assigned sessions + tracking';
+
+  @override
+  String get roleEngineerAdvantage1 => 'Find gigs more easily';
+
+  @override
+  String get roleEngineerAdvantage2 => 'Showcase your expertise (genres, DAWs)';
+
+  @override
+  String get roleEngineerAdvantage3 =>
+      'Compatible with multiple affiliated studios';
+
+  @override
+  String get roleEngineerConstraint1 => '24h response time on team invitations';
+
+  @override
+  String get roleEngineerConstraint2 => 'Commission on Pro profile bookings';
+
+  @override
+  String get roleEngineerCta => 'Become a Sound engineer';
+
+  @override
+  String get roleEngineerCompareAudience => 'Freelance or affiliated engineers';
+
+  @override
+  String get roleEngineerComparePricing => 'Free (commission on Pro bookings)';
+
+  @override
+  String get roleEngineerCompareTools =>
+      'Availability, invitations, Pro profile';
+
+  @override
+  String get roleEngineerCompareIdeal => 'You work sound in studios';
+
+  @override
+  String get roleCompareColAudience => 'Audience';
+
+  @override
+  String get roleCompareColPricing => 'Pricing';
+
+  @override
+  String get roleCompareColTools => 'Main tools';
+
+  @override
+  String get roleCompareColIdeal => 'Ideal if';
+
+  @override
+  String get roleSwitchSectionFeatures => 'Features';
+
+  @override
+  String get roleSwitchSectionAdvantages => 'Advantages';
+
+  @override
+  String get roleSwitchSectionConstraints => 'Constraints';
+
+  @override
+  String roleSwitchConfirmTitle(String role) {
+    return 'Switch to $role mode?';
+  }
+
+  @override
+  String get roleSwitchConfirmBody =>
+      'Your current data is archived and restored if you switch back to your origin role. You\'ll be redirected to the new mode\'s onboarding.';
+
+  @override
+  String get roleSwitchConfirmCta => 'Yes, switch';
+
+  @override
+  String get roleSwitchConfirmCancel => 'Cancel';
+
+  @override
+  String roleSwitchSuccessTitle(String role) {
+    return '$role mode activated';
+  }
+
+  @override
+  String roleSwitchSuccessRestored(String role) {
+    return 'We restored your previous data from $role mode.';
+  }
+
+  @override
+  String get roleSwitchBlockedTitle => 'You can\'t switch right now';
+
+  @override
+  String get roleSwitchBlockedIntro =>
+      'Before changing role, we need to handle these:';
+
+  @override
+  String roleSwitchBlockedReasonUpcomingSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count upcoming sessions',
+      one: '1 upcoming session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roleSwitchBlockedReasonActiveServices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count published services',
+      one: '1 published service',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roleSwitchBlockedReasonInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count team invitations',
+      one: '1 team invitation',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roleSwitchBlockedRequestCta => 'Ask admin to archive';
+
+  @override
+  String get roleSwitchBlockedDismissCta => 'Later';
+
+  @override
+  String get roleSwitchBlockedRequestSent =>
+      'Request sent. An admin will get back to you.';
+
+  @override
+  String get roleSwitchBlockedRequestDuplicate =>
+      'You already have a pending request for this mode.';
+
+  @override
+  String get roleSwitchAnnualLimitReached =>
+      'You reached the limit of 3 role changes per year.';
+
+  @override
+  String roleSwitchGenericError(String error) {
+    return 'Error during switch: $error';
+  }
+
+  @override
+  String get adminRoleSwitchRequestsTitle => 'Role switch requests';
+
+  @override
+  String get adminRoleSwitchRequestsAdminTile => 'Role switch requests';
+
+  @override
+  String get adminRoleSwitchRequestsAdminTileSubtitle =>
+      'Approve / reject and archive';
+
+  @override
+  String get adminRoleSwitchFilterAll => 'All';
+
+  @override
+  String get adminRoleSwitchFilterPending => 'Pending';
+
+  @override
+  String get adminRoleSwitchFilterApproved => 'Approved';
+
+  @override
+  String get adminRoleSwitchFilterRejected => 'Rejected';
+
+  @override
+  String get adminRoleSwitchEmpty => 'No request for this filter';
+
+  @override
+  String adminRoleSwitchUserPrefix(String uid) {
+    return 'User: $uid';
+  }
+
+  @override
+  String adminRoleSwitchFromTo(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get adminRoleSwitchReasonsLabel => 'Blocked by:';
+
+  @override
+  String get adminRoleSwitchApproveCta => 'Approve';
+
+  @override
+  String get adminRoleSwitchRejectCta => 'Reject';
+
+  @override
+  String get adminRoleSwitchApproveConfirmTitle => 'Approve and archive?';
+
+  @override
+  String get adminRoleSwitchApproveConfirmBody =>
+      'Blocking sessions, services and invitations will be soft-archived. The user\'s role will be flipped and they will be notified.';
+
+  @override
+  String get adminRoleSwitchRejectConfirmTitle => 'Reject the request';
+
+  @override
+  String get adminRoleSwitchRejectReasonHint =>
+      'Reason (optional, shown to the user)';
+
+  @override
+  String adminRoleSwitchApproveSuccess(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Request approved + $count docs archived',
+      one: 'Request approved + 1 doc archived',
+      zero: 'Request approved',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminRoleSwitchRejectSuccess => 'Request rejected';
+
+  @override
+  String get adminRoleSwitchStatusPending => 'Pending';
+
+  @override
+  String get adminRoleSwitchStatusApproved => 'Approved';
+
+  @override
+  String get adminRoleSwitchStatusRejected => 'Rejected';
 }

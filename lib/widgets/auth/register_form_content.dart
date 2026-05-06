@@ -9,18 +9,16 @@ import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart';
 import 'package:uzme/widgets/auth/glass_text_field.dart';
-import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
-/// Register form content with glassmorphism design
+/// Register form content with glassmorphism design.
+///
+/// Phase E1: every new account is created with [BaseUserRole.client]
+/// (Artiste). Studios / engineers switch role from Settings post-signup,
+/// after seeing the role-comparison screen — that decouples "joining the
+/// app" from "committing to a supplier role" and removes the friction
+/// of an upfront role chip selector.
 class RegisterFormContent extends StatefulWidget {
-  final BaseUserRole? initialRole;
-  final ValueChanged<BaseUserRole>? onRoleChanged;
-
-  const RegisterFormContent({
-    super.key,
-    this.initialRole,
-    this.onRoleChanged,
-  });
+  const RegisterFormContent({super.key});
 
   @override
   State<RegisterFormContent> createState() => _RegisterFormContentState();
@@ -34,15 +32,8 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
   final _confirmController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
-  // Volontairement nullable : empêche un signup silencieux avec role=client
-  // par défaut. Tous les boutons signup sont désactivés tant que c'est null.
-  BaseUserRole? _selectedRole;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedRole = widget.initialRole;
-  }
+  // Hard-coded — every signup creates a `client` user. See class docs.
+  static const BaseUserRole _defaultRole = BaseUserRole.client;
 
   @override
   void dispose() {
@@ -51,11 +42,6 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
-  }
-
-  void _updateRole(BaseUserRole role) {
-    setState(() => _selectedRole = role);
-    widget.onRoleChanged?.call(role);
   }
 
   @override
@@ -74,8 +60,6 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
             children: [
               _buildHeader(l10n),
               const SizedBox(height: 24),
-              _buildRoleSelector(l10n),
-              const SizedBox(height: 20),
               _buildSocialButtons(isGoogleLoading, isAppleLoading),
               const SizedBox(height: 20),
               _buildDivider(l10n),
@@ -160,99 +144,6 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
     );
   }
 
-  Widget _buildRoleSelector(AppLocalizations l10n) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cs = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.iAm,
-          style: TextStyle(
-            color: isDark ? Colors.white.withValues(alpha: 0.9) : cs.onSurface,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(child: _buildRoleChip(BaseUserRole.client, l10n.artist, FontAwesomeIcons.music)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildRoleChip(BaseUserRole.worker, l10n.engineer, FontAwesomeIcons.headphones)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildRoleChip(BaseUserRole.admin, l10n.studio, FontAwesomeIcons.buildingUser)),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRoleChip(BaseUserRole role, String label, IconData icon) {
-    final isSelected = _selectedRole == role;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cs = Theme.of(context).colorScheme;
-
-    final Color activeIconColor = isDark ? Colors.white : cs.primary;
-    final Color inactiveIconColor = isDark ? Colors.white.withValues(alpha: 0.6) : cs.onSurfaceVariant;
-    final Color activeTextColor = isDark ? Colors.white : cs.primary;
-    final Color inactiveTextColor = isDark ? Colors.white.withValues(alpha: 0.6) : cs.onSurfaceVariant;
-    final Color activeBorderColor = isDark ? Colors.white.withValues(alpha: 0.6) : cs.primary;
-    final Color inactiveBorderColor = isDark ? Colors.white.withValues(alpha: 0.2) : cs.outlineVariant;
-
-    final chip = AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        gradient: isDark
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isSelected
-                    ? [Colors.white.withValues(alpha: 0.35), Colors.white.withValues(alpha: 0.2)]
-                    : [Colors.white.withValues(alpha: 0.12), Colors.white.withValues(alpha: 0.06)],
-              )
-            : null,
-        color: isDark ? null : (isSelected ? cs.primary.withValues(alpha: 0.08) : cs.surfaceContainerHigh),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isSelected ? activeBorderColor : inactiveBorderColor,
-          width: isSelected ? 1.5 : 1,
-        ),
-        boxShadow: isSelected && isDark
-            ? [BoxShadow(color: Colors.white.withValues(alpha: 0.15), blurRadius: 12, spreadRadius: 1)]
-            : null,
-      ),
-      child: Column(
-        children: [
-          FaIcon(icon, size: 22, color: isSelected ? activeIconColor : inactiveIconColor),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: isSelected ? activeTextColor : inactiveTextColor,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return GestureDetector(
-      onTap: () => _updateRole(role),
-      child: isDark
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: chip,
-              ),
-            )
-          : ClipRRect(borderRadius: BorderRadius.circular(14), child: chip),
-    );
-  }
-
   Widget _buildSocialButtons(bool isGoogleLoading, bool isAppleLoading) {
     return Row(
       children: [
@@ -323,7 +214,8 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
         children: [
           GlassTextField(
             controller: _nameController,
-            hint: _selectedRole == BaseUserRole.client ? l10n.stageNameOrName : l10n.fullName,
+            // Always artist signup at this stage — see _defaultRole.
+            hint: l10n.stageNameOrName,
             prefixIcon: FontAwesomeIcons.user,
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.next,
@@ -444,37 +336,28 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
   }
 
   void _register() {
-    if (_selectedRole == null) {
-      AppSnackBar.warning(context, AppLocalizations.of(context)!.selectRoleFirst);
-      return;
-    }
     if (!_formKey.currentState!.validate()) return;
 
     final email = _emailController.text.trim();
     preferencesService.setSavedEmail(email);
 
-    final extraData = <String, dynamic>{};
-    if (_selectedRole == BaseUserRole.client) {
-      extraData['stageName'] = _nameController.text.trim();
-    }
-
+    // Default role = client (Artiste). The user can later switch from
+    // Settings → Comparateur de rôles. The `stageName` extra is set
+    // because new accounts start as artists.
     context.read<AuthBloc>().add(SignUpWithEmailEvent(
           email: email,
           password: _passwordController.text,
           name: _nameController.text.trim(),
-          role: _selectedRole!,
-          extraData: extraData.isNotEmpty ? extraData : null,
+          role: _defaultRole,
+          extraData: {'stageName': _nameController.text.trim()},
         ));
   }
 
   void _socialSignIn(String provider) {
-    // Garde-fou — _buildSocialButtons désactive déjà ces boutons sans rôle,
-    // mais double-check ici pour être sûr de ne JAMAIS lancer un signup
-    // social sans rôle explicitement choisi (sinon le user finit en client).
-    if (_selectedRole == null) {
-      AppSnackBar.warning(context, AppLocalizations.of(context)!.selectRoleFirst);
-      return;
-    }
+    // Default role applied server-side via CompleteSocialSignUpEvent
+    // dispatched from register_screen / login_screen on receipt of
+    // AuthNeedsRoleSelectionState. Phase E1: that handler hard-codes
+    // BaseUserRole.client.
     if (provider == 'google') {
       context.read<AuthBloc>().add(const SignInWithGoogleEvent());
     } else if (provider == 'apple') {

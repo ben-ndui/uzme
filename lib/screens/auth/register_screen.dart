@@ -8,7 +8,6 @@ import 'package:uzme/core/services/invitation_service.dart';
 import 'package:uzme/routing/router.dart';
 import 'package:uzme/widgets/auth/auth_map_background.dart';
 import 'package:uzme/widgets/auth/register_form_content.dart';
-import 'package:uzme/widgets/auth/role_selector_sheet.dart';
 import 'package:uzme/widgets/common/smooth_draggable_widget.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/core/utils/app_logger.dart';
@@ -35,10 +34,6 @@ class _RegisterScreenContent extends StatefulWidget {
 
 class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   final _invitationService = InvitationService();
-  // Volontairement nullable + sans default : force le user à choisir un rôle
-  // explicitement avant signup. Sans ça, un clic direct sur "Sign in with
-  // Google/Apple" créait silencieusement un compte avec role=client.
-  BaseUserRole? _selectedRole;
 
   @override
   Widget build(BuildContext context) {
@@ -47,22 +42,14 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
         if (state is AuthErrorState) {
           AppSnackBar.error(context, state.message);
         } else if (state is AuthNeedsRoleSelectionState) {
-          // Auto-complete avec le rôle explicitement choisi dans le form.
-          // Sécurité : si pour une raison quelconque _selectedRole est null
-          // ici (l'UI ne devrait pas l'avoir permis), on bascule sur le
-          // RoleSelectorSheet pour ne PAS créer un compte avec un default.
-          if (_selectedRole != null) {
-            context.read<AuthBloc>().add(
-                  CompleteSocialSignUpEvent(role: _selectedRole!),
-                );
-          } else {
-            RoleSelectorSheet.show(context, isNewUser: true);
-          }
+          // Phase E1: every signup path defaults to client (Artiste).
+          // Studios / engineers switch role afterwards from Settings.
+          context.read<AuthBloc>().add(
+                const CompleteSocialSignUpEvent(role: BaseUserRole.client),
+              );
         } else if (state is AuthAuthenticatedState) {
-          // Auto-link invitations for artists
-          if (_selectedRole == BaseUserRole.client) {
-            await _autoLinkInvitations(state.user);
-          }
+          // Auto-link invitations for artists (default role = client).
+          await _autoLinkInvitations(state.user);
           if (mounted) _navigateBasedOnRole(state.user);
         }
       },
@@ -88,10 +75,7 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
                 minSize: 0.45,
                 maxSize: 0.92,
                 bottomPadding: 20,
-                bodyContent: RegisterFormContent(
-                  initialRole: _selectedRole,
-                  onRoleChanged: (role) => _selectedRole = role,
-                ),
+                bodyContent: const RegisterFormContent(),
               ),
             ),
           ],

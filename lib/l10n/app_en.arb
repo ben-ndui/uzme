@@ -1919,5 +1919,154 @@
   "studiosCountRadiusSuffix": " · {radius} km",
   "@studiosCountRadiusSuffix": {
     "placeholders": {"radius": {"type": "String"}}
-  }
+  },
+
+  "roleSwitchTileTitle": "Role comparator",
+  "roleSwitchTileSubtitle": "Discover other UZME modes and switch if needed",
+  "roleSwitchScreenTitle": "Your UZME roles",
+  "roleSwitchHeaderIntro": "You're an Artist by default. Switch to Studio or Sound engineer if your activity changes — your data is archived and restored if you switch back.",
+  "roleSwitchYouAreHere": "You're here",
+  "roleSwitchCompareCta": "See comparison",
+  "roleSwitchCompareModalTitle": "Compare roles",
+  "roleSwitchCompareClose": "Close",
+  "roleSwitchAnnualLimitNote": "Limit: 3 role changes per year to keep the marketplace experience healthy.",
+
+  "roleArtistSubtitle": "Book sessions, discover studios and engineers",
+  "roleArtistIntro": "Artist mode lets you search for studios near you, contact engineers, and book your production or mix sessions.",
+  "roleArtistFeature1": "Geolocated studio map",
+  "roleArtistFeature2": "Direct booking or quote request",
+  "roleArtistFeature3": "Encrypted messaging with studios + engineers",
+  "roleArtistFeature4": "Shareable digital card (artist)",
+  "roleArtistAdvantage1": "No commission on your payments",
+  "roleArtistAdvantage2": "Discover pros via the marketplace",
+  "roleArtistAdvantage3": "Save your favourites and history",
+  "roleArtistConstraint1": "You can't receive bookings",
+  "roleArtistConstraint2": "No access to studio management tools",
+  "roleArtistCta": "Become an Artist",
+  "roleArtistCompareAudience": "Artists / musicians",
+  "roleArtistComparePricing": "Free + artist payments",
+  "roleArtistCompareTools": "Map, booking, messaging",
+  "roleArtistCompareIdeal": "You're looking for a studio or engineer",
+
+  "roleStudioSubtitle": "Manage your studio, sessions, and team",
+  "roleStudioIntro": "Studio mode gives you a pro dashboard: published services, calendar, affiliated engineers team, invoices and client payments.",
+  "roleStudioFeature1": "Service catalogue + pricing",
+  "roleStudioFeature2": "Rooms, calendar, Google Calendar sync",
+  "roleStudioFeature3": "Stripe Connect for client payments",
+  "roleStudioFeature4": "Affiliated engineers (team management)",
+  "roleStudioFeature5": "Public studio profile on the map",
+  "roleStudioAdvantage1": "Visibility to UZME artists",
+  "roleStudioAdvantage2": "Pro tools: quotes, invoices, calendar",
+  "roleStudioAdvantage3": "Pioneer: 0% commission, permanent",
+  "roleStudioConstraint1": "Standard marketplace commission if not Pioneer",
+  "roleStudioConstraint2": "Identity verification required (Stripe Connect)",
+  "roleStudioConstraint3": "Real-time involvement (replying to requests)",
+  "roleStudioCta": "Become a Studio",
+  "roleStudioCompareAudience": "Studio owners",
+  "roleStudioComparePricing": "Pro subscription + marketplace fee",
+  "roleStudioCompareTools": "Dashboard, services, team, payments",
+  "roleStudioCompareIdeal": "You run / operate a studio",
+
+  "roleEngineerSubtitle": "Work in studios, manage availability, become a Pro",
+  "roleEngineerIntro": "Sound engineer mode connects you with studios looking for help + lets you offer your services directly via the freelance Pro profile.",
+  "roleEngineerFeature1": "Availability calendar",
+  "roleEngineerFeature2": "Studio team invitations",
+  "roleEngineerFeature3": "Freelance Pro profile on the marketplace",
+  "roleEngineerFeature4": "Assigned sessions + tracking",
+  "roleEngineerAdvantage1": "Find gigs more easily",
+  "roleEngineerAdvantage2": "Showcase your expertise (genres, DAWs)",
+  "roleEngineerAdvantage3": "Compatible with multiple affiliated studios",
+  "roleEngineerConstraint1": "24h response time on team invitations",
+  "roleEngineerConstraint2": "Commission on Pro profile bookings",
+  "roleEngineerCta": "Become a Sound engineer",
+  "roleEngineerCompareAudience": "Freelance or affiliated engineers",
+  "roleEngineerComparePricing": "Free (commission on Pro bookings)",
+  "roleEngineerCompareTools": "Availability, invitations, Pro profile",
+  "roleEngineerCompareIdeal": "You work sound in studios",
+
+  "roleCompareColAudience": "Audience",
+  "roleCompareColPricing": "Pricing",
+  "roleCompareColTools": "Main tools",
+  "roleCompareColIdeal": "Ideal if",
+
+  "roleSwitchSectionFeatures": "Features",
+  "roleSwitchSectionAdvantages": "Advantages",
+  "roleSwitchSectionConstraints": "Constraints",
+
+  "roleSwitchConfirmTitle": "Switch to {role} mode?",
+  "@roleSwitchConfirmTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchConfirmBody": "Your current data is archived and restored if you switch back to your origin role. You'll be redirected to the new mode's onboarding.",
+  "roleSwitchConfirmCta": "Yes, switch",
+  "roleSwitchConfirmCancel": "Cancel",
+
+  "roleSwitchSuccessTitle": "{role} mode activated",
+  "@roleSwitchSuccessTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchSuccessRestored": "We restored your previous data from {role} mode.",
+  "@roleSwitchSuccessRestored": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+
+  "roleSwitchBlockedTitle": "You can't switch right now",
+  "roleSwitchBlockedIntro": "Before changing role, we need to handle these:",
+  "roleSwitchBlockedReasonUpcomingSessions": "{count, plural, =1{1 upcoming session} other{{count} upcoming sessions}}",
+  "@roleSwitchBlockedReasonUpcomingSessions": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedReasonActiveServices": "{count, plural, =1{1 published service} other{{count} published services}}",
+  "@roleSwitchBlockedReasonActiveServices": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedReasonInvitations": "{count, plural, =1{1 team invitation} other{{count} team invitations}}",
+  "@roleSwitchBlockedReasonInvitations": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "roleSwitchBlockedRequestCta": "Ask admin to archive",
+  "roleSwitchBlockedDismissCta": "Later",
+  "roleSwitchBlockedRequestSent": "Request sent. An admin will get back to you.",
+  "roleSwitchBlockedRequestDuplicate": "You already have a pending request for this mode.",
+
+  "roleSwitchAnnualLimitReached": "You reached the limit of 3 role changes per year.",
+  "roleSwitchGenericError": "Error during switch: {error}",
+  "@roleSwitchGenericError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+
+  "adminRoleSwitchRequestsTitle": "Role switch requests",
+  "adminRoleSwitchRequestsAdminTile": "Role switch requests",
+  "adminRoleSwitchRequestsAdminTileSubtitle": "Approve / reject and archive",
+  "adminRoleSwitchFilterAll": "All",
+  "adminRoleSwitchFilterPending": "Pending",
+  "adminRoleSwitchFilterApproved": "Approved",
+  "adminRoleSwitchFilterRejected": "Rejected",
+  "adminRoleSwitchEmpty": "No request for this filter",
+  "adminRoleSwitchUserPrefix": "User: {uid}",
+  "@adminRoleSwitchUserPrefix": {
+    "placeholders": {"uid": {"type": "String"}}
+  },
+  "adminRoleSwitchFromTo": "{from} → {to}",
+  "@adminRoleSwitchFromTo": {
+    "placeholders": {
+      "from": {"type": "String"},
+      "to": {"type": "String"}
+    }
+  },
+  "adminRoleSwitchReasonsLabel": "Blocked by:",
+  "adminRoleSwitchApproveCta": "Approve",
+  "adminRoleSwitchRejectCta": "Reject",
+  "adminRoleSwitchApproveConfirmTitle": "Approve and archive?",
+  "adminRoleSwitchApproveConfirmBody": "Blocking sessions, services and invitations will be soft-archived. The user's role will be flipped and they will be notified.",
+  "adminRoleSwitchRejectConfirmTitle": "Reject the request",
+  "adminRoleSwitchRejectReasonHint": "Reason (optional, shown to the user)",
+  "adminRoleSwitchApproveSuccess": "{count, plural, =0{Request approved} =1{Request approved + 1 doc archived} other{Request approved + {count} docs archived}}",
+  "@adminRoleSwitchApproveSuccess": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminRoleSwitchRejectSuccess": "Request rejected",
+  "adminRoleSwitchStatusPending": "Pending",
+  "adminRoleSwitchStatusApproved": "Approved",
+  "adminRoleSwitchStatusRejected": "Rejected"
 }

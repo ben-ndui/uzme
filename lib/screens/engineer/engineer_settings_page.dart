@@ -102,6 +102,8 @@ class EngineerSettingsPage extends StatelessWidget {
 
           // Digital Card
           const SettingsDigitalCardTile(),
+          // Role comparator (Phase E)
+          const SettingsRoleSwitchTile(),
           const Divider(height: 32),
 
           const SecuritySettingsSection(),

@@ -6,7 +6,6 @@ import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/auth/auth_map_background.dart';
 import 'package:uzme/widgets/auth/login_form_content.dart';
-import 'package:uzme/widgets/auth/role_selector_sheet.dart';
 import 'package:uzme/widgets/common/smooth_draggable_widget.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
@@ -45,7 +44,12 @@ class _LoginScreenContent extends StatelessWidget {
             AppSnackBar.error(context, state.message);
           }
         } else if (state is AuthNeedsRoleSelectionState) {
-          RoleSelectorSheet.show(context, isNewUser: true);
+          // Phase E1: Google / Apple new-user signups silently default
+          // to client (Artiste). Studios / engineers switch role
+          // afterwards from Settings → Comparateur de rôles.
+          context.read<AuthBloc>().add(
+                const CompleteSocialSignUpEvent(role: BaseUserRole.client),
+              );
         } else if (state is AuthPasswordResetSentState) {
           AppSnackBar.success(context, l10n.passwordResetSent(state.email));
         }

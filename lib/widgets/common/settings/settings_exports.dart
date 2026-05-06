@@ -7,4 +7,5 @@ export 'package:smoothandesign_package/core/widgets/settings/settings_section_he
 export 'package:smoothandesign_package/core/widgets/settings/settings_tile.dart';
 export 'settings_pro_bookings_tile.dart';
 export 'settings_pro_profile_tile.dart';
+export 'settings_role_switch_tile.dart';
 export 'settings_theme_tile.dart';
