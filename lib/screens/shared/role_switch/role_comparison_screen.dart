@@ -139,8 +139,12 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
         return;
       }
 
-      // Success — route through splash so the auth re-eval picks the
-      // new role + isFirstTime → onboarding.
+      // Success — go directly to /onboarding with the new role.
+      // We can't rely on /splash here: the AuthBloc's Firestore listener
+      // updates ~hundreds of ms after the callable returns, and splash's
+      // first navigation reads the stale (pre-switch) AuthAuthenticatedState
+      // → it would redirect to the OLD role's home before the new state
+      // lands, skipping onboarding entirely.
       messenger.showSnackBar(
         SnackBar(
           content: Text(
@@ -150,7 +154,8 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
           ),
         ),
       );
-      router.go(AppRoutes.splash);
+      final roleParam = _onboardingRoleParam(result.newRole ?? target.role);
+      router.go('${AppRoutes.onboarding}?role=$roleParam');
     } catch (e) {
       if (!mounted) return;
       AppSnackBar.error(
@@ -190,6 +195,24 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
       return l10n.roleSwitchAnnualLimitReached;
     }
     return l10n.roleSwitchGenericError(raw);
+  }
+
+  /// Mirror of `AppRouter._onboardingRoleParam` — the onboarding URL
+  /// expects 'admin' / 'worker' / 'client' (not the enum.name in all
+  /// cases since the enum may grow). Kept local because we receive the
+  /// new role from the callable, not from the AuthBloc state (which
+  /// is still stale at this point — see the navigation comment above).
+  String _onboardingRoleParam(BaseUserRole role) {
+    switch (role) {
+      case BaseUserRole.admin:
+      case BaseUserRole.superAdmin:
+        return 'admin';
+      case BaseUserRole.worker:
+        return 'worker';
+      case BaseUserRole.client:
+      case BaseUserRole.user:
+        return 'client';
+    }
   }
 }
 
