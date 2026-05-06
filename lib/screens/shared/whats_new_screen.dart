@@ -32,7 +32,13 @@ class _WhatsNewScreenState extends State<WhatsNewScreen> {
   }
 
   void _refresh() {
-    setState(() => _future = featureFlagsService.getWhatsNewForMe());
+    // Important: block body, not arrow. The arrow form returns the
+    // assignment expression's value (a Future<WhatsNewSummary>), which
+    // setState detects as async work and asserts on. Block body
+    // returns void, which is what setState wants.
+    setState(() {
+      _future = featureFlagsService.getWhatsNewForMe();
+    });
   }
 
   @override
