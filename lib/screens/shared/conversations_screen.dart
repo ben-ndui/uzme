@@ -13,6 +13,7 @@ import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/core/services/block_service.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
 import 'package:uzme/widgets/messaging/new_conversation_bottom_sheet.dart';
+import 'package:uzme/widgets/messaging/uzme_conversation_tile.dart';
 
 /// Écran listant toutes les conversations.
 class ConversationsScreen extends StatefulWidget {
@@ -234,7 +235,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
 
         return Column(
           children: [
-            ConversationTile(
+            UzmeConversationTile(
               conversation: conversation,
               currentUserId: currentUserId,
               onTap: () => context.push('/conversations/${conversation.id}'),
