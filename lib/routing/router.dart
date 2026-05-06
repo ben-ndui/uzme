@@ -506,6 +506,30 @@ class AppRouter {
       return AppRoutes.artistPortal;
     }
   }
+
+  /// Single source of truth for "where do I send a freshly-authenticated
+  /// user". First-time users hit `/onboarding?role=...` (which gathers
+  /// permissions: notifications, location, etc.); returning users go
+  /// straight to their role's home.
+  ///
+  /// Use this from every post-auth navigation site (signup, login,
+  /// quick-connect, splash) so the onboarding flow can never be
+  /// silently skipped — that bypass leaves FCM token + geo permissions
+  /// unrequested and breaks the app's core features.
+  static String routeForAuthenticatedUser(BaseUser user) {
+    final appUser = user as AppUser;
+    if (appUser.isFirstTime) {
+      final roleParam = _onboardingRoleParam(appUser);
+      return '${AppRoutes.onboarding}?role=$roleParam';
+    }
+    return getHomeRouteForUser(appUser);
+  }
+
+  static String _onboardingRoleParam(AppUser user) {
+    if (user.isSuperAdmin || user.isStudio) return 'admin';
+    if (user.isEngineer) return 'worker';
+    return 'client';
+  }
 }
 
 /// Not found screen with role-aware redirect

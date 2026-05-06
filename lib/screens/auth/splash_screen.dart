@@ -87,33 +87,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     if (state is AuthAuthenticatedState) {
       final user = state.user as AppUser;
-
       appLog('🚀 Splash: user.isFirstTime = ${user.isFirstTime}');
       appLog('🚀 Splash: user.role = ${user.role}');
-
-      // Check if first time user needs onboarding
-      if (user.isFirstTime) {
-        final roleParam = _getRoleParam(user);
-        appLog('🚀 Splash: Navigating to onboarding with role=$roleParam');
-        context.go('${AppRoutes.onboarding}?role=$roleParam');
-      } else {
-        // User is authenticated and not first-time → go home
-        final route = AppRouter.getHomeRouteForUser(state.user);
-        appLog('🚀 Splash: Navigating to home: $route');
-        context.go(route);
-      }
+      final route = AppRouter.routeForAuthenticatedUser(user);
+      appLog('🚀 Splash: Navigating to $route');
+      context.go(route);
     } else {
       context.go(AppRoutes.login);
-    }
-  }
-
-  String _getRoleParam(AppUser user) {
-    if (user.isSuperAdmin || user.isStudio) {
-      return 'admin';
-    } else if (user.isEngineer) {
-      return 'worker';
-    } else {
-      return 'client';
     }
   }
   @override

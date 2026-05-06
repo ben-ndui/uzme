@@ -77,4 +77,30 @@ void main() {
       );
     });
   });
+
+  group('FeatureFlagsService.watchAll', () {
+    // Regression guard for the cold-start bug fixed by switching the
+    // controller from `StreamController.broadcast()` to a rxdart
+    // BehaviorSubject. Pre-fix, a subscriber attaching after the
+    // first snapshot landed never received it — the announcement
+    // bottomsheet would silently fail to pop on app re-open.
+    test('late subscriber receives the cached snapshot', () async {
+      final service = FeatureFlagsService();
+      final flag = _flag(FeatureRollout.enabled);
+      // Snapshot lands BEFORE anyone subscribes.
+      service.setFlagsForTesting({'k': flag});
+
+      // Now subscribe — the cached snapshot should be replayed.
+      final received = await service.watchAll().first.timeout(
+            const Duration(seconds: 1),
+            onTimeout: () => throw StateError(
+              'Late subscriber did not receive cached snapshot — '
+              'BehaviorSubject regression?',
+            ),
+          );
+
+      expect(received.keys, ['k']);
+      expect(received['k']!.rollout, FeatureRollout.enabled);
+    });
+  });
 }

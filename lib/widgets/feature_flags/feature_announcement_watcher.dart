@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/feature_flag.dart';
 import 'package:uzme/core/services/feature_announcements_service.dart';
+import 'package:uzme/core/utils/app_logger.dart';
 import 'package:uzme/main.dart' show featureFlagsService;
 import 'package:uzme/widgets/feature_flags/feature_announcement_sheet.dart';
 
@@ -44,13 +46,15 @@ class _FeatureAnnouncementWatcherState
     super.initState();
     _service = FeatureAnnouncementsService(flagsService: featureFlagsService);
     _flagsSub = featureFlagsService.watchAll().listen((_) {
-      // New snapshot landed — re-evaluate. We pass through the same
-      // entry point as the auth listener so logic stays in one place.
+      // New snapshot landed — re-evaluate. With BehaviorSubject this
+      // ALSO fires on subscribe with the cached snapshot, so cold-start
+      // mounts after the first Firestore event still trigger.
       _maybeShow();
     });
-    // First evaluation in case the snapshot landed before this widget
-    // was mounted.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShow());
+    // Belt-and-suspenders: also wait for the service's first snapshot
+    // explicitly, so a watcher mounted before Firestore returns gets
+    // unblocked once the snapshot lands.
+    unawaited(featureFlagsService.whenReady().then((_) => _maybeShow()));
   }
 
   @override
@@ -64,24 +68,51 @@ class _FeatureAnnouncementWatcherState
     _checking = true;
     try {
       final authState = context.read<AuthBloc>().state;
-      if (authState is! AuthAuthenticatedState) return;
+      if (authState is! AuthAuthenticatedState) {
+        if (kDebugMode) {
+          appLog('🔔 Announcement: skip — not authenticated yet');
+        }
+        return;
+      }
       final user = authState.user as AppUser?;
       if (user == null) return;
-      if (!featureFlagsService.isReady) return;
+      if (!featureFlagsService.isReady) {
+        if (kDebugMode) {
+          appLog(
+            '🔔 Announcement: skip — flags not ready, waiting for snapshot',
+          );
+        }
+        return;
+      }
 
       final flags = featureFlagsService.current.values
           .where((f) => f.hasAnnouncement)
           .toList();
-      if (flags.isEmpty) return;
+      if (flags.isEmpty) {
+        if (kDebugMode) {
+          appLog('🔔 Announcement: no flag carries an announcement');
+        }
+        return;
+      }
 
       final flag = await _service.nextFor(user: user, flags: flags);
-      if (flag == null) return;
+      if (flag == null) {
+        if (kDebugMode) {
+          appLog(
+            '🔔 Announcement: no pending — all eligible flags already seen / not enabled for ${user.uid}',
+          );
+        }
+        return;
+      }
       // Avoid re-showing the same key in a single mount window in case
       // the snapshot fires before markSeen has hit Firestore.
       if (_lastShownKey == flag.key) return;
       _lastShownKey = flag.key;
       if (!mounted) return;
 
+      if (kDebugMode) {
+        appLog('🔔 Announcement: showing sheet for "${flag.key}"');
+      }
       final acknowledged = await FeatureAnnouncementSheet.show(
         context: context,
         flag: flag,
@@ -90,8 +121,11 @@ class _FeatureAnnouncementWatcherState
       await _service.markSeen(user.uid, flag.key);
       // After ack, re-run in case there's another announcement queued.
       if (mounted) unawaited(_maybeShow());
-    } catch (_) {
-      // Silent — announcements are best-effort UX, not critical path.
+    } catch (e, st) {
+      // Best-effort UX — log so failures aren't truly silent in dev.
+      if (kDebugMode) {
+        appLog('🔔 Announcement watcher error: $e\n$st');
+      }
     } finally {
       _checking = false;
     }

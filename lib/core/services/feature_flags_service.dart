@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/feature_flag.dart';
 
@@ -47,7 +48,13 @@ class FeatureFlagsService {
 
   StreamSubscription? _subscription;
   Map<String, FeatureFlag> _flags = const {};
-  final _streamController = StreamController<Map<String, FeatureFlag>>.broadcast();
+  // BehaviorSubject = broadcast Subject that replays its last value to
+  // every new subscriber. Late mounters (e.g. FeatureAnnouncementWatcher
+  // mounted after the first Firestore snapshot has landed) get the
+  // cached snapshot immediately instead of waiting for the next
+  // Firestore change — that's the difference between the popup
+  // showing on cold start and silently missing it.
+  final _streamController = BehaviorSubject<Map<String, FeatureFlag>>();
   bool _initialised = false;
 
   /// Start listening to the flags collection. Idempotent — safe to call
@@ -122,14 +129,14 @@ class FeatureFlagsService {
     return isEnabled(user, key);
   }
 
-  /// Test-only injection of flag state. Lets widget tests force a known
-  /// rollout for a given flag without touching Firestore. Marked
-  /// [visibleForTesting] so production code can't accidentally bypass
-  /// the snapshot pipeline.
+  /// Test-only injection of flag state. Mirrors the Firestore snapshot
+  /// path: caches the map, marks initialised, and pushes the map onto
+  /// the [BehaviorSubject] so existing AND future subscribers see it.
   @visibleForTesting
   void setFlagsForTesting(Map<String, FeatureFlag> flags) {
     _flags = Map.unmodifiable(flags);
     _initialised = true;
+    _streamController.add(_flags);
   }
 
   /// Test-only reset — clears the cached flags so a subsequent test

@@ -4,9 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/map/map_bloc.dart';
-import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/services/invitation_service.dart';
-import 'package:uzme/routing/app_routes.dart';
+import 'package:uzme/routing/router.dart';
 import 'package:uzme/widgets/auth/auth_map_background.dart';
 import 'package:uzme/widgets/auth/register_form_content.dart';
 import 'package:uzme/widgets/auth/role_selector_sheet.dart';
@@ -121,15 +120,10 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   }
 
   void _navigateBasedOnRole(BaseUser user) {
-    final appUser = user as AppUser;
-
-    if (appUser.isSuperAdmin || appUser.isStudio) {
-      context.go(AppRoutes.home);
-    } else if (appUser.isEngineer) {
-      context.go(AppRoutes.engineerDashboard);
-    } else {
-      context.go(AppRoutes.artistPortal);
-    }
+    // Goes through routeForAuthenticatedUser so a first-time signup
+    // hits /onboarding (permissions + intro) before the role's home.
+    // Skipping that path leaves FCM/geo permissions unrequested.
+    context.go(AppRouter.routeForAuthenticatedUser(user));
   }
 
   Future<void> _autoLinkInvitations(BaseUser user) async {

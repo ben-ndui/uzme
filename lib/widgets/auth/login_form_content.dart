@@ -10,6 +10,7 @@ import 'package:uzme/core/models/recent_account.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart';
 import 'package:uzme/routing/app_routes.dart';
+import 'package:uzme/routing/router.dart';
 import 'package:uzme/widgets/auth/biometric_opt_in_sheet.dart';
 import 'package:uzme/widgets/auth/glass_text_field.dart';
 import 'package:uzme/widgets/auth/password_bottom_sheet.dart';
@@ -138,14 +139,10 @@ class _LoginFormContentState extends State<LoginFormContent> {
     // If Firebase session is still active, navigate directly
     final state = authBloc.state;
     if (state is AuthAuthenticatedState) {
-      final appUser = state.user as AppUser;
-      if (appUser.isSuperAdmin || appUser.isStudio) {
-        context.go(AppRoutes.home);
-      } else if (appUser.isEngineer) {
-        context.go(AppRoutes.engineerDashboard);
-      } else {
-        context.go(AppRoutes.artistPortal);
-      }
+      // Goes through routeForAuthenticatedUser so first-time signups
+      // hit /onboarding (permissions + intro) instead of jumping to a
+      // role home with FCM / geo permissions never requested.
+      context.go(AppRouter.routeForAuthenticatedUser(state.user));
       return;
     }
 
@@ -294,13 +291,9 @@ class _LoginFormContentState extends State<LoginFormContent> {
   }
 
   void _navigateBasedOnRole(BuildContext context, AppUser appUser) {
-    if (appUser.isSuperAdmin || appUser.isStudio) {
-      context.go(AppRoutes.home);
-    } else if (appUser.isEngineer) {
-      context.go(AppRoutes.engineerDashboard);
-    } else {
-      context.go(AppRoutes.artistPortal);
-    }
+    // Same routing decision as splash + register — first-time users
+    // are sent through /onboarding before reaching the role home.
+    context.go(AppRouter.routeForAuthenticatedUser(appUser));
   }
 
   Future<void> _maybeOfferBiometricOptIn(
