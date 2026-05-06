@@ -9291,6 +9291,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Refusée'**
   String get adminRoleSwitchStatusRejected;
+
+  /// No description provided for @roleSwitchAdvisorCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander conseil à l\'IA'**
+  String get roleSwitchAdvisorCta;
+
+  /// No description provided for @roleSwitchAdvisorBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseiller IA'**
+  String get roleSwitchAdvisorBadge;
+
+  /// No description provided for @roleSwitchAdvisorLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'IA analyse ton profil…'**
+  String get roleSwitchAdvisorLoading;
+
+  /// No description provided for @roleSwitchAdvisorStayingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es bien placé sur {role}'**
+  String roleSwitchAdvisorStayingTitle(String role);
+
+  /// No description provided for @roleSwitchAdvisorRecommendTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'IA recommande : {role}'**
+  String roleSwitchAdvisorRecommendTitle(String role);
+
+  /// No description provided for @roleSwitchAdvisorSwitchCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Basculer en {role}'**
+  String roleSwitchAdvisorSwitchCta(String role);
+
+  /// No description provided for @roleSwitchAdvisorDismiss.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get roleSwitchAdvisorDismiss;
 }
 
 class _AppLocalizationsDelegate

@@ -4996,4 +4996,31 @@ class AppLocalizationsSg extends AppLocalizations {
 
   @override
   String get adminRoleSwitchStatusRejected => 'A-kê';
+
+  @override
+  String get roleSwitchAdvisorCta => 'Hûnda conseil na IA';
+
+  @override
+  String get roleSwitchAdvisorBadge => 'Conseiller IA';
+
+  @override
+  String get roleSwitchAdvisorLoading => 'IA a-bâa profil tî mo…';
+
+  @override
+  String roleSwitchAdvisorStayingTitle(String role) {
+    return 'Mo yêkë na rôle $role';
+  }
+
+  @override
+  String roleSwitchAdvisorRecommendTitle(String role) {
+    return 'IA a-tene : $role';
+  }
+
+  @override
+  String roleSwitchAdvisorSwitchCta(String role) {
+    return 'Bascule na $role';
+  }
+
+  @override
+  String get roleSwitchAdvisorDismiss => 'Kîri';
 }

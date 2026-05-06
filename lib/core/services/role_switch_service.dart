@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/core/models/role_switch_advice.dart';
 import 'package:uzme/core/models/role_switch_request.dart';
 
 /// Reasons returned by the [RoleSwitchService.switchUserRole] callable
@@ -138,6 +139,17 @@ class RoleSwitchService {
     await _functions
         .httpsCallable('rejectRoleSwitchRequest')
         .call({'requestId': requestId, 'reason': reason});
+  }
+
+  /// Asks the AI advisor for a personalized role recommendation based
+  /// on the calling user's activity. Server-side falls back to a
+  /// deterministic heuristic if Claude fails, so this never throws on
+  /// AI provider issues.
+  Future<RoleSwitchAdvice> getAdvice() async {
+    final result = await _functions.httpsCallable('getRoleSwitchAdvice').call();
+    return RoleSwitchAdvice.fromMap(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 
   // Use enum.name to roundtrip — works for client/worker/admin/superAdmin/user.

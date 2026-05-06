@@ -2260,5 +2260,22 @@
   "adminRoleSwitchRejectSuccess": "Demande refusée",
   "adminRoleSwitchStatusPending": "En attente",
   "adminRoleSwitchStatusApproved": "Approuvée",
-  "adminRoleSwitchStatusRejected": "Refusée"
+  "adminRoleSwitchStatusRejected": "Refusée",
+
+  "roleSwitchAdvisorCta": "Demander conseil à l'IA",
+  "roleSwitchAdvisorBadge": "Conseiller IA",
+  "roleSwitchAdvisorLoading": "L'IA analyse ton profil…",
+  "roleSwitchAdvisorStayingTitle": "Tu es bien placé sur {role}",
+  "@roleSwitchAdvisorStayingTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorRecommendTitle": "L'IA recommande : {role}",
+  "@roleSwitchAdvisorRecommendTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorSwitchCta": "Basculer en {role}",
+  "@roleSwitchAdvisorSwitchCta": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorDismiss": "Fermer"
 }

@@ -2068,5 +2068,22 @@
   "adminRoleSwitchRejectSuccess": "Request rejected",
   "adminRoleSwitchStatusPending": "Pending",
   "adminRoleSwitchStatusApproved": "Approved",
-  "adminRoleSwitchStatusRejected": "Rejected"
+  "adminRoleSwitchStatusRejected": "Rejected",
+
+  "roleSwitchAdvisorCta": "Ask AI for advice",
+  "roleSwitchAdvisorBadge": "AI advisor",
+  "roleSwitchAdvisorLoading": "AI is analyzing your profile…",
+  "roleSwitchAdvisorStayingTitle": "{role} is the right fit for you",
+  "@roleSwitchAdvisorStayingTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorRecommendTitle": "AI recommends: {role}",
+  "@roleSwitchAdvisorRecommendTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorSwitchCta": "Switch to {role}",
+  "@roleSwitchAdvisorSwitchCta": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorDismiss": "Close"
 }

@@ -2253,5 +2253,22 @@
   "adminRoleSwitchRejectSuccess": "Demande a-kê",
   "adminRoleSwitchStatusPending": "Na lêkû",
   "adminRoleSwitchStatusApproved": "A-yê",
-  "adminRoleSwitchStatusRejected": "A-kê"
+  "adminRoleSwitchStatusRejected": "A-kê",
+
+  "roleSwitchAdvisorCta": "Hûnda conseil na IA",
+  "roleSwitchAdvisorBadge": "Conseiller IA",
+  "roleSwitchAdvisorLoading": "IA a-bâa profil tî mo…",
+  "roleSwitchAdvisorStayingTitle": "Mo yêkë na rôle {role}",
+  "@roleSwitchAdvisorStayingTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorRecommendTitle": "IA a-tene : {role}",
+  "@roleSwitchAdvisorRecommendTitle": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorSwitchCta": "Bascule na {role}",
+  "@roleSwitchAdvisorSwitchCta": {
+    "placeholders": {"role": {"type": "String"}}
+  },
+  "roleSwitchAdvisorDismiss": "Kîri"
 }

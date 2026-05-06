@@ -8,6 +8,7 @@ import 'package:uzme/core/services/role_switch_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
+import 'package:uzme/widgets/role_switch/role_advisor_sheet.dart';
 import 'package:uzme/widgets/role_switch/role_card.dart';
 import 'package:uzme/widgets/role_switch/role_compare_modal.dart';
 import 'package:uzme/widgets/role_switch/role_presentation.dart';
@@ -34,6 +35,7 @@ class RoleComparisonScreen extends StatefulWidget {
 class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
   final _service = RoleSwitchService();
   bool _switching = false;
+  bool _advising = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,25 +91,75 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
             color: theme.colorScheme.surface,
             border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant)),
           ),
-          child: SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
-              onPressed: () => RoleCompareModal.show(
-                context: context,
-                presentations: RolePresentation.switchableRoles
-                    .map((r) => RolePresentation.forRole(r, l10n))
-                    .toList(),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
+                  onPressed: () => RoleCompareModal.show(
+                    context: context,
+                    presentations: RolePresentation.switchableRoles
+                        .map((r) => RolePresentation.forRole(r, l10n))
+                        .toList(),
+                  ),
+                  label: Text(l10n.roleSwitchCompareCta),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
               ),
-              label: Text(l10n.roleSwitchCompareCta),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton.icon(
+                  icon: _advising
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const FaIcon(FontAwesomeIcons.wandMagicSparkles, size: 14),
+                  onPressed: _advising ? null : _askAdvisor,
+                  label: Text(
+                    l10n.roleSwitchAdvisorCta,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _askAdvisor() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _advising = true);
+    try {
+      final advice = await _service.getAdvice();
+      if (!mounted) return;
+      RoleAdvisorSheet.show(
+        context: context,
+        advice: advice,
+        // When the user taps "Switch to X" inside the advisor sheet, we
+        // route through the same confirm + callable flow as the cards.
+        onSwitchRecommended: () {
+          final target = RolePresentation.forRole(advice.recommendedRole, l10n);
+          _onSwitch(target, advice.currentRole);
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      AppSnackBar.error(context, l10n.roleSwitchGenericError(e.toString()));
+    } finally {
+      if (mounted) setState(() => _advising = false);
+    }
   }
 
   Future<void> _onSwitch(

@@ -5023,4 +5023,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminRoleSwitchStatusRejected => 'Rejected';
+
+  @override
+  String get roleSwitchAdvisorCta => 'Ask AI for advice';
+
+  @override
+  String get roleSwitchAdvisorBadge => 'AI advisor';
+
+  @override
+  String get roleSwitchAdvisorLoading => 'AI is analyzing your profile…';
+
+  @override
+  String roleSwitchAdvisorStayingTitle(String role) {
+    return '$role is the right fit for you';
+  }
+
+  @override
+  String roleSwitchAdvisorRecommendTitle(String role) {
+    return 'AI recommends: $role';
+  }
+
+  @override
+  String roleSwitchAdvisorSwitchCta(String role) {
+    return 'Switch to $role';
+  }
+
+  @override
+  String get roleSwitchAdvisorDismiss => 'Close';
 }
