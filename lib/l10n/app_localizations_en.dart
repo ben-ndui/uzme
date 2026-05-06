@@ -5050,4 +5050,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roleSwitchAdvisorDismiss => 'Close';
+
+  @override
+  String get roleSwitchAdvisorInitialPrompt =>
+      'Hi! Can you analyse my UZME profile and tell me which role (Artist, Studio, Sound engineer) fits me best given my activity? Walk me through your reasoning and suggest a switch if it makes sense.';
 }

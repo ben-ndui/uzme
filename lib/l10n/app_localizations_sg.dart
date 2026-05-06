@@ -5023,4 +5023,8 @@ class AppLocalizationsSg extends AppLocalizations {
 
   @override
   String get roleSwitchAdvisorDismiss => 'Kîri';
+
+  @override
+  String get roleSwitchAdvisorInitialPrompt =>
+      'Salut ! Mo wara tî bâa profil tî mo na UZME na tene rôle (Artiste, Studio, Ingé son) ti mo ? Bâa raisonnement tî mo na propose bascule si a-yêkë gera.';
 }

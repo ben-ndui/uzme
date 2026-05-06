@@ -9333,6 +9333,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Fermer'**
   String get roleSwitchAdvisorDismiss;
+
+  /// No description provided for @roleSwitchAdvisorInitialPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Salut ! Peux-tu analyser mon profil UZME et me dire quel rôle (Artiste, Studio, Ingé son) me correspond le mieux selon mon activité ? Détaille ton raisonnement et propose une bascule si elle est pertinente.'**
+  String get roleSwitchAdvisorInitialPrompt;
 }
 
 class _AppLocalizationsDelegate

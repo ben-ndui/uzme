@@ -91,51 +91,47 @@ class _RoleComparisonScreenState extends State<RoleComparisonScreen> {
             color: theme.colorScheme.surface,
             border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant)),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
-                  onPressed: () => RoleCompareModal.show(
-                    context: context,
-                    presentations: RolePresentation.switchableRoles
-                        .map((r) => RolePresentation.forRole(r, l10n))
-                        .toList(),
-                  ),
-                  label: Text(l10n.roleSwitchCompareCta),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 14),
+              onPressed: () => RoleCompareModal.show(
+                context: context,
+                presentations: RolePresentation.switchableRoles
+                    .map((r) => RolePresentation.forRole(r, l10n))
+                    .toList(),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: FilledButton.icon(
-                  icon: _advising
-                      ? const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const FaIcon(FontAwesomeIcons.wandMagicSparkles, size: 14),
-                  onPressed: _advising ? null : _askAdvisor,
-                  label: Text(
-                    l10n.roleSwitchAdvisorCta,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
+              label: Text(l10n.roleSwitchCompareCta),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-            ],
+            ),
           ),
         ),
       ),
+      // Phase AI-2.5 — dual-mode FAB :
+      //   tap        → ouvre /ai-assistant?prompt=... pour engager une
+      //                vraie conversation avec mémoire et tools
+      //   long-press → sheet "advice rapide" one-shot via callable
+      // Les deux modes sont complémentaires : la conversation pour
+      // creuser, le sheet pour un verdict en 5 secondes.
+      floatingActionButton: _AdvisorFab(
+        loading: _advising,
+        onTap: _openAdvisorConversation,
+        onLongPress: _askAdvisor,
+      ),
     );
+  }
+
+  void _openAdvisorConversation() {
+    final l10n = AppLocalizations.of(context)!;
+    // Prompt verbatim envoyé en premier message — deep-link contextuel
+    // qui démarre la conversation IA sur le bon sujet sans que le user
+    // ait à le retaper.
+    final prompt = Uri.encodeQueryComponent(
+      l10n.roleSwitchAdvisorInitialPrompt,
+    );
+    context.push('${AppRoutes.aiAssistant}?prompt=$prompt');
   }
 
   Future<void> _askAdvisor() async {
@@ -280,6 +276,63 @@ class _Header extends StatelessWidget {
       style: theme.textTheme.bodyMedium?.copyWith(
         color: theme.colorScheme.onSurfaceVariant,
         height: 1.45,
+      ),
+    );
+  }
+}
+
+/// Extended FAB with sparkle icon + violet glow. Wraps a [GestureDetector]
+/// (for the long-press) around a regular [FloatingActionButton.extended]
+/// (for the tap). Shows a spinner inline when loading.
+class _AdvisorFab extends StatelessWidget {
+  final bool loading;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+  const _AdvisorFab({
+    required this.loading,
+    required this.onTap,
+    required this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8B5CF6).withValues(alpha: 0.45),
+            blurRadius: 18,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: GestureDetector(
+        onLongPress: loading ? null : onLongPress,
+        child: FloatingActionButton.extended(
+          onPressed: loading ? null : onTap,
+          backgroundColor: const Color(0xFF8B5CF6),
+          foregroundColor: Colors.white,
+          icon: loading
+              ? const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const FaIcon(FontAwesomeIcons.wandMagicSparkles, size: 16),
+          label: Text(
+            l10n.roleSwitchAdvisorCta,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          // Hide the disabled-state grey override; we manage colours
+          // ourselves so the glow stays consistent.
+          disabledElevation: 0,
+        ),
       ),
     );
   }

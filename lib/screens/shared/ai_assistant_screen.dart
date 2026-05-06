@@ -10,9 +10,16 @@ import 'package:uzme/core/services/chat_assistant_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/chat/chat_widgets_exports.dart';
 
-/// Ecran de conversation avec l'assistant IA personnel
+/// Ecran de conversation avec l'assistant IA personnel.
+///
+/// [initialPrompt] : si non-null et non-vide, le screen envoie ce
+/// message AUTOMATIQUEMENT à l'IA dès que la conversation est chargée.
+/// Sert aux deep-links contextuels (genre "Conseiller IA" depuis le
+/// Comparateur de rôles) où l'utilisateur arrive avec un sujet précis
+/// déjà formulé.
 class AIAssistantScreen extends StatefulWidget {
-  const AIAssistantScreen({super.key});
+  final String? initialPrompt;
+  const AIAssistantScreen({super.key, this.initialPrompt});
 
   @override
   State<AIAssistantScreen> createState() => _AIAssistantScreenState();
@@ -73,6 +80,17 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
     });
 
     _scrollToBottom(animate: false);
+
+    // If the screen was opened with a deep-link initial prompt, fire it
+    // now so the user lands on a conversation that's already engaged on
+    // their topic — no need to retype the question.
+    final prompt = widget.initialPrompt?.trim();
+    if (prompt != null && prompt.isNotEmpty) {
+      // Schedule on next tick so the welcome message renders first.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _sendMessage(prompt);
+      });
+    }
   }
 
   Future<void> _sendMessage(String text) async {

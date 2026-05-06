@@ -5092,4 +5092,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get roleSwitchAdvisorDismiss => 'Fermer';
+
+  @override
+  String get roleSwitchAdvisorInitialPrompt =>
+      'Salut ! Peux-tu analyser mon profil UZME et me dire quel rôle (Artiste, Studio, Ingé son) me correspond le mieux selon mon activité ? Détaille ton raisonnement et propose une bascule si elle est pertinente.';
 }

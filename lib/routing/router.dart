@@ -451,11 +451,15 @@ class AppRouter {
         // AI Assistant — gated by ai_assistant flag (route-level
         // defense-in-depth, in addition to the entry tile in
         // conversations_screen). Disabled flag → bounce to home.
+        // Optional `?prompt=...` lets deep-links pre-send a first
+        // message (e.g. role advisor link from RoleComparisonScreen).
         GoRoute(
           path: AppRoutes.aiAssistant,
           redirect: (context, state) =>
               _featureGuard(context, FeatureFlagKeys.aiAssistant.key),
-          builder: (context, state) => const AIAssistantScreen(),
+          builder: (context, state) => AIAssistantScreen(
+            initialPrompt: state.uri.queryParameters['prompt'],
+          ),
         ),
         GoRoute(
           path: AppRoutes.aiSettings,
