@@ -128,12 +128,14 @@ class _NewConversationBottomSheetState extends State<NewConversationBottomSheet>
       name: currentUser.displayName ?? currentUser.name ?? l10n.user,
       avatarUrl: currentUser.photoURL,
       role: currentUser.role.useMeLabel,
+      isPioneer: currentUser.isPioneer,
     );
 
     final otherUserInfo = ParticipantInfo(
       name: contact.displayName ?? contact.name ?? l10n.contact,
       avatarUrl: contact.photoURL,
       role: contact.role.useMeLabel,
+      isPioneer: contact.isPioneer,
     );
 
     // Dispatcher l'event

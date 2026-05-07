@@ -5130,4 +5130,207 @@ class AppLocalizationsFr extends AppLocalizations {
   String whatsNewError(String error) {
     return 'Impossible de générer le résumé : $error';
   }
+
+  @override
+  String get adminPioneerScreenTitle => 'Programme Pioneer';
+
+  @override
+  String get adminPioneerNewCohort => 'Nouveau cohort';
+
+  @override
+  String get adminPioneerCreatedDraft => 'Programme créé en brouillon';
+
+  @override
+  String get adminPioneerEmptyTitle => 'Aucun programme Pioneer';
+
+  @override
+  String get adminPioneerEmptyDesc =>
+      'Crée un cohort pour récompenser tes utilisateurs les plus engagés.';
+
+  @override
+  String adminPioneerLoadError(String error) {
+    return 'Erreur de chargement : $error';
+  }
+
+  @override
+  String adminPioneerTileSubtitle(int count, String date) {
+    return 'Top $count · échéance $date';
+  }
+
+  @override
+  String get adminPioneerStatusDraft => 'Brouillon';
+
+  @override
+  String get adminPioneerStatusActive => 'Actif';
+
+  @override
+  String get adminPioneerStatusDistributed => 'Distribué';
+
+  @override
+  String get adminPioneerStatusArchived => 'Archivé';
+
+  @override
+  String get adminPioneerDetailTitle => 'Cohort Pioneer';
+
+  @override
+  String get adminPioneerNotFound => 'Cohort introuvable';
+
+  @override
+  String get adminPioneerActivated => 'Programme activé';
+
+  @override
+  String adminPioneerErrorWithMessage(String error) {
+    return 'Erreur : $error';
+  }
+
+  @override
+  String get adminPioneerDistributeTitle => 'Distribuer maintenant ?';
+
+  @override
+  String adminPioneerDistributeBody(int count) {
+    return 'Les $count meilleurs scores recevront le badge Pioneer. Cette action est irréversible.';
+  }
+
+  @override
+  String get adminPioneerDistributeCta => 'Distribuer';
+
+  @override
+  String adminPioneerDistributedSuccess(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Pioneers distribués 🚀',
+      one: '1 Pioneer distribué 🚀',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminPioneerArchiveTitle => 'Archiver le cohort ?';
+
+  @override
+  String get adminPioneerArchiveBody =>
+      'Le cohort sera marqué comme archivé. Les badges déjà distribués sont conservés sur les utilisateurs.';
+
+  @override
+  String get adminPioneerArchiveCta => 'Archiver';
+
+  @override
+  String get adminPioneerArchived => 'Cohort archivé';
+
+  @override
+  String get adminPioneerDialogCancel => 'Annuler';
+
+  @override
+  String adminPioneerDeadline(String date) {
+    return 'Échéance $date';
+  }
+
+  @override
+  String get adminPioneerConfigTitle => 'Configuration';
+
+  @override
+  String get adminPioneerConfigTopN => 'Top N';
+
+  @override
+  String get adminPioneerConfigWeights => 'Pondérations';
+
+  @override
+  String adminPioneerConfigWeightsValue(int s, int m, int d) {
+    return 'sessions×$s · messages×$m · jours×$d';
+  }
+
+  @override
+  String get adminPioneerConfigDistributedLabel => 'Distribué';
+
+  @override
+  String adminPioneerConfigDistributedValue(int count, String date) {
+    return '$count Pioneers le $date';
+  }
+
+  @override
+  String get adminPioneerLeaderboardTitle => 'Top 30 — preview live';
+
+  @override
+  String get adminPioneerLeaderboardRecompute => 'Recalculer';
+
+  @override
+  String get adminPioneerLeaderboardTapHint =>
+      'Tap ↻ pour calculer le classement';
+
+  @override
+  String get adminPioneerLeaderboardEmpty =>
+      'Aucun utilisateur éligible pour l\'instant';
+
+  @override
+  String adminPioneerLeaderboardEntryStats(int s, int m, int d) {
+    return '$s sessions · $m msg · $d jours';
+  }
+
+  @override
+  String get adminPioneerActivate => 'Activer';
+
+  @override
+  String get adminPioneerDistributeNow => 'Distribuer maintenant';
+
+  @override
+  String get adminPioneerArchive => 'Archiver';
+
+  @override
+  String get adminPioneerCreateTitle => 'Nouveau cohort Pioneer';
+
+  @override
+  String get adminPioneerCreateNameLabel => 'Nom du cohort';
+
+  @override
+  String get adminPioneerCreateNameHint => 'ex. Pioneer Q1 2026';
+
+  @override
+  String get adminPioneerCreateNameRequired => 'Requis';
+
+  @override
+  String get adminPioneerCreateDescLabel => 'Description (optionnel)';
+
+  @override
+  String get adminPioneerCreateTopNLabel => 'Top N';
+
+  @override
+  String get adminPioneerCreateTopNError => '1 - 5000';
+
+  @override
+  String get adminPioneerCreateDeadlineLabel => 'Échéance';
+
+  @override
+  String adminPioneerCreateError(String error) {
+    return 'Erreur création : $error';
+  }
+
+  @override
+  String get adminPioneerCreateWeightsTitle => 'Pondérations du score';
+
+  @override
+  String adminPioneerCreateWeightsFormula(int s, int m, int d) {
+    return 'Score = sessions × $s + messages × $m + jours × $d';
+  }
+
+  @override
+  String get adminPioneerCreateWeightSessions => 'Sessions confirmées';
+
+  @override
+  String get adminPioneerCreateWeightMessages => 'Messages envoyés';
+
+  @override
+  String get adminPioneerCreateWeightDays => 'Jours actifs';
+
+  @override
+  String get adminPioneerCreateSubmitting => 'Création…';
+
+  @override
+  String get adminPioneerCreateSubmit => 'Créer le cohort';
+
+  @override
+  String get adminStripeModeLive => 'Live';
+
+  @override
+  String get adminStripeModeTest => 'Test';
 }

@@ -2100,5 +2100,117 @@
   "whatsNewError": "Couldn't generate recap: {error}",
   "@whatsNewError": {
     "placeholders": {"error": {"type": "String"}}
-  }
+  },
+
+  "adminPioneerScreenTitle": "Pioneer programme",
+  "adminPioneerNewCohort": "New cohort",
+  "adminPioneerCreatedDraft": "Cohort created as draft",
+  "adminPioneerEmptyTitle": "No Pioneer programme",
+  "adminPioneerEmptyDesc": "Create a cohort to reward your most engaged users.",
+  "adminPioneerLoadError": "Loading error: {error}",
+  "@adminPioneerLoadError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerTileSubtitle": "Top {count} · deadline {date}",
+  "@adminPioneerTileSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "date": {"type": "String"}
+    }
+  },
+  "adminPioneerStatusDraft": "Draft",
+  "adminPioneerStatusActive": "Active",
+  "adminPioneerStatusDistributed": "Distributed",
+  "adminPioneerStatusArchived": "Archived",
+
+  "adminPioneerDetailTitle": "Pioneer cohort",
+  "adminPioneerNotFound": "Cohort not found",
+  "adminPioneerActivated": "Cohort activated",
+  "adminPioneerErrorWithMessage": "Error: {error}",
+  "@adminPioneerErrorWithMessage": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerDistributeTitle": "Distribute now?",
+  "adminPioneerDistributeBody": "The top {count} scores will receive the Pioneer badge. This action is irreversible.",
+  "@adminPioneerDistributeBody": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminPioneerDistributeCta": "Distribute",
+  "adminPioneerDistributedSuccess": "{count, plural, =1{1 Pioneer distributed 🚀} other{{count} Pioneers distributed 🚀}}",
+  "@adminPioneerDistributedSuccess": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminPioneerArchiveTitle": "Archive cohort?",
+  "adminPioneerArchiveBody": "The cohort will be marked archived. Already-distributed badges stay on users.",
+  "adminPioneerArchiveCta": "Archive",
+  "adminPioneerArchived": "Cohort archived",
+  "adminPioneerDialogCancel": "Cancel",
+  "adminPioneerDeadline": "Deadline {date}",
+  "@adminPioneerDeadline": {
+    "placeholders": {"date": {"type": "String"}}
+  },
+  "adminPioneerConfigTitle": "Configuration",
+  "adminPioneerConfigTopN": "Top N",
+  "adminPioneerConfigWeights": "Weights",
+  "adminPioneerConfigWeightsValue": "sessions×{s} · messages×{m} · days×{d}",
+  "@adminPioneerConfigWeightsValue": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerConfigDistributedLabel": "Distributed",
+  "adminPioneerConfigDistributedValue": "{count} Pioneers on {date}",
+  "@adminPioneerConfigDistributedValue": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "date": {"type": "String"}
+    }
+  },
+  "adminPioneerLeaderboardTitle": "Top 30 — live preview",
+  "adminPioneerLeaderboardRecompute": "Recompute",
+  "adminPioneerLeaderboardTapHint": "Tap ↻ to compute the ranking",
+  "adminPioneerLeaderboardEmpty": "No eligible user yet",
+  "adminPioneerLeaderboardEntryStats": "{s} sessions · {m} msg · {d} days",
+  "@adminPioneerLeaderboardEntryStats": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerActivate": "Activate",
+  "adminPioneerDistributeNow": "Distribute now",
+  "adminPioneerArchive": "Archive",
+
+  "adminPioneerCreateTitle": "New Pioneer cohort",
+  "adminPioneerCreateNameLabel": "Cohort name",
+  "adminPioneerCreateNameHint": "e.g. Pioneer Q1 2026",
+  "adminPioneerCreateNameRequired": "Required",
+  "adminPioneerCreateDescLabel": "Description (optional)",
+  "adminPioneerCreateTopNLabel": "Top N",
+  "adminPioneerCreateTopNError": "1 - 5000",
+  "adminPioneerCreateDeadlineLabel": "Deadline",
+  "adminPioneerCreateError": "Creation error: {error}",
+  "@adminPioneerCreateError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerCreateWeightsTitle": "Score weights",
+  "adminPioneerCreateWeightsFormula": "Score = sessions × {s} + messages × {m} + days × {d}",
+  "@adminPioneerCreateWeightsFormula": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerCreateWeightSessions": "Confirmed sessions",
+  "adminPioneerCreateWeightMessages": "Messages sent",
+  "adminPioneerCreateWeightDays": "Active days",
+  "adminPioneerCreateSubmitting": "Creating…",
+  "adminPioneerCreateSubmit": "Create cohort",
+
+  "adminStripeModeLive": "Live",
+  "adminStripeModeTest": "Test"
 }

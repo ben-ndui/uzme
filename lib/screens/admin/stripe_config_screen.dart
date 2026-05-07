@@ -166,7 +166,9 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    _isLiveMode ? 'Live' : 'Test',
+                    _isLiveMode
+                        ? AppLocalizations.of(context)!.adminStripeModeLive
+                        : AppLocalizations.of(context)!.adminStripeModeTest,
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: _isLiveMode ? Colors.green : Colors.orange,
                       fontWeight: FontWeight.w600,

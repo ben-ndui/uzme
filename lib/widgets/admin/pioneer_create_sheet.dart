@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:uzme/core/models/pioneer_program.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart' show pioneerService;
 
 /// Modal sheet to create a new Pioneer cohort. Submits a draft program
@@ -34,12 +35,13 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
   }
 
   Future<void> _pickDeadline() async {
+    final locale = Localizations.localeOf(context);
     final picked = await showDatePicker(
       context: context,
       initialDate: _deadline,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-      locale: const Locale('fr', 'FR'),
+      locale: locale,
     );
     if (picked != null) {
       setState(() => _deadline = picked);
@@ -48,6 +50,7 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _submitting = true);
     final messenger = ScaffoldMessenger.of(context);
     final errorColor = Theme.of(context).colorScheme.error;
@@ -68,7 +71,7 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
       if (mounted) setState(() => _submitting = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Erreur création : $e'),
+          content: Text(l10n.adminPioneerCreateError(e.toString())),
           backgroundColor: errorColor,
         ),
       );
@@ -78,7 +81,9 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final df = DateFormat('d MMMM yyyy', 'fr_FR');
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final df = DateFormat('d MMMM yyyy', locale);
     final viewInsets = MediaQuery.of(context).viewInsets;
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + viewInsets.bottom),
@@ -90,25 +95,26 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Nouveau cohort Pioneer',
+                l10n.adminPioneerCreateTitle,
                 style: theme.textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom du cohort',
-                  hintText: 'ex. Pioneer Q1 2026',
+                decoration: InputDecoration(
+                  labelText: l10n.adminPioneerCreateNameLabel,
+                  hintText: l10n.adminPioneerCreateNameHint,
                 ),
                 textCapitalization: TextCapitalization.sentences,
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Requis' : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? l10n.adminPioneerCreateNameRequired
+                    : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optionnel)',
+                decoration: InputDecoration(
+                  labelText: l10n.adminPioneerCreateDescLabel,
                 ),
                 maxLines: 2,
               ),
@@ -119,13 +125,13 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
                     child: TextFormField(
                       controller: _targetCountController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Top N',
+                      decoration: InputDecoration(
+                        labelText: l10n.adminPioneerCreateTopNLabel,
                       ),
                       validator: (v) {
                         final n = int.tryParse(v ?? '');
                         if (n == null || n < 1 || n > 5000) {
-                          return '1 - 5000';
+                          return l10n.adminPioneerCreateTopNError;
                         }
                         return null;
                       },
@@ -138,9 +144,12 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
                       onTap: _pickDeadline,
                       borderRadius: BorderRadius.circular(4),
                       child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Échéance',
-                          suffixIcon: Icon(Icons.calendar_today, size: 18),
+                        decoration: InputDecoration(
+                          labelText: l10n.adminPioneerCreateDeadlineLabel,
+                          suffixIcon: const Icon(
+                            Icons.calendar_today,
+                            size: 18,
+                          ),
                         ),
                         child: Text(df.format(_deadline)),
                       ),
@@ -150,31 +159,35 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Pondérations du score',
+                l10n.adminPioneerCreateWeightsTitle,
                 style: theme.textTheme.titleSmall,
               ),
               const SizedBox(height: 4),
               Text(
-                'Score = sessions × ${_wSessions.round()} + messages × ${_wMessages.round()} + jours × ${_wDays.round()}',
+                l10n.adminPioneerCreateWeightsFormula(
+                  _wSessions.round(),
+                  _wMessages.round(),
+                  _wDays.round(),
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.outline,
                 ),
               ),
               const SizedBox(height: 12),
               _WeightSlider(
-                label: 'Sessions confirmées',
+                label: l10n.adminPioneerCreateWeightSessions,
                 icon: FontAwesomeIcons.calendarCheck,
                 value: _wSessions,
                 onChanged: (v) => setState(() => _wSessions = v),
               ),
               _WeightSlider(
-                label: 'Messages envoyés',
+                label: l10n.adminPioneerCreateWeightMessages,
                 icon: FontAwesomeIcons.message,
                 value: _wMessages,
                 onChanged: (v) => setState(() => _wMessages = v),
               ),
               _WeightSlider(
-                label: 'Jours actifs',
+                label: l10n.adminPioneerCreateWeightDays,
                 icon: FontAwesomeIcons.fire,
                 value: _wDays,
                 onChanged: (v) => setState(() => _wDays = v),
@@ -191,7 +204,11 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const FaIcon(FontAwesomeIcons.check, size: 14),
-                  label: Text(_submitting ? 'Création…' : 'Créer le cohort'),
+                  label: Text(
+                    _submitting
+                        ? l10n.adminPioneerCreateSubmitting
+                        : l10n.adminPioneerCreateSubmit,
+                  ),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),

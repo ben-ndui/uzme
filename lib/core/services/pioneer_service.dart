@@ -11,11 +11,20 @@ class PioneerService {
   PioneerService({
     FirebaseFirestore? firestore,
     FirebaseFunctions? functions,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _functions = functions ?? FirebaseFunctions.instance;
+  })  : _firestoreOverride = firestore,
+        _functionsOverride = functions;
 
-  final FirebaseFirestore _firestore;
-  final FirebaseFunctions _functions;
+  final FirebaseFirestore? _firestoreOverride;
+  final FirebaseFunctions? _functionsOverride;
+
+  // Lazy Firebase access so the eager `final pioneerService =
+  // PioneerService()` in main.dart doesn't blow up in test envs that
+  // haven't called `Firebase.initializeApp()`. Keeps prod path
+  // identical (instances are cached singletons anyway).
+  FirebaseFirestore get _firestore =>
+      _firestoreOverride ?? FirebaseFirestore.instance;
+  FirebaseFunctions get _functions =>
+      _functionsOverride ?? FirebaseFunctions.instance;
 
   static const _collection = 'pioneer_programs';
 

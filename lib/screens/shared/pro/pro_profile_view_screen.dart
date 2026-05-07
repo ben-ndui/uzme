@@ -426,12 +426,14 @@ class ProProfileViewScreen extends StatelessWidget {
       name: currentUser.displayName ?? currentUser.name ?? l10n.user,
       avatarUrl: currentUser.photoURL,
       role: currentUser.role.useMeLabel,
+      isPioneer: currentUser.isPioneer,
     );
 
     final otherUserInfo = ParticipantInfo(
       name: _profile.displayName,
       avatarUrl: user.displayPhotoUrl,
       role: user.role.useMeLabel,
+      isPioneer: user.isPioneer,
     );
 
     context.read<MessagingBloc>().add(StartPrivateConversationEvent(

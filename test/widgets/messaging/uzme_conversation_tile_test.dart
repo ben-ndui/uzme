@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/messaging/uzme_conversation_tile.dart';
@@ -10,6 +11,7 @@ BaseConversation _privateConversation({
   required String otherUid,
   required String otherName,
   String? otherRole,
+  bool otherIsPioneer = false,
 }) {
   final now = DateTime(2026, 5, 5);
   return BaseConversation(
@@ -20,7 +22,11 @@ BaseConversation _privateConversation({
     createdByUserId: currentUid,
     participantIds: [currentUid, otherUid],
     participantDetails: {
-      otherUid: ParticipantInfo(name: otherName, role: otherRole),
+      otherUid: ParticipantInfo(
+        name: otherName,
+        role: otherRole,
+        isPioneer: otherIsPioneer,
+      ),
       currentUid: const ParticipantInfo(name: 'Me'),
     },
   );
@@ -107,6 +113,41 @@ void main() {
         ),
       );
       expect(find.text('Artiste'), findsOneWidget);
+    });
+
+    testWidgets('renders the Pioneer star when isPioneer is true',
+        (tester) async {
+      await _pump(
+        tester,
+        UzmeConversationTile(
+          conversation: _privateConversation(
+            currentUid: 'me',
+            otherUid: 'pioneer-uid',
+            otherName: 'Pioneer Studio',
+            otherRole: 'admin',
+            otherIsPioneer: true,
+          ),
+          currentUserId: 'me',
+        ),
+      );
+      expect(find.byIcon(FontAwesomeIcons.solidStar), findsOneWidget);
+    });
+
+    testWidgets('omits the Pioneer star when isPioneer is false',
+        (tester) async {
+      await _pump(
+        tester,
+        UzmeConversationTile(
+          conversation: _privateConversation(
+            currentUid: 'me',
+            otherUid: 'plain-uid',
+            otherName: 'Plain Studio',
+            otherRole: 'admin',
+          ),
+          currentUserId: 'me',
+        ),
+      );
+      expect(find.byIcon(FontAwesomeIcons.solidStar), findsNothing);
     });
 
     testWidgets('omits the role chip when participant role is missing',

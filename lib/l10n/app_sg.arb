@@ -2285,5 +2285,117 @@
   "whatsNewError": "A-lîngbi pëpe : {error}",
   "@whatsNewError": {
     "placeholders": {"error": {"type": "String"}}
-  }
+  },
+
+  "adminPioneerScreenTitle": "Programme Pioneer",
+  "adminPioneerNewCohort": "Cohort tî finî",
+  "adminPioneerCreatedDraft": "Programme a-leke na brouillon",
+  "adminPioneerEmptyTitle": "Programme Pioneer pëpe",
+  "adminPioneerEmptyDesc": "Leke cohort tî récompenser azo tî mo so a-yêkë engagés.",
+  "adminPioneerLoadError": "Erreur tî chargement : {error}",
+  "@adminPioneerLoadError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerTileSubtitle": "Top {count} · échéance {date}",
+  "@adminPioneerTileSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "date": {"type": "String"}
+    }
+  },
+  "adminPioneerStatusDraft": "Brouillon",
+  "adminPioneerStatusActive": "Actif",
+  "adminPioneerStatusDistributed": "Distribué",
+  "adminPioneerStatusArchived": "Archivé",
+
+  "adminPioneerDetailTitle": "Cohort Pioneer",
+  "adminPioneerNotFound": "Cohort a-wara pëpe",
+  "adminPioneerActivated": "Programme a-yêkë activé",
+  "adminPioneerErrorWithMessage": "Erreur : {error}",
+  "@adminPioneerErrorWithMessage": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerDistributeTitle": "Distribuer fadëso ?",
+  "adminPioneerDistributeBody": "Top {count} score-ti-kônde a-wara badge Pioneer. Action sô a-lîngbi pëpe tî kîri na peko.",
+  "@adminPioneerDistributeBody": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminPioneerDistributeCta": "Distribuer",
+  "adminPioneerDistributedSuccess": "{count, plural, =1{1 Pioneer a-distribué 🚀} other{{count} Pioneers a-distribué 🚀}}",
+  "@adminPioneerDistributedSuccess": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "adminPioneerArchiveTitle": "Archiver cohort ?",
+  "adminPioneerArchiveBody": "Cohort a-yêkë marqué archivé. Badge so a-distribué awê a-yêkë na azo.",
+  "adminPioneerArchiveCta": "Archiver",
+  "adminPioneerArchived": "Cohort a-yêkë archivé",
+  "adminPioneerDialogCancel": "Zîa",
+  "adminPioneerDeadline": "Échéance {date}",
+  "@adminPioneerDeadline": {
+    "placeholders": {"date": {"type": "String"}}
+  },
+  "adminPioneerConfigTitle": "Configuration",
+  "adminPioneerConfigTopN": "Top N",
+  "adminPioneerConfigWeights": "Pondérations",
+  "adminPioneerConfigWeightsValue": "sessions×{s} · messages×{m} · lângö×{d}",
+  "@adminPioneerConfigWeightsValue": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerConfigDistributedLabel": "Distribué",
+  "adminPioneerConfigDistributedValue": "{count} Pioneers na {date}",
+  "@adminPioneerConfigDistributedValue": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "date": {"type": "String"}
+    }
+  },
+  "adminPioneerLeaderboardTitle": "Top 30 — preview live",
+  "adminPioneerLeaderboardRecompute": "Recalculer",
+  "adminPioneerLeaderboardTapHint": "Tap ↻ tî calculer classement",
+  "adminPioneerLeaderboardEmpty": "Zo tî éligible pëpe na ngoï sô",
+  "adminPioneerLeaderboardEntryStats": "{s} sessions · {m} msg · {d} lângö",
+  "@adminPioneerLeaderboardEntryStats": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerActivate": "Activer",
+  "adminPioneerDistributeNow": "Distribuer fadëso",
+  "adminPioneerArchive": "Archiver",
+
+  "adminPioneerCreateTitle": "Cohort Pioneer tî finî",
+  "adminPioneerCreateNameLabel": "Iri tî cohort",
+  "adminPioneerCreateNameHint": "tongana. Pioneer Q1 2026",
+  "adminPioneerCreateNameRequired": "A-yêkë gï",
+  "adminPioneerCreateDescLabel": "Description (optionnel)",
+  "adminPioneerCreateTopNLabel": "Top N",
+  "adminPioneerCreateTopNError": "1 - 5000",
+  "adminPioneerCreateDeadlineLabel": "Échéance",
+  "adminPioneerCreateError": "Erreur création : {error}",
+  "@adminPioneerCreateError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "adminPioneerCreateWeightsTitle": "Pondérations tî score",
+  "adminPioneerCreateWeightsFormula": "Score = sessions × {s} + messages × {m} + lângö × {d}",
+  "@adminPioneerCreateWeightsFormula": {
+    "placeholders": {
+      "s": {"type": "int"},
+      "m": {"type": "int"},
+      "d": {"type": "int"}
+    }
+  },
+  "adminPioneerCreateWeightSessions": "Sessions a-confirmé",
+  "adminPioneerCreateWeightMessages": "Messages a-tokua",
+  "adminPioneerCreateWeightDays": "Lângö actifs",
+  "adminPioneerCreateSubmitting": "Création…",
+  "adminPioneerCreateSubmit": "Leke cohort",
+
+  "adminStripeModeLive": "Live",
+  "adminStripeModeTest": "Test"
 }

@@ -3,14 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 
 /// uzme-specific conversation tile that augments the shared list row
-/// with a role chip + avatar role-colored overlay. Pulls the role from
-/// `BaseConversation.participantDetails[otherId].role` — no extra
-/// Firestore reads, just rendering signals already on the doc.
-///
-/// Skipped enrichment for v1 :
-/// - Pioneer badge (would require denormalising `pioneer.isPioneer`
-///   onto `ParticipantInfo`, separate backend sprint).
-/// - Booking-related indicator (would join with `useme_sessions`).
+/// with a role chip, avatar role-colored overlay, and Pioneer star.
+/// Pulls everything from `BaseConversation.participantDetails[otherId]`
+/// — no extra Firestore reads, just rendering signals already on the
+/// doc (denormalised by the backend).
 class UzmeConversationTile extends StatelessWidget {
   final BaseConversation conversation;
   final String currentUserId;
@@ -33,6 +29,7 @@ class UzmeConversationTile extends StatelessWidget {
     final displayName = conversation.getDisplayName(currentUserId);
     final avatarUrl = conversation.getAvatarUrl(currentUserId);
     final otherRole = _resolveOtherRole();
+    final otherIsPioneer = _resolveOtherIsPioneer();
 
     return ListTile(
       onTap: onTap,
@@ -55,6 +52,14 @@ class UzmeConversationTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          if (otherIsPioneer) ...[
+            const SizedBox(width: 4),
+            const FaIcon(
+              FontAwesomeIcons.solidStar,
+              size: 11,
+              color: Color(0xFFFFB800),
+            ),
+          ],
           if (otherRole != null) ...[
             const SizedBox(width: 6),
             _RoleChip(role: otherRole),
@@ -82,6 +87,16 @@ class UzmeConversationTile extends StatelessWidget {
       if (r.name == raw) return r;
     }
     return null;
+  }
+
+  bool _resolveOtherIsPioneer() {
+    if (conversation.type != ConversationType.private) return false;
+    final otherId = conversation.participantIds.firstWhere(
+      (id) => id != currentUserId,
+      orElse: () => '',
+    );
+    if (otherId.isEmpty) return false;
+    return conversation.participantDetails[otherId]?.isPioneer ?? false;
   }
 
   Color? _roleAccent(BaseUserRole? role) {

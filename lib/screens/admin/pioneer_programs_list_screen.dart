@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:uzme/core/models/pioneer_program.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart' show pioneerService;
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/admin/pioneer_create_sheet.dart';
@@ -14,9 +15,10 @@ class PioneerProgramsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Programme Pioneer'),
+        title: Text(l10n.adminPioneerScreenTitle),
       ),
       body: StreamBuilder<List<PioneerProgram>>(
         stream: pioneerService.watchPrograms(),
@@ -42,12 +44,13 @@ class PioneerProgramsListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openCreateSheet(context),
         icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
-        label: const Text('Nouveau cohort'),
+        label: Text(l10n.adminPioneerNewCohort),
       ),
     );
   }
 
   Future<void> _openCreateSheet(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
     final router = GoRouter.of(context);
     final result = await showModalBottomSheet<String>(
@@ -58,7 +61,7 @@ class PioneerProgramsListScreen extends StatelessWidget {
     );
     if (result == null) return;
     messenger.showSnackBar(
-      const SnackBar(content: Text('Programme créé en brouillon')),
+      SnackBar(content: Text(l10n.adminPioneerCreatedDraft)),
     );
     router.push(AppRoutes.pioneerProgramDetail(result));
   }
@@ -71,7 +74,9 @@ class _ProgramTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final df = DateFormat('d MMM yyyy', 'fr_FR');
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final df = DateFormat('d MMM yyyy', locale);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -99,7 +104,10 @@ class _ProgramTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Top ${program.targetCount} · échéance ${df.format(program.deadline)}',
+                      l10n.adminPioneerTileSubtitle(
+                        program.targetCount,
+                        df.format(program.deadline),
+                      ),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.outline,
                       ),
@@ -123,11 +131,15 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final (label, color) = switch (status) {
-      PioneerProgramStatus.draft => ('Brouillon', Colors.grey),
-      PioneerProgramStatus.active => ('Actif', Colors.green),
-      PioneerProgramStatus.distributed => ('Distribué', Colors.blue),
-      PioneerProgramStatus.archived => ('Archivé', Colors.orange),
+      PioneerProgramStatus.draft => (l10n.adminPioneerStatusDraft, Colors.grey),
+      PioneerProgramStatus.active =>
+        (l10n.adminPioneerStatusActive, Colors.green),
+      PioneerProgramStatus.distributed =>
+        (l10n.adminPioneerStatusDistributed, Colors.blue),
+      PioneerProgramStatus.archived =>
+        (l10n.adminPioneerStatusArchived, Colors.orange),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -154,6 +166,7 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -167,12 +180,12 @@ class _EmptyView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun programme Pioneer',
+              l10n.adminPioneerEmptyTitle,
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Créez un cohort pour récompenser tes utilisateurs les plus engagés.',
+              l10n.adminPioneerEmptyDesc,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.outline,
@@ -191,11 +204,12 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Text(
-          'Erreur de chargement: $message',
+          l10n.adminPioneerLoadError(message),
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       ),

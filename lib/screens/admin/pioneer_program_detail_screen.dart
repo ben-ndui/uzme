@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:uzme/core/models/pioneer_program.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart' show pioneerService;
 
 /// SuperAdmin screen — full detail of a Pioneer cohort. Streams the
@@ -23,8 +24,9 @@ class _PioneerProgramDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Cohort Pioneer')),
+      appBar: AppBar(title: Text(l10n.adminPioneerDetailTitle)),
       body: FutureBuilder<PioneerProgram?>(
         future: pioneerService.fetchProgram(widget.programId),
         builder: (context, snapshot) {
@@ -33,7 +35,7 @@ class _PioneerProgramDetailScreenState
           }
           final program = snapshot.data;
           if (program == null) {
-            return const Center(child: Text('Cohort introuvable'));
+            return Center(child: Text(l10n.adminPioneerNotFound));
           }
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -66,6 +68,7 @@ class _PioneerProgramDetailScreenState
   }
 
   Future<void> _activate(PioneerProgram program) async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _busy = true);
     final messenger = ScaffoldMessenger.of(context);
     try {
@@ -74,24 +77,25 @@ class _PioneerProgramDetailScreenState
         status: PioneerProgramStatus.active,
       );
       messenger.showSnackBar(
-        const SnackBar(content: Text('Programme activé')),
+        SnackBar(content: Text(l10n.adminPioneerActivated)),
       );
       if (mounted) setState(() {});
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Erreur : $e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.adminPioneerErrorWithMessage(e.toString()))),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _distribute(PioneerProgram program) async {
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
     final confirmed = await _confirmDialog(
-      title: 'Distribuer maintenant ?',
-      message:
-          'Les ${program.targetCount} meilleurs scores recevront le badge Pioneer. '
-          'Cette action est irréversible.',
-      confirmLabel: 'Distribuer',
+      title: l10n.adminPioneerDistributeTitle,
+      message: l10n.adminPioneerDistributeBody(program.targetCount),
+      confirmLabel: l10n.adminPioneerDistributeCta,
     );
     if (!confirmed || !mounted) return;
     setState(() => _busy = true);
@@ -99,37 +103,40 @@ class _PioneerProgramDetailScreenState
       final count = await pioneerService.distributeProgram(program.id);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('$count Pioneers distribués 🚀'),
+          content: Text(l10n.adminPioneerDistributedSuccess(count)),
           backgroundColor: Colors.green,
         ),
       );
       if (mounted) setState(() {});
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Erreur : $e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.adminPioneerErrorWithMessage(e.toString()))),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _archive(PioneerProgram program) async {
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
     final confirmed = await _confirmDialog(
-      title: 'Archiver le cohort ?',
-      message:
-          'Le cohort sera marqué comme archivé. Les badges déjà distribués '
-          'sont conservés sur les utilisateurs.',
-      confirmLabel: 'Archiver',
+      title: l10n.adminPioneerArchiveTitle,
+      message: l10n.adminPioneerArchiveBody,
+      confirmLabel: l10n.adminPioneerArchiveCta,
     );
     if (!confirmed || !mounted) return;
     setState(() => _busy = true);
     try {
       await pioneerService.archiveProgram(program.id);
       messenger.showSnackBar(
-        const SnackBar(content: Text('Cohort archivé')),
+        SnackBar(content: Text(l10n.adminPioneerArchived)),
       );
       if (mounted) setState(() {});
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Erreur : $e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.adminPioneerErrorWithMessage(e.toString()))),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -140,6 +147,7 @@ class _PioneerProgramDetailScreenState
     required String message,
     required String confirmLabel,
   }) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -148,7 +156,7 @@ class _PioneerProgramDetailScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Annuler'),
+            child: Text(l10n.adminPioneerDialogCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -168,7 +176,9 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final df = DateFormat('d MMMM yyyy', 'fr_FR');
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final df = DateFormat('d MMMM yyyy', locale);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -188,7 +198,7 @@ class _Header extends StatelessWidget {
             _StatusPill(status: program.status),
             const SizedBox(width: 8),
             Text(
-              'Échéance ${df.format(program.deadline)}',
+              l10n.adminPioneerDeadline(df.format(program.deadline)),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
@@ -206,11 +216,15 @@ class _StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final (label, color) = switch (status) {
-      PioneerProgramStatus.draft => ('Brouillon', Colors.grey),
-      PioneerProgramStatus.active => ('Actif', Colors.green),
-      PioneerProgramStatus.distributed => ('Distribué', Colors.blue),
-      PioneerProgramStatus.archived => ('Archivé', Colors.orange),
+      PioneerProgramStatus.draft => (l10n.adminPioneerStatusDraft, Colors.grey),
+      PioneerProgramStatus.active =>
+        (l10n.adminPioneerStatusActive, Colors.green),
+      PioneerProgramStatus.distributed =>
+        (l10n.adminPioneerStatusDistributed, Colors.blue),
+      PioneerProgramStatus.archived =>
+        (l10n.adminPioneerStatusArchived, Colors.orange),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -235,6 +249,8 @@ class _ConfigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -247,24 +263,32 @@ class _ConfigCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Configuration',
+              l10n.adminPioneerConfigTitle,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
-            _RowItem(label: 'Top N', value: '${program.targetCount}'),
             _RowItem(
-              label: 'Pondérations',
-              value: 'sessions×${program.weights.confirmedSessions} · '
-                  'messages×${program.weights.messagesSent} · '
-                  'jours×${program.weights.activeDays}',
+              label: l10n.adminPioneerConfigTopN,
+              value: '${program.targetCount}',
+            ),
+            _RowItem(
+              label: l10n.adminPioneerConfigWeights,
+              value: l10n.adminPioneerConfigWeightsValue(
+                program.weights.confirmedSessions,
+                program.weights.messagesSent,
+                program.weights.activeDays,
+              ),
             ),
             if (program.distributedAt != null)
               _RowItem(
-                label: 'Distribué',
-                value:
-                    '${program.distributedCount ?? 0} Pioneers le ${DateFormat('d MMM yyyy', 'fr_FR').format(program.distributedAt!)}',
+                label: l10n.adminPioneerConfigDistributedLabel,
+                value: l10n.adminPioneerConfigDistributedValue(
+                  program.distributedCount ?? 0,
+                  DateFormat('d MMM yyyy', locale)
+                      .format(program.distributedAt!),
+                ),
               ),
           ],
         ),
@@ -316,6 +340,7 @@ class _LeaderboardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -331,7 +356,7 @@ class _LeaderboardSection extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Top 30 — preview live',
+                    l10n.adminPioneerLeaderboardTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -339,7 +364,7 @@ class _LeaderboardSection extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowsRotate, size: 16),
-                  tooltip: 'Recalculer',
+                  tooltip: l10n.adminPioneerLeaderboardRecompute,
                   onPressed: onRefresh,
                 ),
               ],
@@ -349,7 +374,7 @@ class _LeaderboardSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  'Tap ↻ pour calculer le classement',
+                  l10n.adminPioneerLeaderboardTapHint,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.outline,
                   ),
@@ -369,7 +394,9 @@ class _LeaderboardSection extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Text(
-                        'Erreur : ${snapshot.error}',
+                        l10n.adminPioneerErrorWithMessage(
+                          snapshot.error.toString(),
+                        ),
                         style: TextStyle(color: theme.colorScheme.error),
                       ),
                     );
@@ -379,7 +406,7 @@ class _LeaderboardSection extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Text(
-                        'Aucun utilisateur éligible pour l\'instant',
+                        l10n.adminPioneerLeaderboardEmpty,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.outline,
                         ),
@@ -427,7 +454,12 @@ class _LeaderboardRow extends StatelessWidget {
               children: [
                 Text(entry.name, style: theme.textTheme.bodyMedium),
                 Text(
-                  '${entry.confirmedSessions} sessions · ${entry.messagesSent} msg · ${entry.activeDays} jours',
+                  AppLocalizations.of(context)!
+                      .adminPioneerLeaderboardEntryStats(
+                    entry.confirmedSessions,
+                    entry.messagesSent,
+                    entry.activeDays,
+                  ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.outline,
                   ),
@@ -464,6 +496,7 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Wrap(
       spacing: 12,
       runSpacing: 8,
@@ -472,21 +505,21 @@ class _Actions extends StatelessWidget {
           FilledButton.icon(
             onPressed: busy ? null : onActivate,
             icon: const FaIcon(FontAwesomeIcons.play, size: 14),
-            label: const Text('Activer'),
+            label: Text(l10n.adminPioneerActivate),
           ),
         if (program.status == PioneerProgramStatus.draft ||
             program.status == PioneerProgramStatus.active)
           FilledButton.icon(
             onPressed: busy ? null : onDistribute,
             icon: const FaIcon(FontAwesomeIcons.rocket, size: 14),
-            label: const Text('Distribuer maintenant'),
+            label: Text(l10n.adminPioneerDistributeNow),
             style: FilledButton.styleFrom(backgroundColor: Colors.green),
           ),
         if (program.status != PioneerProgramStatus.archived)
           OutlinedButton.icon(
             onPressed: busy ? null : onArchive,
             icon: const FaIcon(FontAwesomeIcons.boxArchive, size: 14),
-            label: const Text('Archiver'),
+            label: Text(l10n.adminPioneerArchive),
           ),
       ],
     );

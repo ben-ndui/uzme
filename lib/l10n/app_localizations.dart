@@ -9399,6 +9399,348 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible de générer le résumé : {error}'**
   String whatsNewError(String error);
+
+  /// No description provided for @adminPioneerScreenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme Pioneer'**
+  String get adminPioneerScreenTitle;
+
+  /// No description provided for @adminPioneerNewCohort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau cohort'**
+  String get adminPioneerNewCohort;
+
+  /// No description provided for @adminPioneerCreatedDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme créé en brouillon'**
+  String get adminPioneerCreatedDraft;
+
+  /// No description provided for @adminPioneerEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun programme Pioneer'**
+  String get adminPioneerEmptyTitle;
+
+  /// No description provided for @adminPioneerEmptyDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crée un cohort pour récompenser tes utilisateurs les plus engagés.'**
+  String get adminPioneerEmptyDesc;
+
+  /// No description provided for @adminPioneerLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de chargement : {error}'**
+  String adminPioneerLoadError(String error);
+
+  /// No description provided for @adminPioneerTileSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Top {count} · échéance {date}'**
+  String adminPioneerTileSubtitle(int count, String date);
+
+  /// No description provided for @adminPioneerStatusDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillon'**
+  String get adminPioneerStatusDraft;
+
+  /// No description provided for @adminPioneerStatusActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get adminPioneerStatusActive;
+
+  /// No description provided for @adminPioneerStatusDistributed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribué'**
+  String get adminPioneerStatusDistributed;
+
+  /// No description provided for @adminPioneerStatusArchived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivé'**
+  String get adminPioneerStatusArchived;
+
+  /// No description provided for @adminPioneerDetailTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cohort Pioneer'**
+  String get adminPioneerDetailTitle;
+
+  /// No description provided for @adminPioneerNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cohort introuvable'**
+  String get adminPioneerNotFound;
+
+  /// No description provided for @adminPioneerActivated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme activé'**
+  String get adminPioneerActivated;
+
+  /// No description provided for @adminPioneerErrorWithMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur : {error}'**
+  String adminPioneerErrorWithMessage(String error);
+
+  /// No description provided for @adminPioneerDistributeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribuer maintenant ?'**
+  String get adminPioneerDistributeTitle;
+
+  /// No description provided for @adminPioneerDistributeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les {count} meilleurs scores recevront le badge Pioneer. Cette action est irréversible.'**
+  String adminPioneerDistributeBody(int count);
+
+  /// No description provided for @adminPioneerDistributeCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribuer'**
+  String get adminPioneerDistributeCta;
+
+  /// No description provided for @adminPioneerDistributedSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 Pioneer distribué 🚀} other{{count} Pioneers distribués 🚀}}'**
+  String adminPioneerDistributedSuccess(int count);
+
+  /// No description provided for @adminPioneerArchiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver le cohort ?'**
+  String get adminPioneerArchiveTitle;
+
+  /// No description provided for @adminPioneerArchiveBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le cohort sera marqué comme archivé. Les badges déjà distribués sont conservés sur les utilisateurs.'**
+  String get adminPioneerArchiveBody;
+
+  /// No description provided for @adminPioneerArchiveCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver'**
+  String get adminPioneerArchiveCta;
+
+  /// No description provided for @adminPioneerArchived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cohort archivé'**
+  String get adminPioneerArchived;
+
+  /// No description provided for @adminPioneerDialogCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get adminPioneerDialogCancel;
+
+  /// No description provided for @adminPioneerDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échéance {date}'**
+  String adminPioneerDeadline(String date);
+
+  /// No description provided for @adminPioneerConfigTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration'**
+  String get adminPioneerConfigTitle;
+
+  /// No description provided for @adminPioneerConfigTopN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Top N'**
+  String get adminPioneerConfigTopN;
+
+  /// No description provided for @adminPioneerConfigWeights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pondérations'**
+  String get adminPioneerConfigWeights;
+
+  /// No description provided for @adminPioneerConfigWeightsValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'sessions×{s} · messages×{m} · jours×{d}'**
+  String adminPioneerConfigWeightsValue(int s, int m, int d);
+
+  /// No description provided for @adminPioneerConfigDistributedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribué'**
+  String get adminPioneerConfigDistributedLabel;
+
+  /// No description provided for @adminPioneerConfigDistributedValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} Pioneers le {date}'**
+  String adminPioneerConfigDistributedValue(int count, String date);
+
+  /// No description provided for @adminPioneerLeaderboardTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Top 30 — preview live'**
+  String get adminPioneerLeaderboardTitle;
+
+  /// No description provided for @adminPioneerLeaderboardRecompute.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recalculer'**
+  String get adminPioneerLeaderboardRecompute;
+
+  /// No description provided for @adminPioneerLeaderboardTapHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap ↻ pour calculer le classement'**
+  String get adminPioneerLeaderboardTapHint;
+
+  /// No description provided for @adminPioneerLeaderboardEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun utilisateur éligible pour l\'instant'**
+  String get adminPioneerLeaderboardEmpty;
+
+  /// No description provided for @adminPioneerLeaderboardEntryStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'{s} sessions · {m} msg · {d} jours'**
+  String adminPioneerLeaderboardEntryStats(int s, int m, int d);
+
+  /// No description provided for @adminPioneerActivate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get adminPioneerActivate;
+
+  /// No description provided for @adminPioneerDistributeNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distribuer maintenant'**
+  String get adminPioneerDistributeNow;
+
+  /// No description provided for @adminPioneerArchive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver'**
+  String get adminPioneerArchive;
+
+  /// No description provided for @adminPioneerCreateTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau cohort Pioneer'**
+  String get adminPioneerCreateTitle;
+
+  /// No description provided for @adminPioneerCreateNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du cohort'**
+  String get adminPioneerCreateNameLabel;
+
+  /// No description provided for @adminPioneerCreateNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. Pioneer Q1 2026'**
+  String get adminPioneerCreateNameHint;
+
+  /// No description provided for @adminPioneerCreateNameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Requis'**
+  String get adminPioneerCreateNameRequired;
+
+  /// No description provided for @adminPioneerCreateDescLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (optionnel)'**
+  String get adminPioneerCreateDescLabel;
+
+  /// No description provided for @adminPioneerCreateTopNLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Top N'**
+  String get adminPioneerCreateTopNLabel;
+
+  /// No description provided for @adminPioneerCreateTopNError.
+  ///
+  /// In fr, this message translates to:
+  /// **'1 - 5000'**
+  String get adminPioneerCreateTopNError;
+
+  /// No description provided for @adminPioneerCreateDeadlineLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échéance'**
+  String get adminPioneerCreateDeadlineLabel;
+
+  /// No description provided for @adminPioneerCreateError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur création : {error}'**
+  String adminPioneerCreateError(String error);
+
+  /// No description provided for @adminPioneerCreateWeightsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pondérations du score'**
+  String get adminPioneerCreateWeightsTitle;
+
+  /// No description provided for @adminPioneerCreateWeightsFormula.
+  ///
+  /// In fr, this message translates to:
+  /// **'Score = sessions × {s} + messages × {m} + jours × {d}'**
+  String adminPioneerCreateWeightsFormula(int s, int m, int d);
+
+  /// No description provided for @adminPioneerCreateWeightSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sessions confirmées'**
+  String get adminPioneerCreateWeightSessions;
+
+  /// No description provided for @adminPioneerCreateWeightMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messages envoyés'**
+  String get adminPioneerCreateWeightMessages;
+
+  /// No description provided for @adminPioneerCreateWeightDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours actifs'**
+  String get adminPioneerCreateWeightDays;
+
+  /// No description provided for @adminPioneerCreateSubmitting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Création…'**
+  String get adminPioneerCreateSubmitting;
+
+  /// No description provided for @adminPioneerCreateSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le cohort'**
+  String get adminPioneerCreateSubmit;
+
+  /// No description provided for @adminStripeModeLive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Live'**
+  String get adminStripeModeLive;
+
+  /// No description provided for @adminStripeModeTest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Test'**
+  String get adminStripeModeTest;
 }
 
 class _AppLocalizationsDelegate

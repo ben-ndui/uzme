@@ -5060,4 +5060,205 @@ class AppLocalizationsSg extends AppLocalizations {
   String whatsNewError(String error) {
     return 'A-lîngbi pëpe : $error';
   }
+
+  @override
+  String get adminPioneerScreenTitle => 'Programme Pioneer';
+
+  @override
+  String get adminPioneerNewCohort => 'Cohort tî finî';
+
+  @override
+  String get adminPioneerCreatedDraft => 'Programme a-leke na brouillon';
+
+  @override
+  String get adminPioneerEmptyTitle => 'Programme Pioneer pëpe';
+
+  @override
+  String get adminPioneerEmptyDesc =>
+      'Leke cohort tî récompenser azo tî mo so a-yêkë engagés.';
+
+  @override
+  String adminPioneerLoadError(String error) {
+    return 'Erreur tî chargement : $error';
+  }
+
+  @override
+  String adminPioneerTileSubtitle(int count, String date) {
+    return 'Top $count · échéance $date';
+  }
+
+  @override
+  String get adminPioneerStatusDraft => 'Brouillon';
+
+  @override
+  String get adminPioneerStatusActive => 'Actif';
+
+  @override
+  String get adminPioneerStatusDistributed => 'Distribué';
+
+  @override
+  String get adminPioneerStatusArchived => 'Archivé';
+
+  @override
+  String get adminPioneerDetailTitle => 'Cohort Pioneer';
+
+  @override
+  String get adminPioneerNotFound => 'Cohort a-wara pëpe';
+
+  @override
+  String get adminPioneerActivated => 'Programme a-yêkë activé';
+
+  @override
+  String adminPioneerErrorWithMessage(String error) {
+    return 'Erreur : $error';
+  }
+
+  @override
+  String get adminPioneerDistributeTitle => 'Distribuer fadëso ?';
+
+  @override
+  String adminPioneerDistributeBody(int count) {
+    return 'Top $count score-ti-kônde a-wara badge Pioneer. Action sô a-lîngbi pëpe tî kîri na peko.';
+  }
+
+  @override
+  String get adminPioneerDistributeCta => 'Distribuer';
+
+  @override
+  String adminPioneerDistributedSuccess(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Pioneers a-distribué 🚀',
+      one: '1 Pioneer a-distribué 🚀',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminPioneerArchiveTitle => 'Archiver cohort ?';
+
+  @override
+  String get adminPioneerArchiveBody =>
+      'Cohort a-yêkë marqué archivé. Badge so a-distribué awê a-yêkë na azo.';
+
+  @override
+  String get adminPioneerArchiveCta => 'Archiver';
+
+  @override
+  String get adminPioneerArchived => 'Cohort a-yêkë archivé';
+
+  @override
+  String get adminPioneerDialogCancel => 'Zîa';
+
+  @override
+  String adminPioneerDeadline(String date) {
+    return 'Échéance $date';
+  }
+
+  @override
+  String get adminPioneerConfigTitle => 'Configuration';
+
+  @override
+  String get adminPioneerConfigTopN => 'Top N';
+
+  @override
+  String get adminPioneerConfigWeights => 'Pondérations';
+
+  @override
+  String adminPioneerConfigWeightsValue(int s, int m, int d) {
+    return 'sessions×$s · messages×$m · lângö×$d';
+  }
+
+  @override
+  String get adminPioneerConfigDistributedLabel => 'Distribué';
+
+  @override
+  String adminPioneerConfigDistributedValue(int count, String date) {
+    return '$count Pioneers na $date';
+  }
+
+  @override
+  String get adminPioneerLeaderboardTitle => 'Top 30 — preview live';
+
+  @override
+  String get adminPioneerLeaderboardRecompute => 'Recalculer';
+
+  @override
+  String get adminPioneerLeaderboardTapHint => 'Tap ↻ tî calculer classement';
+
+  @override
+  String get adminPioneerLeaderboardEmpty => 'Zo tî éligible pëpe na ngoï sô';
+
+  @override
+  String adminPioneerLeaderboardEntryStats(int s, int m, int d) {
+    return '$s sessions · $m msg · $d lângö';
+  }
+
+  @override
+  String get adminPioneerActivate => 'Activer';
+
+  @override
+  String get adminPioneerDistributeNow => 'Distribuer fadëso';
+
+  @override
+  String get adminPioneerArchive => 'Archiver';
+
+  @override
+  String get adminPioneerCreateTitle => 'Cohort Pioneer tî finî';
+
+  @override
+  String get adminPioneerCreateNameLabel => 'Iri tî cohort';
+
+  @override
+  String get adminPioneerCreateNameHint => 'tongana. Pioneer Q1 2026';
+
+  @override
+  String get adminPioneerCreateNameRequired => 'A-yêkë gï';
+
+  @override
+  String get adminPioneerCreateDescLabel => 'Description (optionnel)';
+
+  @override
+  String get adminPioneerCreateTopNLabel => 'Top N';
+
+  @override
+  String get adminPioneerCreateTopNError => '1 - 5000';
+
+  @override
+  String get adminPioneerCreateDeadlineLabel => 'Échéance';
+
+  @override
+  String adminPioneerCreateError(String error) {
+    return 'Erreur création : $error';
+  }
+
+  @override
+  String get adminPioneerCreateWeightsTitle => 'Pondérations tî score';
+
+  @override
+  String adminPioneerCreateWeightsFormula(int s, int m, int d) {
+    return 'Score = sessions × $s + messages × $m + lângö × $d';
+  }
+
+  @override
+  String get adminPioneerCreateWeightSessions => 'Sessions a-confirmé';
+
+  @override
+  String get adminPioneerCreateWeightMessages => 'Messages a-tokua';
+
+  @override
+  String get adminPioneerCreateWeightDays => 'Lângö actifs';
+
+  @override
+  String get adminPioneerCreateSubmitting => 'Création…';
+
+  @override
+  String get adminPioneerCreateSubmit => 'Leke cohort';
+
+  @override
+  String get adminStripeModeLive => 'Live';
+
+  @override
+  String get adminStripeModeTest => 'Test';
 }
