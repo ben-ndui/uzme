@@ -116,3 +116,23 @@ jobs:
           AAB_PATH: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab
           RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
           RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}
+
+      - name: Notify (success)
+        if: success()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: success
+          title: "✅ Android v${{ github.ref_name }} sur Play Internal"
+          body: "AAB build #${{ steps.version.outputs.build_number }} uploadé sur la track Internal (draft)."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Notify (failure)
+        if: failure()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: failure
+          title: "❌ Android build ${{ github.ref_name }} échoué"
+          body: "Le build / upload Play Store a échoué. Voir les logs."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

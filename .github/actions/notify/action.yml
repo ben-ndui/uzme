@@ -1,0 +1,90 @@
+name: Notify webhook
+description: |
+  Posts a release-pipeline notification to either a Discord or Slack
+  incoming webhook. Auto-detects the target from the URL pattern, so
+  the calling workflow only needs to point at one secret.
+
+  Skips silently when no webhook URL is configured, so workflows stay
+  green for forks / contributors who haven't set up a webhook.
+
+inputs:
+  webhook_url:
+    description: "Discord or Slack incoming webhook URL"
+    required: false
+    default: ""
+  status:
+    description: "info | success | failure"
+    required: true
+  title:
+    description: "Short headline (e.g. '🚀 Release v1.5.24 tagged')"
+    required: true
+  body:
+    description: "Longer description, supports multi-line"
+    required: false
+    default: ""
+  run_url:
+    description: "Link to the GH Actions run for context"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send notification
+      shell: bash
+      env:
+        WEBHOOK: ${{ inputs.webhook_url }}
+        STATUS: ${{ inputs.status }}
+        TITLE: ${{ inputs.title }}
+        BODY: ${{ inputs.body }}
+        RUN_URL: ${{ inputs.run_url }}
+      run: |
+        set -uo pipefail
+
+        if [ -z "$WEBHOOK" ]; then
+          echo "No webhook configured, skipping notification."
+          exit 0
+        fi
+
+        # Discord embed colors (decimal): green / red / blurple
+        case "$STATUS" in
+          success) COLOR=3066993 ;;
+          failure) COLOR=15158332 ;;
+          *)       COLOR=5865218 ;;
+        esac
+
+        if echo "$WEBHOOK" | grep -q "discord.com/api/webhooks"; then
+          # Discord embed payload
+          PAYLOAD=$(jq -n \
+            --arg title "$TITLE" \
+            --arg body "$BODY" \
+            --arg url "$RUN_URL" \
+            --argjson color "$COLOR" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $body,
+                color: $color,
+                url: ($url // empty),
+                footer: { text: "uzme · GitHub Actions" }
+              }]
+            }')
+          curl -fsS -X POST -H "Content-Type: application/json" \
+            -d "$PAYLOAD" "$WEBHOOK" \
+            || echo "Discord webhook POST failed (non-blocking)."
+        elif echo "$WEBHOOK" | grep -q "hooks.slack.com"; then
+          # Slack incoming webhook payload
+          ICON="ℹ️"
+          [ "$STATUS" = "success" ] && ICON="✅"
+          [ "$STATUS" = "failure" ] && ICON="❌"
+          MD_BODY="$BODY"
+          [ -n "$RUN_URL" ] && MD_BODY="$BODY"$'\n'"<$RUN_URL|GitHub Actions run>"
+          PAYLOAD=$(jq -n \
+            --arg text "$ICON  *$TITLE*"$'\n'"$MD_BODY" \
+            '{ text: $text }')
+          curl -fsS -X POST -H "Content-Type: application/json" \
+            -d "$PAYLOAD" "$WEBHOOK" \
+            || echo "Slack webhook POST failed (non-blocking)."
+        else
+          echo "Webhook URL doesn't match Discord or Slack — skipping."
+        fi

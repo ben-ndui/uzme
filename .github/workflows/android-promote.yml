@@ -56,8 +56,36 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Promote to production
+        id: promote
         run: bundle exec fastlane android promote
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_KEY_PATH: /tmp/google-play-key.json
           RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
           RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}
+
+      - name: Resolve current version (for notify)
+        id: version
+        if: always()
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' ')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Notify (success)
+        if: success()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: success
+          title: "🎉 Android v${{ steps.version.outputs.version }} promu en Production"
+          body: "La track Internal a été promue → Production sur Google Play."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Notify (failure)
+        if: failure()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: failure
+          title: "❌ Android promote en Production échoué"
+          body: "fastlane android promote a échoué. Voir les logs."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

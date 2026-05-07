@@ -64,3 +64,30 @@ jobs:
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
           RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
           RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}
+
+      - name: Resolve current version (for notify)
+        id: version
+        if: always()
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' ')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Notify (success)
+        if: success()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: success
+          title: "🍎 iOS v${{ steps.version.outputs.version }} soumis à la review App Store"
+          body: "Le build TestFlight a été soumis à la review Apple."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Notify (failure)
+        if: failure()
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: failure
+          title: "❌ iOS submit App Store échoué"
+          body: "fastlane ios promote (deliver) a échoué. Voir les logs."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
