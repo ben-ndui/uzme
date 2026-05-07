@@ -8,25 +8,40 @@ platform :android do
   desc "Deploy AAB to Google Play (internal testing)"
   lane :deploy do
     aab_path = ENV["AAB_PATH"] || "../build/app/outputs/bundle/release/app-release.aab"
+
+    # Per-locale release notes from RELEASE_NOTES.md (extracted by
+    # the deploy workflow into RELEASE_NOTES_FR / RELEASE_NOTES_EN
+    # env vars). If empty, omit the key so supply keeps whatever was
+    # previously set on the Play Console for that locale.
+    notes = {}
+    notes["fr-FR"] = ENV["RELEASE_NOTES_FR"] if ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?
+    notes["en-US"] = ENV["RELEASE_NOTES_EN"] if ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?
+
     upload_to_play_store(
       track: "internal",
       aab: aab_path,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: "draft"
+      release_status: "draft",
+      release_notes: notes.empty? ? nil : notes
     )
   end
 
   desc "Promote internal to production"
   lane :promote do
+    notes = {}
+    notes["fr-FR"] = ENV["RELEASE_NOTES_FR"] if ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?
+    notes["en-US"] = ENV["RELEASE_NOTES_EN"] if ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?
+
     upload_to_play_store(
       track: "internal",
       track_promote_to: "production",
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
-      skip_upload_screenshots: true
+      skip_upload_screenshots: true,
+      release_notes: notes.empty? ? nil : notes
     )
   end
 end
@@ -78,10 +93,16 @@ platform :ios do
       is_key_content_base64: true
     )
 
+    # "What to test" notes for TestFlight beta testers. Falls back to
+    # blank if the deploy workflow couldn't extract the section.
+    changelog = ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty? \
+      ? ENV["RELEASE_NOTES_EN"] : nil
+
     upload_to_testflight(
       ipa: ipa_path,
       api_key: api_key,
-      skip_waiting_for_build_processing: true
+      skip_waiting_for_build_processing: true,
+      changelog: changelog
     )
   end
 
@@ -94,11 +115,17 @@ platform :ios do
       is_key_content_base64: true
     )
 
+    # Per-locale "What's new" notes shown on the App Store.
+    notes = {}
+    notes["fr-FR"] = ENV["RELEASE_NOTES_FR"] if ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?
+    notes["en-US"] = ENV["RELEASE_NOTES_EN"] if ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?
+
     deliver(
       api_key: api_key,
       skip_binary_upload: true,
-      skip_metadata: true,
+      skip_metadata: notes.empty?,
       skip_screenshots: true,
+      release_notes: notes.empty? ? nil : notes,
       submit_for_review: true,
       automatic_release: false,
       force: true,

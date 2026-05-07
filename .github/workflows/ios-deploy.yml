@@ -110,6 +110,25 @@ jobs:
           echo "Found IPA: $IPA_FILE"
           echo "path=${{ github.workspace }}/$IPA_FILE" >> $GITHUB_OUTPUT
 
+      - name: Extract release notes from RELEASE_NOTES.md
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION=${GITHUB_REF#refs/tags/v}
+          if [ ! -x scripts/extract_release_notes.sh ]; then
+            chmod +x scripts/extract_release_notes.sh || true
+          fi
+          FR=$(./scripts/extract_release_notes.sh "$VERSION" FR || echo "")
+          EN=$(./scripts/extract_release_notes.sh "$VERSION" EN || echo "")
+          {
+            echo "fr<<RNEOF"
+            echo "$FR"
+            echo "RNEOF"
+            echo "en<<RNEOF"
+            echo "$EN"
+            echo "RNEOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Upload to TestFlight
         run: bundle exec fastlane ios deploy
         env:
@@ -117,3 +136,5 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
+          RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}

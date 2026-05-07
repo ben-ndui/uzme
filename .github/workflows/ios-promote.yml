@@ -33,6 +33,25 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
 
+      - name: Resolve current version + extract release notes
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' ')
+          if [ ! -x scripts/extract_release_notes.sh ]; then
+            chmod +x scripts/extract_release_notes.sh || true
+          fi
+          FR=$(./scripts/extract_release_notes.sh "$VERSION" FR || echo "")
+          EN=$(./scripts/extract_release_notes.sh "$VERSION" EN || echo "")
+          {
+            echo "fr<<RNEOF"
+            echo "$FR"
+            echo "RNEOF"
+            echo "en<<RNEOF"
+            echo "$EN"
+            echo "RNEOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Submit to App Store
         run: bundle exec fastlane ios promote
         env:
@@ -43,3 +62,5 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
+          RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}

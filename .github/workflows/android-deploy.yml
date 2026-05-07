@@ -90,8 +90,29 @@ jobs:
           find build -name "*.aab" 2>/dev/null || echo "No AAB found"
           ls -la build/app/outputs/bundle/release/ 2>/dev/null || echo "Release dir not found"
 
+      - name: Extract release notes from RELEASE_NOTES.md
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION=${GITHUB_REF#refs/tags/v}
+          if [ ! -x scripts/extract_release_notes.sh ]; then
+            chmod +x scripts/extract_release_notes.sh || true
+          fi
+          FR=$(./scripts/extract_release_notes.sh "$VERSION" FR || echo "")
+          EN=$(./scripts/extract_release_notes.sh "$VERSION" EN || echo "")
+          {
+            echo "fr<<RNEOF"
+            echo "$FR"
+            echo "RNEOF"
+            echo "en<<RNEOF"
+            echo "$EN"
+            echo "RNEOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Upload to Google Play
         run: bundle exec fastlane android deploy
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_KEY_PATH: /tmp/google-play-key.json
           AAB_PATH: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab
+          RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
+          RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}

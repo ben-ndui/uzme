@@ -10,6 +10,68 @@ publiée en prod (**v1.3.0**) jusqu'à la version actuelle (**v1.5.23**).
 
 ---
 
+## Convention par version (lue automatiquement par les workflows)
+
+À chaque release, ajouter une section au format suivant **avant de
+lancer la release.yml** depuis le dashboard. Le workflow extrait la
+section pour la version qu'il vient de tagger et passe le contenu à
+Fastlane (`upload_to_play_store` + `deliver`).
+
+```
+## v1.5.24
+
+### FR
+Texte court FR (≤500 chars pour Play Store, ≤4000 pour App Store).
+
+### EN
+Short EN text.
+
+### SG
+Texte Sango (in-app what's-new uniquement — pas une locale store).
+```
+
+Voir `scripts/extract_release_notes.sh` pour le parser exact.
+
+Si une section ou une locale manque, Fastlane skip le upload des notes
+sans casser le deploy → release notes restent celles de la version
+précédente sur le store.
+
+---
+
+## v1.5.23
+
+### FR
+🚀 Programme Pioneer : badge studio, frais offerts 6 mois, mise en avant carte.
+🎭 Bascule entre rôles (Artiste/Studio/Ingé) avec conseiller IA.
+🤖 Assistant IA contextualisé qui connaît ton activité.
+🔐 Face ID / Touch ID + verrouillage de l'app.
+🌐 Profil public usmi.app/u/{id} pour les QR codes.
+💬 Messagerie : badges rôle + étoile Pioneer.
+🌍 Sango ajouté.
+🎨 Re-design AI Assistant + mode clair/sombre.
+
+### EN
+🚀 Pioneer programme: studio badge, 6-month fee waiver, featured on the map.
+🎭 Switch roles (Artist/Studio/Engineer) with an AI advisor.
+🤖 Context-aware AI assistant that knows your activity.
+🔐 Face ID / Touch ID + app lock.
+🌐 Public profile at usmi.app/u/{id} for QR scans.
+💬 Conversations: role badges + Pioneer star.
+🌍 Sango language added.
+🎨 AI Assistant redesign + light/dark mode.
+
+### SG
+🚀 Programme Pioneer : badge studio tî mo, frais a-yêkë gï tî 6 nze, mise tî kekê na carte.
+🎭 Bascule rôle (Artiste/Studio/Ingé) na conseiller IA.
+🤖 Assistant IA so a-yêkë na contexte tî activité tî mo.
+🔐 Face ID / Touch ID + verrouillage tî app.
+🌐 Profil public usmi.app/u/{id} tî QR code.
+💬 Conversations: badge rôle + étoile Pioneer.
+🌍 Sango a-yêkë na app.
+🎨 Re-design AI Assistant + mode lê / lê.
+
+---
+
 ## Fiche complète — v1.3.0 → v1.5.23
 
 ### 🚀 Nouvelles fonctionnalités majeures

@@ -36,7 +36,28 @@ jobs:
       - name: Create Google Play service account key
         run: echo '${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}' > /tmp/google-play-key.json
 
+      - name: Resolve current version + extract release notes
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' ')
+          if [ ! -x scripts/extract_release_notes.sh ]; then
+            chmod +x scripts/extract_release_notes.sh || true
+          fi
+          FR=$(./scripts/extract_release_notes.sh "$VERSION" FR || echo "")
+          EN=$(./scripts/extract_release_notes.sh "$VERSION" EN || echo "")
+          {
+            echo "fr<<RNEOF"
+            echo "$FR"
+            echo "RNEOF"
+            echo "en<<RNEOF"
+            echo "$EN"
+            echo "RNEOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Promote to production
         run: bundle exec fastlane android promote
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_KEY_PATH: /tmp/google-play-key.json
+          RELEASE_NOTES_FR: ${{ steps.notes.outputs.fr }}
+          RELEASE_NOTES_EN: ${{ steps.notes.outputs.en }}
