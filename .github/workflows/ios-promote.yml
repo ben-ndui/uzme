@@ -1,0 +1,45 @@
+name: iOS Submit to App Store
+
+# Submits the latest TestFlight build for App Store review via
+# `fastlane ios promote` (deliver). No new build — uses whatever is
+# already on TestFlight.
+#
+# Triggered manually from the dashboard (POST /api/github/promote with
+# platform=ios).
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: "Notes for the App Store review (optional)"
+        required: false
+
+concurrency:
+  group: ios-promote
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Submit TestFlight build → App Store review
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby & Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Submit to App Store
+        run: bundle exec fastlane ios promote
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}

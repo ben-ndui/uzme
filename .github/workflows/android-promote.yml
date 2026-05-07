@@ -1,0 +1,42 @@
+name: Android Promote to Production
+
+# Promotes the latest build on the Internal track up to the Production
+# track on Google Play. No new build — `fastlane android promote` does
+# a track-promote on the existing AAB.
+#
+# Triggered manually from the dashboard (POST /api/github/promote with
+# platform=android).
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: "Release notes to include with the production rollout (optional)"
+        required: false
+
+concurrency:
+  group: android-promote
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Promote Internal → Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby & Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Create Google Play service account key
+        run: echo '${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}' > /tmp/google-play-key.json
+
+      - name: Promote to production
+        run: bundle exec fastlane android promote
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_KEY_PATH: /tmp/google-play-key.json
