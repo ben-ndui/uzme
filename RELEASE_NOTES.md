@@ -18,7 +18,7 @@ section pour la version qu'il vient de tagger et passe le contenu à
 Fastlane (`upload_to_play_store` + `deliver`).
 
 ```
-## v1.5.24
+## v{X.Y.Z}
 
 ### FR
 Texte court FR (≤500 chars pour Play Store, ≤4000 pour App Store).
@@ -29,6 +29,13 @@ Short EN text.
 ### SG
 Texte Sango (in-app what's-new uniquement — pas une locale store).
 ```
+
+**⚠️ Pas d'emoji ni d'icônes dans les sections FR / EN.** Apple
+rejette les release notes contenant des emoji (Guideline App Review
+sur le contenu des metadata). Les bullets utiliser `-` ou `•`. Les
+emoji restent OK pour SG puisque cette section n'est pas envoyée aux
+stores (c'est uniquement la copie pour le bottomsheet what's-new
+in-app).
 
 Voir `scripts/extract_release_notes.sh` pour le parser exact.
 
@@ -41,14 +48,14 @@ précédente sur le store.
 ## v1.5.24
 
 ### FR
-🔐 Onboarding amélioré : la demande de localisation et de notifications respecte les recommandations Apple — bouton « Continuer » au lieu de « Activer ».
-🐛 Fix loop : si tu modifiais une permission depuis les Réglages iOS, l'écran ne se mettait pas à jour. C'est réparé.
-✨ Pages réservées aux fonctionnalités essentielles plus claires.
+- Onboarding amélioré : la demande de localisation et de notifications respecte les recommandations Apple — bouton « Continuer » au lieu de « Activer ».
+- Fix : si tu modifiais une permission depuis les Réglages iOS, l'écran ne se mettait pas à jour automatiquement. C'est réparé.
+- Pages permissions plus claires pour les fonctionnalités essentielles.
 
 ### EN
-🔐 Onboarding polish: location and notification prompts now follow Apple's guidelines — "Continue" instead of "Enable".
-🐛 Fix: if you toggled a permission in iOS Settings, the screen didn't always update. Resolved.
-✨ Cleaner permission screens for essential features.
+- Onboarding polish: location and notification prompts now follow Apple's guidelines — "Continue" instead of "Enable".
+- Fix: if you toggled a permission in iOS Settings, the screen didn't always update. Resolved.
+- Cleaner permission screens for essential features.
 
 ### SG
 🔐 Onboarding a-yêkë na recommandations tî Apple — « Tambela » na pëtï tî « Activer ».
@@ -60,24 +67,24 @@ précédente sur le store.
 ## v1.5.23
 
 ### FR
-🚀 Programme Pioneer : badge studio, frais offerts 6 mois, mise en avant carte.
-🎭 Bascule entre rôles (Artiste/Studio/Ingé) avec conseiller IA.
-🤖 Assistant IA contextualisé qui connaît ton activité.
-🔐 Face ID / Touch ID + verrouillage de l'app.
-🌐 Profil public usmi.app/u/{id} pour les QR codes.
-💬 Messagerie : badges rôle + étoile Pioneer.
-🌍 Sango ajouté.
-🎨 Re-design AI Assistant + mode clair/sombre.
+- Programme Pioneer : badge studio, frais offerts 6 mois, mise en avant carte.
+- Bascule entre rôles (Artiste / Studio / Ingé) avec conseiller IA.
+- Assistant IA contextualisé qui connaît ton activité.
+- Face ID / Touch ID + verrouillage de l'app.
+- Profil public usmi.app/u/{id} pour les QR codes.
+- Messagerie : badges rôle + étoile Pioneer.
+- Langue Sango ajoutée.
+- Re-design AI Assistant + mode clair / sombre.
 
 ### EN
-🚀 Pioneer programme: studio badge, 6-month fee waiver, featured on the map.
-🎭 Switch roles (Artist/Studio/Engineer) with an AI advisor.
-🤖 Context-aware AI assistant that knows your activity.
-🔐 Face ID / Touch ID + app lock.
-🌐 Public profile at usmi.app/u/{id} for QR scans.
-💬 Conversations: role badges + Pioneer star.
-🌍 Sango language added.
-🎨 AI Assistant redesign + light/dark mode.
+- Pioneer programme: studio badge, 6-month fee waiver, featured on the map.
+- Switch roles (Artist / Studio / Engineer) with an AI advisor.
+- Context-aware AI assistant that knows your activity.
+- Face ID / Touch ID + app lock.
+- Public profile at usmi.app/u/{id} for QR scans.
+- Conversations: role badges + Pioneer star.
+- Sango language added.
+- AI Assistant redesign + light / dark mode.
 
 ### SG
 🚀 Programme Pioneer : badge studio tî mo, frais a-yêkë gï tî 6 nze, mise tî kekê na carte.
