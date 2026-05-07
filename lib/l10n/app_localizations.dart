@@ -5587,7 +5587,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingEnableLocation.
   ///
   /// In fr, this message translates to:
-  /// **'Activer'**
+  /// **'Continuer'**
   String get onboardingEnableLocation;
 
   /// No description provided for @onboardingLater.
@@ -5601,6 +5601,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Localisation activée'**
   String get onboardingLocationGranted;
+
+  /// No description provided for @onboardingRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get onboardingRetry;
+
+  /// No description provided for @onboardingOpenSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir les Réglages'**
+  String get onboardingOpenSettings;
+
+  /// No description provided for @onboardingContinueWithout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer sans'**
+  String get onboardingContinueWithout;
 
   /// No description provided for @onboardingNotificationTitle.
   ///
@@ -5617,7 +5635,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingEnableNotifications.
   ///
   /// In fr, this message translates to:
-  /// **'Activer'**
+  /// **'Continuer'**
   String get onboardingEnableNotifications;
 
   /// No description provided for @onboardingNotificationGranted.

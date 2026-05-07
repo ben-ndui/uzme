@@ -2951,13 +2951,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingLocationDescStudio => 'So artists can find you';
 
   @override
-  String get onboardingEnableLocation => 'Enable';
+  String get onboardingEnableLocation => 'Continue';
 
   @override
   String get onboardingLater => 'Later';
 
   @override
   String get onboardingLocationGranted => 'Location enabled';
+
+  @override
+  String get onboardingRetry => 'Retry';
+
+  @override
+  String get onboardingOpenSettings => 'Open Settings';
+
+  @override
+  String get onboardingContinueWithout => 'Continue without';
 
   @override
   String get onboardingNotificationTitle => 'Stay informed';
@@ -2967,7 +2976,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Receive alerts for your sessions and messages';
 
   @override
-  String get onboardingEnableNotifications => 'Enable';
+  String get onboardingEnableNotifications => 'Continue';
 
   @override
   String get onboardingNotificationGranted => 'Notifications enabled';

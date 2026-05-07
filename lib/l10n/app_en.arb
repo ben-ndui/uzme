@@ -1058,13 +1058,16 @@
   "onboardingLocationTitle": "Enable location",
   "onboardingLocationDescArtist": "To find studios near you",
   "onboardingLocationDescStudio": "So artists can find you",
-  "onboardingEnableLocation": "Enable",
+  "onboardingEnableLocation": "Continue",
   "onboardingLater": "Later",
   "onboardingLocationGranted": "Location enabled",
+  "onboardingRetry": "Retry",
+  "onboardingOpenSettings": "Open Settings",
+  "onboardingContinueWithout": "Continue without",
 
   "onboardingNotificationTitle": "Stay informed",
   "onboardingNotificationDesc": "Receive alerts for your sessions and messages",
-  "onboardingEnableNotifications": "Enable",
+  "onboardingEnableNotifications": "Continue",
   "onboardingNotificationGranted": "Notifications enabled",
 
   "onboardingTermsTitle": "Terms of Service",

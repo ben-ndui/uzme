@@ -38,6 +38,25 @@ précédente sur le store.
 
 ---
 
+## v1.5.24
+
+### FR
+🔐 Onboarding amélioré : la demande de localisation et de notifications respecte les recommandations Apple — bouton « Continuer » au lieu de « Activer ».
+🐛 Fix loop : si tu modifiais une permission depuis les Réglages iOS, l'écran ne se mettait pas à jour. C'est réparé.
+✨ Pages réservées aux fonctionnalités essentielles plus claires.
+
+### EN
+🔐 Onboarding polish: location and notification prompts now follow Apple's guidelines — "Continue" instead of "Enable".
+🐛 Fix: if you toggled a permission in iOS Settings, the screen didn't always update. Resolved.
+✨ Cleaner permission screens for essential features.
+
+### SG
+🔐 Onboarding a-yêkë na recommandations tî Apple — « Tambela » na pëtï tî « Activer ».
+🐛 Fix : si mo a-change permission na Réglages, écran a-update pëpe. A-yêkë awê.
+✨ Pages tî permissions a-yêkë claire.
+
+---
+
 ## v1.5.23
 
 ### FR

@@ -172,9 +172,33 @@ class PermissionDialog extends StatelessWidget {
     AppLocalizations l10n,
     _PermissionConfig config,
   ) {
+    // Apple Review 5.1.1(iv): the screen displayed BEFORE the OS
+    // permission dialog must not include a decline / "Later" button.
+    // The user has to proceed to the OS dialog (where they can deny).
+    // The decline button only appears on the `isDeniedForever` variant,
+    // which is shown AFTER the user has already answered the OS prompt.
+    if (!isDeniedForever) {
+      return SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: onAccept,
+          style: FilledButton.styleFrom(
+            backgroundColor: config.color,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          child: Text(l10n.permissionContinue),
+        ),
+      );
+    }
+
     return Row(
       children: [
-        // Bouton secondaire
+        // Decline only on the post-permission "permanently denied"
+        // dialog — at this point the OS has already gathered the user's
+        // choice, we're just offering a path to Settings.
         Expanded(
           child: OutlinedButton(
             onPressed: onDecline,
@@ -188,7 +212,6 @@ class PermissionDialog extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        // Bouton principal
         Expanded(
           child: FilledButton.icon(
             onPressed: onAccept,
@@ -199,14 +222,8 @@ class PermissionDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            icon: isDeniedForever
-                ? const FaIcon(FontAwesomeIcons.gear, size: 14)
-                : const SizedBox.shrink(),
-            label: Text(
-              isDeniedForever
-                  ? l10n.permissionOpenSettings
-                  : l10n.permissionContinue,
-            ),
+            icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
+            label: Text(l10n.permissionOpenSettings),
           ),
         ),
       ],

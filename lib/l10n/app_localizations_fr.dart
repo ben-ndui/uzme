@@ -2975,13 +2975,22 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pour que les artistes puissent vous trouver';
 
   @override
-  String get onboardingEnableLocation => 'Activer';
+  String get onboardingEnableLocation => 'Continuer';
 
   @override
   String get onboardingLater => 'Plus tard';
 
   @override
   String get onboardingLocationGranted => 'Localisation activée';
+
+  @override
+  String get onboardingRetry => 'Réessayer';
+
+  @override
+  String get onboardingOpenSettings => 'Ouvrir les Réglages';
+
+  @override
+  String get onboardingContinueWithout => 'Continuer sans';
 
   @override
   String get onboardingNotificationTitle => 'Restez informé';
@@ -2991,7 +3000,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Recevez des alertes pour vos sessions et messages';
 
   @override
-  String get onboardingEnableNotifications => 'Activer';
+  String get onboardingEnableNotifications => 'Continuer';
 
   @override
   String get onboardingNotificationGranted => 'Notifications activées';

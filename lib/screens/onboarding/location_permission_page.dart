@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import '../../config/useme_theme.dart';
 import '../../core/blocs/blocs_exports.dart';
 import '../../l10n/app_localizations.dart';
@@ -40,6 +41,11 @@ class _LocationPermissionPageState extends State<LocationPermissionPage>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    // Apple Review 5.1.1(iv): the screen shown BEFORE the OS permission
+    // dialog must not have a Skip / Later exit. The user always proceeds
+    // to the native dialog from here. After the OS dialog (denied or
+    // permanentlyDenied), we then offer alternatives ("Réessayer",
+    // "Continuer sans" or "Ouvrir Réglages") via _buildButtons.
     return Stack(
       children: [
         // Blue gradient background
@@ -54,27 +60,6 @@ class _LocationPermissionPageState extends State<LocationPermissionPage>
             padding: const EdgeInsets.all(32),
             child: Column(
               children: [
-                // Skip button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: _GlassButton(
-                    onPressed: widget.state.status == PermissionStatus.requesting
-                        ? null
-                        : () {
-                            context.read<OnboardingBloc>().add(
-                                  const SkipLocationPermissionEvent(),
-                                );
-                          },
-                    child: Text(
-                      l10n.onboardingLater,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-
                 const Spacer(),
 
                 // Animated icon
@@ -214,22 +199,42 @@ class _LocationPermissionPageState extends State<LocationPermissionPage>
   }
 
   Widget _buildButtons(AppLocalizations l10n) {
-    final isRequesting = widget.state.status == PermissionStatus.requesting;
-    final isGranted = widget.state.status == PermissionStatus.granted;
+    final status = widget.state.status;
+    final isRequesting = status == PermissionStatus.requesting;
+    final isGranted = status == PermissionStatus.granted;
+    final isDenied = status == PermissionStatus.denied;
+    final isPermanentlyDenied = status == PermissionStatus.permanentlyDenied;
+
+    // After the OS dialog has been shown and refused, we expose a
+    // "Continue without" secondary action. This satisfies Apple while
+    // not trapping the user in the onboarding.
+    final showFallback = isDenied || isPermanentlyDenied;
 
     return Column(
       children: [
-        // Primary action button
+        // Primary action — depends on current status
         SizedBox(
           width: double.infinity,
           child: _PrimaryButton(
-            label: l10n.onboardingEnableLocation,
-            icon: isRequesting ? null : FontAwesomeIcons.locationDot,
+            label: isPermanentlyDenied
+                ? l10n.onboardingOpenSettings
+                : isDenied
+                    ? l10n.onboardingRetry
+                    : l10n.onboardingEnableLocation,
+            icon: isRequesting
+                ? null
+                : isPermanentlyDenied
+                    ? FontAwesomeIcons.gear
+                    : FontAwesomeIcons.locationDot,
             isLoading: isRequesting,
             isEnabled: !isRequesting && !isGranted,
             onPressed: isRequesting || isGranted
                 ? null
                 : () {
+                    if (isPermanentlyDenied) {
+                      openAppSettings();
+                      return;
+                    }
                     context.read<OnboardingBloc>().add(
                           const RequestLocationPermissionEvent(),
                         );
@@ -237,25 +242,26 @@ class _LocationPermissionPageState extends State<LocationPermissionPage>
           ),
         ),
 
-        const SizedBox(height: 16),
-
-        // Skip button
-        TextButton(
-          onPressed: isRequesting
-              ? null
-              : () {
-                  context.read<OnboardingBloc>().add(
-                        const SkipLocationPermissionEvent(),
-                      );
-                },
-          child: Text(
-            l10n.onboardingLater,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
-              fontSize: 15,
+        // Post-decision fallback: "Continue without" only after the OS
+        // dialog has been answered. Never visible on the initial pre-
+        // permission screen (Apple 5.1.1(iv) compliance).
+        if (showFallback) ...[
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () {
+              context.read<OnboardingBloc>().add(
+                    const SkipLocationPermissionEvent(),
+                  );
+            },
+            child: Text(
+              l10n.onboardingContinueWithout,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.7),
+                fontSize: 15,
+              ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -352,40 +358,6 @@ class _FloatingCircle extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white.withValues(alpha: opacity),
-      ),
-    );
-  }
-}
-
-/// Glass button
-class _GlassButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final Widget child;
-
-  const _GlassButton({required this.onPressed, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Material(
-          color: Colors.white.withValues(alpha: 0.15),
-          child: InkWell(
-            onTap: onPressed,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.25),
-                ),
-              ),
-              child: child,
-            ),
-          ),
-        ),
       ),
     );
   }

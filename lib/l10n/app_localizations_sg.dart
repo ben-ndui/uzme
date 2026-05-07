@@ -2941,13 +2941,22 @@ class AppLocalizationsSg extends AppLocalizations {
   String get onboardingLocationDescStudio => 'Tî artiste akë lîngbi gï mo';
 
   @override
-  String get onboardingEnableLocation => 'Zîa';
+  String get onboardingEnableLocation => 'Tambela';
 
   @override
   String get onboardingLater => 'Mbï sô';
 
   @override
   String get onboardingLocationGranted => 'Localisation a-zîa';
+
+  @override
+  String get onboardingRetry => 'Tara mbeni';
+
+  @override
+  String get onboardingOpenSettings => 'Zîa Réglages';
+
+  @override
+  String get onboardingContinueWithout => 'Tambela sâns';
 
   @override
   String get onboardingNotificationTitle => 'Duti na sêse';
@@ -2957,7 +2966,7 @@ class AppLocalizationsSg extends AppLocalizations {
       'Sï alertes tî sessions na mbëtï tî mo';
 
   @override
-  String get onboardingEnableNotifications => 'Zîa';
+  String get onboardingEnableNotifications => 'Tambela';
 
   @override
   String get onboardingNotificationGranted => 'Notifications a-zîa';

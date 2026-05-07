@@ -1195,13 +1195,16 @@
   "onboardingLocationTitle": "Zîa localisation",
   "onboardingLocationDescArtist": "Tî gï studio akë tî pëtï tî mo",
   "onboardingLocationDescStudio": "Tî artiste akë lîngbi gï mo",
-  "onboardingEnableLocation": "Zîa",
+  "onboardingEnableLocation": "Tambela",
   "onboardingLater": "Mbï sô",
   "onboardingLocationGranted": "Localisation a-zîa",
+  "onboardingRetry": "Tara mbeni",
+  "onboardingOpenSettings": "Zîa Réglages",
+  "onboardingContinueWithout": "Tambela sâns",
 
   "onboardingNotificationTitle": "Duti na sêse",
   "onboardingNotificationDesc": "Sï alertes tî sessions na mbëtï tî mo",
-  "onboardingEnableNotifications": "Zîa",
+  "onboardingEnableNotifications": "Tambela",
   "onboardingNotificationGranted": "Notifications a-zîa",
 
   "onboardingTermsTitle": "Ndiä tî sära na",

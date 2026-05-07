@@ -25,7 +25,8 @@ class StudioClaimScreen extends StatefulWidget {
   State<StudioClaimScreen> createState() => _StudioClaimScreenState();
 }
 
-class _StudioClaimScreenState extends State<StudioClaimScreen> {
+class _StudioClaimScreenState extends State<StudioClaimScreen>
+    with WidgetsBindingObserver {
   final StudioClaimService _claimService = StudioClaimService();
   final StudioClaimApprovalService _approvalService = StudioClaimApprovalService();
   final LocationService _locationService = LocationService();
@@ -33,11 +34,31 @@ class _StudioClaimScreenState extends State<StudioClaimScreen> {
   List<DiscoveredStudio> _studios = [];
   bool _isLoading = true;
   String? _error;
+  // Tracks "we asked the user to go to iOS Settings to grant location".
+  // On lifecycle resume we retry the load automatically — fixes the
+  // bug where toggling permission ON in Settings still left the user
+  // stuck on the error and re-prompting in a loop.
+  bool _waitingForSettingsResult = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadNearbyStudios();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _waitingForSettingsResult) {
+      _waitingForSettingsResult = false;
+      _loadNearbyStudios();
+    }
   }
 
   Future<void> _loadNearbyStudios() async {
@@ -46,11 +67,23 @@ class _StudioClaimScreenState extends State<StudioClaimScreen> {
       _error = null;
     });
 
-    await PermissionDialog.requestPermission(
+    final granted = await PermissionDialog.requestPermission(
       context,
       type: AppPermissionType.location,
     );
     if (!mounted) return;
+
+    if (!granted) {
+      // Two paths land here: user declined the OS dialog, or user was
+      // sent to iOS Settings via the deniedForever flow. In the second
+      // case the lifecycle observer above will retry on resume.
+      _waitingForSettingsResult = true;
+      setState(() {
+        _isLoading = false;
+        _error = AppLocalizations.of(context)!.permissionLocationDesc;
+      });
+      return;
+    }
 
     try {
       final position = await _locationService.getCurrentLatLng();

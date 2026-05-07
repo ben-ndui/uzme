@@ -1250,13 +1250,16 @@
   "onboardingLocationTitle": "Activez la localisation",
   "onboardingLocationDescArtist": "Pour trouver les studios près de chez vous",
   "onboardingLocationDescStudio": "Pour que les artistes puissent vous trouver",
-  "onboardingEnableLocation": "Activer",
+  "onboardingEnableLocation": "Continuer",
   "onboardingLater": "Plus tard",
   "onboardingLocationGranted": "Localisation activée",
+  "onboardingRetry": "Réessayer",
+  "onboardingOpenSettings": "Ouvrir les Réglages",
+  "onboardingContinueWithout": "Continuer sans",
 
   "onboardingNotificationTitle": "Restez informé",
   "onboardingNotificationDesc": "Recevez des alertes pour vos sessions et messages",
-  "onboardingEnableNotifications": "Activer",
+  "onboardingEnableNotifications": "Continuer",
   "onboardingNotificationGranted": "Notifications activées",
 
   "onboardingTermsTitle": "Conditions d'utilisation",

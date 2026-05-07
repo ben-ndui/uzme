@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import '../../services/location_service.dart';
@@ -133,10 +134,22 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
             status: PermissionStatus.granted));
         await Future.delayed(const Duration(milliseconds: 500));
         emit(const OnboardingTermsState());
-      } else {
-        emit(
-            const OnboardingNotificationState(status: PermissionStatus.denied));
+        return;
       }
+
+      // On iOS, after the user has refused once, calling
+      // requestPermissions() again returns false without showing the
+      // native dialog (Apple won't re-prompt). We surface that as
+      // permanentlyDenied so the UI can offer "Open Settings" instead
+      // of looping the user on a useless retry button.
+      final phStatus = await ph.Permission.notification.status;
+      final isPermanentlyDenied =
+          phStatus.isPermanentlyDenied || phStatus.isRestricted;
+      emit(OnboardingNotificationState(
+        status: isPermanentlyDenied
+            ? PermissionStatus.permanentlyDenied
+            : PermissionStatus.denied,
+      ));
     } catch (e) {
       emit(const OnboardingNotificationState(status: PermissionStatus.denied));
     }
