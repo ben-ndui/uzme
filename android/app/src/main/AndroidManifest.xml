@@ -7,11 +7,16 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
-    <!-- Photo/media permissions (Android 13+ granular, older = READ_EXTERNAL_STORAGE) -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <!-- Photo / media access:
+         Android 13+ (SDK 33+) → image_picker uses the system Photo Picker
+         (ACTION_PICK_IMAGES / PickVisualMedia), no READ_MEDIA_* needed.
+         Required by Play Console for apps with occasional photo usage:
+         https://support.google.com/googleplay/android-developer/answer/14115180.
+         Android 10–12 → file_picker / image_picker work via SAF, no perm needed.
+         Android ≤ 9 (SDK ≤ 28) → READ_EXTERNAL_STORAGE still required for
+         image_picker legacy gallery mode; capped via maxSdkVersion. -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+        android:maxSdkVersion="28"/>
 
     <!-- Contacts permission for phone import -->
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
