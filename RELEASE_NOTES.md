@@ -48,19 +48,22 @@ précédente sur le store.
 ## v1.5.24
 
 ### FR
-- Onboarding amélioré : la demande de localisation et de notifications respecte les recommandations Apple — bouton « Continuer » au lieu de « Activer ».
-- Fix : si tu modifiais une permission depuis les Réglages iOS, l'écran ne se mettait pas à jour automatiquement. C'est réparé.
-- Pages permissions plus claires pour les fonctionnalités essentielles.
+- Profil : édite ta ville et tes genres musicaux directement depuis ton profil.
+- Studios : saisie d'adresse avec suggestions auto + carte interactive pour ajuster ta position.
+- Onboarding : demandes de permission conformes aux recommandations Apple.
+- Fix : retour des Réglages iOS, l'écran se met à jour automatiquement.
 
 ### EN
-- Onboarding polish: location and notification prompts now follow Apple's guidelines — "Continue" instead of "Enable".
-- Fix: if you toggled a permission in iOS Settings, the screen didn't always update. Resolved.
-- Cleaner permission screens for essential features.
+- Profile: edit your city and music genres directly from your profile.
+- Studios: address input with live suggestions + interactive map to adjust your pin.
+- Onboarding: permission prompts follow Apple's guidelines.
+- Fix: returning from iOS Settings now refreshes the screen automatically.
 
 ### SG
+🌆 Profil tî mo a-yêkë na fini : modifie ville na genres musicaux direct na profil.
+📍 Saisie tî adresse fluide na studios : suggestions automatique, carte interactive tî ajuster position.
 🔐 Onboarding a-yêkë na recommandations tî Apple — « Tambela » na pëtï tî « Activer ».
 🐛 Fix : si mo a-change permission na Réglages, écran a-update pëpe. A-yêkë awê.
-✨ Pages tî permissions a-yêkë claire.
 
 ---
 
