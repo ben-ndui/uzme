@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmap;
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/models/studio_profile.dart';
 import 'package:uzme/core/services/location_service.dart';
@@ -10,7 +11,7 @@ import 'package:uzme/core/services/studio_claim_service.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/routing/app_routes.dart';
-import 'package:uzme/widgets/common/permission_dialog.dart';
+import 'package:uzme/widgets/common/map_position_picker.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Écran pour créer manuellement un profil studio (sans lien Google)
@@ -36,6 +37,12 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
 
   bool _isSubmitting = false;
   GeoPoint? _location;
+  // Initial center for the picker map. Resolved from the device's
+  // current location when permission is granted, otherwise the picker
+  // falls back to its built-in default (Paris). Loaded async, so the
+  // picker may render before this is set — that's fine, it'll just
+  // start zoomed-out further.
+  gmap.LatLng? _initialCenter;
   StudioType _selectedStudioType = StudioType.independent;
 
   final List<String> _availableServices = [
@@ -67,19 +74,19 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
   }
 
   Future<void> _loadCurrentLocation() async {
-    final granted = await PermissionDialog.requestPermission(
-      context,
-      type: AppPermissionType.location,
-    );
-    if (!granted || !mounted) return;
-
+    // Pre-warm the picker map with the user's current location as the
+    // initial center. We don't trigger the permission dialog here —
+    // the picker doesn't need GPS to function (the user can type or
+    // tap an address directly), so we only consume an already-granted
+    // permission. If denied, the picker falls back to its default.
     try {
       final latLng = await _locationService.getCurrentLatLng();
+      if (!mounted) return;
       setState(() {
-        _location = GeoPoint(latLng.latitude, latLng.longitude);
+        _initialCenter = gmap.LatLng(latLng.latitude, latLng.longitude);
       });
     } catch (e) {
-      // Ignorer - la localisation sera null
+      // Ignorer — le picker ouvrira sur sa fallback (Paris).
     }
   }
 
@@ -219,15 +226,30 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
             Text(l10n.location, style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
 
-            TextFormField(
-              controller: _addressController,
-              decoration: InputDecoration(
-                labelText: l10n.address,
-                hintText: l10n.addressHint,
-                prefixIcon: const Icon(FontAwesomeIcons.locationDot, size: 16),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              textCapitalization: TextCapitalization.words,
+            MapPositionPicker(
+              labelText: l10n.address,
+              initialAddress: _addressController.text.isEmpty
+                  ? null
+                  : _addressController.text,
+              initialPosition: _location == null
+                  ? null
+                  : gmap.LatLng(_location!.latitude, _location!.longitude),
+              fallbackCenter: _initialCenter ??
+                  const gmap.LatLng(48.8566, 2.3522),
+              onChanged: (result) {
+                setState(() {
+                  if (result == null) {
+                    _addressController.text = '';
+                    _location = null;
+                  } else {
+                    _addressController.text = result.address;
+                    _location = GeoPoint(
+                      result.position.latitude,
+                      result.position.longitude,
+                    );
+                  }
+                });
+              },
             ),
             const SizedBox(height: 12),
 
