@@ -31,10 +31,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _phoneController = TextEditingController();
   final _bioController = TextEditingController();
   final _stageNameController = TextEditingController();
+  final _cityController = TextEditingController();
   final _photoService = ProfilePhotoService();
   bool _isLoading = false;
   bool _isUploadingPhoto = false;
   File? _selectedPhoto;
+  // Mirror the catalogue used in artist_creation_form so the same
+  // chips show up across the app. Adding "Autre" lets users pick a
+  // generic bucket without us shipping every micro-genre.
+  static const List<String> _availableGenres = [
+    'Hip-Hop',
+    'R&B',
+    'Pop',
+    'Rock',
+    'Jazz',
+    'Soul',
+    'Électro',
+    'Reggae',
+    'Afro',
+    'Classique',
+    'Folk',
+    'Autre',
+  ];
+  final Set<String> _selectedGenres = <String>{};
 
   @override
   void initState() {
@@ -51,6 +70,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _phoneController.text = user.phoneNumber ?? '';
       _bioController.text = user.bio ?? '';
       _stageNameController.text = user.stageName ?? '';
+      _cityController.text = user.city ?? '';
+      _selectedGenres
+        ..clear()
+        ..addAll(user.genres);
     }
   }
 
@@ -61,6 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _phoneController.dispose();
     _bioController.dispose();
     _stageNameController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
@@ -155,6 +179,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     prefixIcon: const Icon(Icons.phone_outlined),
                   ),
                 ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _cityController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    labelText: l10n.city,
+                    prefixIcon: const Icon(Icons.location_city_outlined),
+                  ),
+                ),
                 const SizedBox(height: 24),
 
                 _buildSectionTitle(context, l10n.bio),
@@ -166,6 +199,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hintText: l10n.tellAboutYourself,
                   ),
                 ),
+
+                if (user.isArtist) ...[
+                  const SizedBox(height: 24),
+                  _buildSectionTitle(context, l10n.proProfileGenres),
+                  const SizedBox(height: 12),
+                  _buildGenreChips(theme),
+                ],
+
                 const SizedBox(height: 32),
 
                 // Account actions
@@ -379,6 +420,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Widget _buildGenreChips(ThemeData theme) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: _availableGenres.map((genre) {
+        final isSelected = _selectedGenres.contains(genre);
+        return FilterChip(
+          label: Text(genre),
+          selected: isSelected,
+          onSelected: (selected) {
+            setState(() {
+              if (selected) {
+                _selectedGenres.add(genre);
+              } else {
+                _selectedGenres.remove(genre);
+              }
+            });
+          },
+        );
+      }).toList(),
+    );
+  }
+
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -393,6 +457,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         phoneNumber: _phoneController.text.trim(),
         bio: _bioController.text.trim(),
         stageName: _stageNameController.text.trim(),
+        city: _cityController.text.trim().isEmpty
+            ? null
+            : _cityController.text.trim(),
+        genres: user.isArtist ? _selectedGenres.toList() : user.genres,
       );
 
       final response = await useMeAuthService.updateUserProfile(updatedUser);
