@@ -74,7 +74,7 @@ précédente sur le store.
 - Bascule entre rôles (Artiste / Studio / Ingé) avec conseiller IA.
 - Assistant IA contextualisé qui connaît ton activité.
 - Face ID / Touch ID + verrouillage de l'app.
-- Profil public usmi.app/u/{id} pour les QR codes.
+- Profil public uzme.app/u/{id} pour les QR codes.
 - Messagerie : badges rôle + étoile Pioneer.
 - Langue Sango ajoutée.
 - Re-design AI Assistant + mode clair / sombre.
@@ -84,7 +84,7 @@ précédente sur le store.
 - Switch roles (Artist / Studio / Engineer) with an AI advisor.
 - Context-aware AI assistant that knows your activity.
 - Face ID / Touch ID + app lock.
-- Public profile at usmi.app/u/{id} for QR scans.
+- Public profile at uzme.app/u/{id} for QR scans.
 - Conversations: role badges + Pioneer star.
 - Sango language added.
 - AI Assistant redesign + light / dark mode.
@@ -94,7 +94,7 @@ précédente sur le store.
 🎭 Bascule rôle (Artiste/Studio/Ingé) na conseiller IA.
 🤖 Assistant IA so a-yêkë na contexte tî activité tî mo.
 🔐 Face ID / Touch ID + verrouillage tî app.
-🌐 Profil public usmi.app/u/{id} tî QR code.
+🌐 Profil public uzme.app/u/{id} tî QR code.
 💬 Conversations: badge rôle + étoile Pioneer.
 🌍 Sango a-yêkë na app.
 🎨 Re-design AI Assistant + mode lê / lê.
@@ -136,7 +136,7 @@ pour TON usage de l'app, plutôt qu'une longue liste générique.
 
 **Profil public web** 🌐
 Quand quelqu'un scanne ton QR code UZME sans avoir l'app, il atterrit
-sur une fiche propre (`usmi.app/u/{id}`) avec :
+sur une fiche propre (`uzme.app/u/{id}`) avec :
 - Avatar, nom, badge rôle, ville
 - Bio, spécialités, genres
 - Badges Pioneer / Partenaire
@@ -223,7 +223,7 @@ sur une fiche propre (`usmi.app/u/{id}`) avec :
 🎭 Bascule entre rôles (Artiste/Studio/Ingé) avec conseiller IA.
 🤖 Assistant IA contextualisé qui connaît ton activité.
 🔐 Face ID / Touch ID + verrouillage de l'app.
-🌐 Profil public usmi.app/u/{id} pour les QR codes.
+🌐 Profil public uzme.app/u/{id} pour les QR codes.
 💬 Messagerie : badges rôle + étoile Pioneer.
 🌍 Sango ajouté.
 🎨 Re-design AI Assistant + mode clair/sombre.
@@ -236,7 +236,7 @@ sur une fiche propre (`usmi.app/u/{id}`) avec :
 🎭 Switch roles (Artist/Studio/Engineer) with an AI advisor.
 🤖 Context-aware AI assistant that knows your activity.
 🔐 Face ID / Touch ID + app lock.
-🌐 Public profile at usmi.app/u/{id} for QR scans.
+🌐 Public profile at uzme.app/u/{id} for QR scans.
 💬 Conversations: role badges + Pioneer star.
 🌍 Sango language added.
 🎨 AI Assistant redesign + light/dark mode.
@@ -249,7 +249,7 @@ sur une fiche propre (`usmi.app/u/{id}`) avec :
 🎭 Bascule rôle (Artiste/Studio/Ingé) na conseiller IA.
 🤖 Assistant IA so a-yêkë na contexte tî activité tî mo.
 🔐 Face ID / Touch ID + verrouillage tî app.
-🌐 Profil public usmi.app/u/{id} tî QR code.
+🌐 Profil public uzme.app/u/{id} tî QR code.
 💬 Conversations: badge rôle + étoile Pioneer.
 🌍 Sango a-yêkë na app.
 🎨 Re-design AI Assistant + mode lê / lê.

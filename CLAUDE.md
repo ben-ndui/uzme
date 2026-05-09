@@ -279,4 +279,4 @@ import 'package:uzme/core/models/session.dart';
 
 - **smoothbackend** (monorepo backend): `/Users/wesof./IdeaProjects/smoothbackend` — repo `ben-ndui/smoothbackend`
 - **smoothandesign_package** (shared Flutter package): `/Users/wesof./IdeaProjects/smoothandesign_package`
-- **useme-website** (Next.js support site): `/Users/wesof./IdeaProjects/useme-support` — repo `ben-ndui/useme-website` — domaine `usmi.app`
+- **uzme-support** (Next.js dashboard): `/Users/wesof./IdeaProjects/uzme-support` — repo `ben-ndui/uzme-support` — domaine principal `uzme.app` (alias `usmi.app`)
