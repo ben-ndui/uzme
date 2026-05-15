@@ -9,39 +9,40 @@ platform :android do
   lane :deploy do
     aab_path = ENV["AAB_PATH"] || "../build/app/outputs/bundle/release/app-release.aab"
 
-    # Per-locale release notes from RELEASE_NOTES.md (extracted by
-    # the deploy workflow into RELEASE_NOTES_FR / RELEASE_NOTES_EN
-    # env vars). If empty, omit the key so supply keeps whatever was
-    # previously set on the Play Console for that locale.
-    notes = {}
-    notes["fr-FR"] = ENV["RELEASE_NOTES_FR"] if ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?
-    notes["en-US"] = ENV["RELEASE_NOTES_EN"] if ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?
+    # Per-locale release notes : supply (alias upload_to_play_store) v2+ ne
+    # supporte plus l'argument `release_notes:` direct. Le workflow GHA écrit
+    # les changelogs dans fastlane/metadata/android/{locale}/changelogs/
+    # {versionCode,default}.txt avant cette étape — on active simplement
+    # metadata_path + l'upload sélectif des changelogs uniquement.
+    has_notes = (ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?) ||
+                (ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?)
 
     upload_to_play_store(
       track: "internal",
       aab: aab_path,
-      skip_upload_metadata: true,
+      metadata_path: "fastlane/metadata/android",
+      skip_upload_metadata: !has_notes,
+      skip_upload_changelogs: !has_notes,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: "draft",
-      release_notes: notes.empty? ? nil : notes
+      release_status: "draft"
     )
   end
 
   desc "Promote internal to production"
   lane :promote do
-    notes = {}
-    notes["fr-FR"] = ENV["RELEASE_NOTES_FR"] if ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?
-    notes["en-US"] = ENV["RELEASE_NOTES_EN"] if ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?
+    has_notes = (ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?) ||
+                (ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?)
 
     upload_to_play_store(
       track: "internal",
       track_promote_to: "production",
+      metadata_path: "fastlane/metadata/android",
       skip_upload_aab: true,
-      skip_upload_metadata: true,
+      skip_upload_metadata: !has_notes,
+      skip_upload_changelogs: !has_notes,
       skip_upload_images: true,
-      skip_upload_screenshots: true,
-      release_notes: notes.empty? ? nil : notes
+      skip_upload_screenshots: true
     )
   end
 end

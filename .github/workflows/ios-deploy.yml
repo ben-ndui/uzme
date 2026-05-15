@@ -57,7 +57,10 @@ jobs:
         run: flutter clean && flutter pub get
 
       - name: Install CocoaPods
-        run: cd ios && pod install --repo-update
+        # `bundle exec pod` utilise la version pinned dans Gemfile.lock (Ruby
+        # 3.2 cohérent avec setup-ruby) — évite le `xcodeproj LoadError` quand
+        # on appelle `pod` system avec le Ruby override de la step précédente.
+        run: cd ios && bundle exec pod install --repo-update
 
       - name: Setup signing via Match
         run: bundle exec fastlane ios setup_signing

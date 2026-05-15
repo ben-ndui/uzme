@@ -109,6 +109,28 @@ jobs:
             echo "RNEOF"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Write Play Store changelog files
+        # Fastlane supply ne supporte plus l'argument `release_notes:` direct
+        # depuis 2022 — il faut écrire les changelogs en fichiers per-locale
+        # dans fastlane/metadata/android/{locale}/changelogs/default.txt avant
+        # l'upload (le Fastfile active skip_upload_changelogs uniquement quand
+        # ni FR ni EN ne sont fournis).
+        run: |
+          set -euo pipefail
+          BUILD_NUMBER=${{ steps.version.outputs.build_number }}
+          mkdir -p fastlane/metadata/android/fr-FR/changelogs
+          mkdir -p fastlane/metadata/android/en-US/changelogs
+          if [ -n "${{ steps.notes.outputs.fr }}" ]; then
+            printf '%s\n' '${{ steps.notes.outputs.fr }}' > "fastlane/metadata/android/fr-FR/changelogs/${BUILD_NUMBER}.txt"
+            printf '%s\n' '${{ steps.notes.outputs.fr }}' > "fastlane/metadata/android/fr-FR/changelogs/default.txt"
+          fi
+          if [ -n "${{ steps.notes.outputs.en }}" ]; then
+            printf '%s\n' '${{ steps.notes.outputs.en }}' > "fastlane/metadata/android/en-US/changelogs/${BUILD_NUMBER}.txt"
+            printf '%s\n' '${{ steps.notes.outputs.en }}' > "fastlane/metadata/android/en-US/changelogs/default.txt"
+          fi
+          echo "--- Written changelog files ---"
+          find fastlane/metadata/android -name "*.txt" -exec ls -la {} \;
+
       - name: Upload to Google Play
         run: bundle exec fastlane android deploy
         env:
