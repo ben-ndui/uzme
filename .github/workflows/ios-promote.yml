@@ -33,6 +33,9 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: false
 
+      - name: Bundle install
+        run: bundle install --jobs 4
+
       - name: Resolve current version + extract release notes
         id: notes
         run: |

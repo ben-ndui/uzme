@@ -47,6 +47,9 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: false
 
+      - name: Bundle install
+        run: bundle install --jobs 4
+
       - name: Decode GoogleService-Info.plist
         run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
 
