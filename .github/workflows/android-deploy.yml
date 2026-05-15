@@ -115,18 +115,23 @@ jobs:
         # dans fastlane/metadata/android/{locale}/changelogs/default.txt avant
         # l'upload (le Fastfile active skip_upload_changelogs uniquement quand
         # ni FR ni EN ne sont fournis).
+        # On passe les release notes via env vars (pas inline) pour gérer
+        # proprement les apostrophes/quotes dans le texte FR/EN.
+        env:
+          NOTES_FR: ${{ steps.notes.outputs.fr }}
+          NOTES_EN: ${{ steps.notes.outputs.en }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
         run: |
           set -euo pipefail
-          BUILD_NUMBER=${{ steps.version.outputs.build_number }}
           mkdir -p fastlane/metadata/android/fr-FR/changelogs
           mkdir -p fastlane/metadata/android/en-US/changelogs
-          if [ -n "${{ steps.notes.outputs.fr }}" ]; then
-            printf '%s\n' '${{ steps.notes.outputs.fr }}' > "fastlane/metadata/android/fr-FR/changelogs/${BUILD_NUMBER}.txt"
-            printf '%s\n' '${{ steps.notes.outputs.fr }}' > "fastlane/metadata/android/fr-FR/changelogs/default.txt"
+          if [ -n "$NOTES_FR" ]; then
+            printf '%s\n' "$NOTES_FR" > "fastlane/metadata/android/fr-FR/changelogs/${BUILD_NUMBER}.txt"
+            printf '%s\n' "$NOTES_FR" > "fastlane/metadata/android/fr-FR/changelogs/default.txt"
           fi
-          if [ -n "${{ steps.notes.outputs.en }}" ]; then
-            printf '%s\n' '${{ steps.notes.outputs.en }}' > "fastlane/metadata/android/en-US/changelogs/${BUILD_NUMBER}.txt"
-            printf '%s\n' '${{ steps.notes.outputs.en }}' > "fastlane/metadata/android/en-US/changelogs/default.txt"
+          if [ -n "$NOTES_EN" ]; then
+            printf '%s\n' "$NOTES_EN" > "fastlane/metadata/android/en-US/changelogs/${BUILD_NUMBER}.txt"
+            printf '%s\n' "$NOTES_EN" > "fastlane/metadata/android/en-US/changelogs/default.txt"
           fi
           echo "--- Written changelog files ---"
           find fastlane/metadata/android -name "*.txt" -exec ls -la {} \;

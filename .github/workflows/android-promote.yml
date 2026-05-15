@@ -59,15 +59,19 @@ jobs:
         # cf. android-deploy.yml — supply v2+ ne supporte plus release_notes:,
         # on passe par les fichiers per-locale (default.txt suffit en promote
         # car on ne connaît pas le version_code de la build à promouvoir).
+        # Env vars (pas inline) pour gérer apostrophes/quotes dans le texte.
+        env:
+          NOTES_FR: ${{ steps.notes.outputs.fr }}
+          NOTES_EN: ${{ steps.notes.outputs.en }}
         run: |
           set -euo pipefail
           mkdir -p fastlane/metadata/android/fr-FR/changelogs
           mkdir -p fastlane/metadata/android/en-US/changelogs
-          if [ -n "${{ steps.notes.outputs.fr }}" ]; then
-            printf '%s\n' '${{ steps.notes.outputs.fr }}' > fastlane/metadata/android/fr-FR/changelogs/default.txt
+          if [ -n "$NOTES_FR" ]; then
+            printf '%s\n' "$NOTES_FR" > fastlane/metadata/android/fr-FR/changelogs/default.txt
           fi
-          if [ -n "${{ steps.notes.outputs.en }}" ]; then
-            printf '%s\n' '${{ steps.notes.outputs.en }}' > fastlane/metadata/android/en-US/changelogs/default.txt
+          if [ -n "$NOTES_EN" ]; then
+            printf '%s\n' "$NOTES_EN" > fastlane/metadata/android/en-US/changelogs/default.txt
           fi
 
       - name: Promote to production
