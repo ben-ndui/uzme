@@ -25,7 +25,7 @@ platform :android do
       skip_upload_changelogs: !has_notes,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: "draft"
+      release_status: "completed"
     )
   end
 
