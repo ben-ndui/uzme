@@ -31,16 +31,15 @@ platform :android do
 
   desc "Promote internal to production"
   lane :promote do
-    has_notes = (ENV["RELEASE_NOTES_FR"] && !ENV["RELEASE_NOTES_FR"].empty?) ||
-                (ENV["RELEASE_NOTES_EN"] && !ENV["RELEASE_NOTES_EN"].empty?)
-
+    # Changelogs are uploaded at deploy time (track: internal). supply cannot
+    # attach changelogs on a track-promote without an explicit :version_code,
+    # so we skip them here unconditionally.
     upload_to_play_store(
       track: "internal",
       track_promote_to: "production",
-      metadata_path: "fastlane/metadata/android",
       skip_upload_aab: true,
       skip_upload_metadata: true,
-      skip_upload_changelogs: !has_notes,
+      skip_upload_changelogs: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
     )
@@ -130,6 +129,7 @@ platform :ios do
       submit_for_review: true,
       automatic_release: false,
       force: true,
+      precheck_include_in_app_purchases: false,
       submission_information: {
         add_id_info_uses_idfa: false
       }
