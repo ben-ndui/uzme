@@ -116,6 +116,13 @@ dev_dependencies:
   mocktail: ^1.0.4
 
 flutter:
+  # SPM (activé par défaut depuis Flutter 3.44) cohabite mal avec notre
+  # setup CocoaPods : firebase_core_shared se retrouve linké deux fois
+  # (pod + package SPM) → "25 duplicate symbols" au link iOS. À réévaluer
+  # quand tous les plugins auront migré SPM et qu'on pourra lâcher les pods.
+  config:
+    enable-swift-package-manager: false
+
   uses-material-design: true
   generate: true
 
