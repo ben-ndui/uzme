@@ -13,7 +13,16 @@ class UseMeAuthService extends BaseAuthService {
 
   @override
   Future<BaseUser?> getUserFromFirestore(String uid) async {
-    final doc = await SmoothFirebase.collection('users').doc(uid).get();
+    // Timeout dur : un get() Firestore peut pendre indéfiniment (token
+    // révoqué, réseau proxifié type App Review) — sans borne, le
+    // CheckAuthEvent ne se résout jamais et le splash gèle (rejet
+    // Guideline 2.1(a) "app loads indefinitely"). Le TimeoutException
+    // est absorbé par les appelants (reloadUser / flows de sign-in) qui
+    // retombent sur l'état non authentifié ou une erreur affichable.
+    final doc = await SmoothFirebase.collection('users')
+        .doc(uid)
+        .get()
+        .timeout(const Duration(seconds: 10));
     if (!doc.exists || doc.data() == null) return null;
     return AppUser.fromMap(doc.data()!, doc.id);
   }

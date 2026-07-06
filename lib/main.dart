@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uzme/firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +118,8 @@ void main() {
         rethrow;
       }
 
+      await _purgeStaleKeychainOnFreshInstall();
+
       // Subscribe to feature_flags collection — runs in background, won't
       // block boot. UIs that need to gate on a flag at first render
       // should `await featureFlagsService.whenReady()` themselves.
@@ -171,6 +176,34 @@ void main() {
       } catch (_) {}
     },
   );
+}
+
+/// Sur iOS, le keychain (session Firebase Auth) et le secure storage (flag
+/// de verrouillage biométrique, tokens) survivent à la désinstallation de
+/// l'app. Une session périmée héritée d'une installation précédente envoie
+/// le boot dans le chemin authentifié — reload Firestore d'un user qui
+/// n'existe plus, token révoqué — et peut geler le splash indéfiniment
+/// (rejet App Review Guideline 2.1(a), les devices de review sont réutilisés).
+/// À la première exécution après installation, on repart d'un état propre.
+Future<void> _purgeStaleKeychainOnFreshInstall() async {
+  const hasLaunchedKey = 'uzme_has_launched_before';
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(hasLaunchedKey) ?? false) return;
+    // Les SharedPreferences (NSUserDefaults) sont effacées à la
+    // désinstallation, contrairement au keychain : des prefs non vides
+    // signifient une mise à jour d'app, pas une réinstallation — on ne
+    // déconnecte pas les utilisateurs existants dans ce cas.
+    final isFreshInstall = prefs.getKeys().isEmpty;
+    if (isFreshInstall) {
+      await FirebaseAuth.instance.signOut();
+      await const FlutterSecureStorage().deleteAll();
+      _bootLog('freshinstall:purged');
+    }
+    await prefs.setBool(hasLaunchedKey, true);
+  } catch (e) {
+    _bootLog('freshinstall:FAIL: $e');
+  }
 }
 
 /// Create device session for the authenticated user.

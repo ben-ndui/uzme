@@ -22,6 +22,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late Animation<double> _fadeAnimation;
   bool _hasNavigated = false;
   bool _isCheckingAuth = false;
+  int _authRetries = 0;
+
+  /// Watchdog : nombre max de retries de 500ms avant d'abandonner l'attente
+  /// de l'AuthBloc et d'envoyer l'utilisateur sur /login. Sans borne, un
+  /// CheckAuthEvent qui ne se résout pas gèle le splash indéfiniment
+  /// (rejet App Review Guideline 2.1(a)). ~24 × 500ms = 12s après l'anim.
+  static const int _maxAuthRetries = 24;
 
   @override
   void initState() {
@@ -49,6 +56,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Reset navigation state on hot reload and check auth
     _hasNavigated = false;
     _isCheckingAuth = false;
+    _authRetries = 0;
     _scheduleAuthCheck();
   }
 
@@ -68,8 +76,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     final state = context.read<AuthBloc>().state;
 
-    // If still loading, wait and retry
+    // If still loading, wait and retry — bounded by the watchdog
     if (state is AuthInitialState || state is AuthLoadingState) {
+      if (_authRetries >= _maxAuthRetries) {
+        _hasNavigated = true;
+        appLog('🚀 Splash: auth watchdog fired — fallback to /login');
+        context.go(AppRoutes.login);
+        return;
+      }
+      _authRetries++;
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) _navigateBasedOnAuth();
       });
