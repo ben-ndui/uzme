@@ -31,6 +31,16 @@ jobs:
           BUILD_NUMBER=${{ inputs.build_number || github.run_number }}
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
 
+      # Notification de démarrage — même logique que ios-deploy.yml.
+      - name: Notify (started)
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: info
+          title: "🚀 Android build #${{ steps.version.outputs.build_number }} démarré (${{ github.ref_name }})"
+          body: "Build AAB + upload Play Console en cours."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:

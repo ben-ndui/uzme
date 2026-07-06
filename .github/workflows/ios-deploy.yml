@@ -30,6 +30,17 @@ jobs:
           BUILD_NUMBER=${{ inputs.build_number || github.run_number }}
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
 
+      # Notification de démarrage : sans elle, Discord reste silencieux
+      # pendant ~40 min de build — on ne sait même pas qu'un run a démarré.
+      - name: Notify (started)
+        uses: ./.github/actions/notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL || secrets.SLACK_WEBHOOK_URL }}
+          status: info
+          title: "🚀 iOS build #${{ steps.version.outputs.build_number }} démarré (${{ github.ref_name }})"
+          body: "Build IPA + upload TestFlight en cours (~40 min)."
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
       - name: Setup Flutter (FVM)
         uses: kuhnroyal/flutter-fvm-config-action@v2
         id: fvm-config
