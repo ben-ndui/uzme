@@ -192,7 +192,7 @@ class _BookingCard extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(ThemeData theme, IconData icon, String text) {
+  Widget _infoRow(ThemeData theme, FaIconData icon, String text) {
     return Row(
       children: [
         FaIcon(icon, size: 14, color: theme.colorScheme.primary),

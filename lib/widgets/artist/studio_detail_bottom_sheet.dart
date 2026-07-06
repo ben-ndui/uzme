@@ -298,7 +298,7 @@ class StudioDetailBottomSheet extends StatelessWidget {
 
   Widget _buildStatChip(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required Color iconColor,
     required String value,
     required String label,

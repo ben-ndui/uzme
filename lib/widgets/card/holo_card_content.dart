@@ -214,7 +214,7 @@ class HoloCardContent extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniBadge(IconData icon, String label) {
+  Widget _buildMiniBadge(FaIconData icon, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(

@@ -37,7 +37,7 @@ class AIStatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(ThemeData theme, String label, dynamic value, IconData icon, Color color) {
+  Widget _buildStatItem(ThemeData theme, String label, dynamic value, FaIconData icon, Color color) {
     return Expanded(
       child: Column(
         children: [

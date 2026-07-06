@@ -343,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildActionTile(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     required VoidCallback onTap,
     bool isDestructive = false,

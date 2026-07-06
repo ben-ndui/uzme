@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// An icon button with optional badge for dashboards
 class DashboardIconButton extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final VoidCallback onTap;
   final bool showBadge;
 

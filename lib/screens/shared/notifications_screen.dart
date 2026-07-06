@@ -341,7 +341,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  IconData _getTypeIcon(String type) {
+  FaIconData _getTypeIcon(String type) {
     switch (type) {
       case 'new_message':
         return FontAwesomeIcons.message;

@@ -67,10 +67,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
         decoration: InputDecoration(
           hintText: l10n.searchContact,
-          prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+          prefixIcon: Icon(FontAwesomeIcons.magnifyingGlass.data, size: 16),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
-                  icon: const Icon(FontAwesomeIcons.xmark, size: 16),
+                  icon: Icon(FontAwesomeIcons.xmark.data, size: 16),
                   onPressed: () {
                     _searchController.clear();
                     setState(() => _searchQuery = '');

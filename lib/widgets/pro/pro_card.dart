@@ -155,7 +155,7 @@ class ProCard extends StatelessWidget {
 
   Widget _chip(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     Color? color,
   }) {

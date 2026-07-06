@@ -377,7 +377,7 @@ class _OnboardingSlide extends StatelessWidget {
 
 /// Glassmorphism icon container
 class _GlassIconContainer extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   const _GlassIconContainer({required this.icon, required this.color});
@@ -485,7 +485,7 @@ class _GlassButton extends StatelessWidget {
 
 /// Glass icon button
 class _GlassIconButton extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final VoidCallback onPressed;
 
   const _GlassIconButton({required this.icon, required this.onPressed});

@@ -87,7 +87,7 @@ class AIServicesCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(ThemeData theme, String title, IconData icon, int count) {
+  Widget _buildHeader(ThemeData theme, String title, FaIconData icon, int count) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

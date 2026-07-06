@@ -66,7 +66,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.heart), findsWidgets);
+      expect(find.byIcon(FontAwesomeIcons.heart.data), findsWidgets);
     });
 
     testWidgets('shows filled heart when pro is favorited', (tester) async {
@@ -92,7 +92,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.solidHeart), findsWidgets);
+      expect(find.byIcon(FontAwesomeIcons.solidHeart.data), findsWidgets);
     });
 
     testWidgets('dispatches ToggleFavoriteEvent on tap', (tester) async {
@@ -106,7 +106,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Find the FavoriteButtonCompact's GestureDetector
-      final heartIcon = find.byIcon(FontAwesomeIcons.heart);
+      final heartIcon = find.byIcon(FontAwesomeIcons.heart.data);
       expect(heartIcon, findsWidgets);
 
       // Tap the first heart (the compact one in the card)
@@ -134,7 +134,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.heart), findsOneWidget);
+      expect(find.byIcon(FontAwesomeIcons.heart.data), findsOneWidget);
     });
 
     testWidgets('hides when user not authenticated', (tester) async {
@@ -153,8 +153,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should not show any heart icon when not authenticated
-      expect(find.byIcon(FontAwesomeIcons.heart), findsNothing);
-      expect(find.byIcon(FontAwesomeIcons.solidHeart), findsNothing);
+      expect(find.byIcon(FontAwesomeIcons.heart.data), findsNothing);
+      expect(find.byIcon(FontAwesomeIcons.solidHeart.data), findsNothing);
     });
   });
 

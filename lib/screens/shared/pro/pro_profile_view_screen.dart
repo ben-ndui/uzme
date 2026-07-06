@@ -445,7 +445,7 @@ class ProProfileViewScreen extends StatelessWidget {
 
   Widget _badge(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required Color color,
   }) {
@@ -474,7 +474,7 @@ class ProProfileViewScreen extends StatelessWidget {
 
   Widget _statCard(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required String value,
   }) {

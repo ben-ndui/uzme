@@ -154,8 +154,8 @@ class _ConnectStatusView extends StatelessWidget {
           const SizedBox(height: 24),
           Icon(
             isActive
-                ? FontAwesomeIcons.solidCircleCheck
-                : FontAwesomeIcons.stripe,
+                ? FontAwesomeIcons.solidCircleCheck.data
+                : FontAwesomeIcons.stripe.data,
             size: 56,
             color: isActive ? Colors.green : theme.colorScheme.primary,
           ),
@@ -232,7 +232,7 @@ class _ConnectStatusView extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(FontAwesomeIcons.solidCircleCheck,
+                  Icon(FontAwesomeIcons.solidCircleCheck.data,
                       color: Colors.green, size: 20),
                   const SizedBox(width: 12),
                   Expanded(
@@ -278,8 +278,8 @@ class _StatusRow extends StatelessWidget {
       children: [
         Icon(
           enabled
-              ? FontAwesomeIcons.solidCircleCheck
-              : FontAwesomeIcons.solidCircleXmark,
+              ? FontAwesomeIcons.solidCircleCheck.data
+              : FontAwesomeIcons.solidCircleXmark.data,
           size: 16,
           color: enabled ? Colors.green : Colors.orange,
         ),

@@ -133,7 +133,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     );
   }
 
-  Widget _buildEmptyState({required IconData icon, required String title, required String subtitle}) {
+  Widget _buildEmptyState({required FaIconData icon, required String title, required String subtitle}) {
     final theme = Theme.of(context);
 
     return Container(

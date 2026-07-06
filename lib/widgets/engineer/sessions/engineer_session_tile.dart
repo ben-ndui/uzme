@@ -136,7 +136,7 @@ class EngineerSessionTile extends StatelessWidget {
     };
   }
 
-  IconData _getTypeIcon(SessionType type) {
+  FaIconData _getTypeIcon(SessionType type) {
     return switch (type) {
       SessionType.recording => FontAwesomeIcons.microphone,
       SessionType.mix || SessionType.mixing => FontAwesomeIcons.sliders,

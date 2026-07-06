@@ -247,7 +247,7 @@ class _QuickLoginCardState extends State<QuickLoginCard> {
     );
   }
 
-  IconData get _roleIcon {
+  FaIconData get _roleIcon {
     switch (widget.role) {
       case 'admin':
       case 'superAdmin':

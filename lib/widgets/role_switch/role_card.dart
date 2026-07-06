@@ -148,7 +148,7 @@ class RoleCard extends StatelessWidget {
     required String label,
     required Color color,
     required List<String> items,
-    required IconData icon,
+    required FaIconData icon,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -163,7 +163,7 @@ class PaymentTrackingCard extends StatelessWidget {
 
   Widget _statusStep(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required bool done,
     String? subtitle,

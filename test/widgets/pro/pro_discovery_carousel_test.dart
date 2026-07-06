@@ -99,7 +99,7 @@ void main() {
       await tester.pumpWidget(buildCarousel(results: proUsers));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.briefcase), findsOneWidget);
+      expect(find.byIcon(FontAwesomeIcons.briefcase.data), findsOneWidget);
     });
 
     testWidgets('hides during search with no results', (tester) async {

@@ -221,7 +221,7 @@ class _SessionDetailContent extends StatelessWidget {
 }
 
 class _InfoCard extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String title;
   final String value;
   final ThemeData theme;

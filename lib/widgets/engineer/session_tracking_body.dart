@@ -140,7 +140,7 @@ class SessionTrackingBody extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String text) {
+  Widget _buildInfoRow(BuildContext context, FaIconData icon, String text) {
     final theme = Theme.of(context);
     return Row(
       children: [

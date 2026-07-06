@@ -90,7 +90,7 @@ class SettingsLanguageTile extends StatelessWidget {
 }
 
 class _LanguageOption extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String title;
   final String subtitle;
   final Locale? locale;

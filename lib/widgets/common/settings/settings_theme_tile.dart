@@ -80,7 +80,7 @@ class SettingsThemeTile extends StatelessWidget {
 }
 
 class _ThemeOption extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String title;
   final String subtitle;
   final ThemeMode mode;

@@ -131,7 +131,7 @@ class _AvailabilityContent extends StatelessWidget {
 
   Widget _buildSectionHeader(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     Widget? trailing,
   }) {

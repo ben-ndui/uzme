@@ -202,7 +202,7 @@ class _ReportMissingStudioSheetState extends State<ReportMissingStudioSheet> {
               decoration: InputDecoration(
                 labelText: l10n.studioName,
                 hintText: l10n.studioNameExample,
-                prefixIcon: const Icon(FontAwesomeIcons.microphone, size: 16),
+                prefixIcon: const FaIcon(FontAwesomeIcons.microphone, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               textCapitalization: TextCapitalization.words,
@@ -221,7 +221,7 @@ class _ReportMissingStudioSheetState extends State<ReportMissingStudioSheet> {
               decoration: InputDecoration(
                 labelText: l10n.city,
                 hintText: l10n.cityExample,
-                prefixIcon: const Icon(FontAwesomeIcons.locationDot, size: 16),
+                prefixIcon: const FaIcon(FontAwesomeIcons.locationDot, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               textCapitalization: TextCapitalization.words,
@@ -240,7 +240,7 @@ class _ReportMissingStudioSheetState extends State<ReportMissingStudioSheet> {
               decoration: InputDecoration(
                 labelText: l10n.notesOptionalLabel,
                 hintText: l10n.notesHint,
-                prefixIcon: const Icon(FontAwesomeIcons.noteSticky, size: 16),
+                prefixIcon: const FaIcon(FontAwesomeIcons.noteSticky, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               maxLines: 2,

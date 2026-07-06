@@ -38,7 +38,7 @@ void main() {
       await tester.pumpWidget(buildScreen());
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.userPlus), findsOneWidget);
+      expect(find.byIcon(FontAwesomeIcons.userPlus.data), findsOneWidget);
     });
 
     testWidgets('shows My network title', (tester) async {
@@ -109,7 +109,7 @@ void main() {
       await tester.pumpWidget(buildScreen());
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.userGroup), findsOneWidget);
+      expect(find.byIcon(FontAwesomeIcons.userGroup.data), findsOneWidget);
     });
   });
 }

@@ -367,7 +367,7 @@ class _ProBookingScreenState extends State<ProBookingScreen> {
     );
   }
 
-  Widget _summaryRow(ThemeData theme, IconData icon, String text) {
+  Widget _summaryRow(ThemeData theme, FaIconData icon, String text) {
     return Row(
       children: [
         FaIcon(icon, size: 14, color: theme.colorScheme.primary),

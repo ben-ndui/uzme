@@ -112,7 +112,7 @@ class UzmeConversationTile extends StatelessWidget {
     }
   }
 
-  IconData? _roleIcon(BaseUserRole? role) {
+  FaIconData? _roleIcon(BaseUserRole? role) {
     switch (role) {
       case BaseUserRole.client:
         return FontAwesomeIcons.music;
@@ -218,7 +218,7 @@ class _Avatar extends StatelessWidget {
   final String name;
   final String? avatarUrl;
   final Color? roleAccent;
-  final IconData? roleIcon;
+  final FaIconData? roleIcon;
 
   const _Avatar({
     required this.name,

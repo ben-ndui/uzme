@@ -371,7 +371,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     );
   }
 
-  IconData _getIconForType(PaymentMethodType type) {
+  FaIconData _getIconForType(PaymentMethodType type) {
     switch (type) {
       case PaymentMethodType.cash:
         return FontAwesomeIcons.moneyBill;

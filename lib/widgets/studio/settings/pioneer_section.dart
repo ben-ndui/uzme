@@ -105,7 +105,7 @@ class PioneerSection extends StatelessWidget {
 
   Widget _benefitRow(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required bool active,
   }) {

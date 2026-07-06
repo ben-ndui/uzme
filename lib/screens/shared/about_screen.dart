@@ -189,7 +189,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Widget _buildTile(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     String? subtitle,
     required VoidCallback onTap,

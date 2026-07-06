@@ -115,7 +115,7 @@ class FavoritesScreen extends StatelessWidget {
 class _TabConfig {
   final String label;
   final FavoriteType type;
-  final IconData emptyIcon;
+  final FaIconData emptyIcon;
   final String emptyTitle;
   final String emptySubtitle;
 
@@ -130,7 +130,7 @@ class _TabConfig {
 
 class _FavoritesList extends StatelessWidget {
   final List<Favorite> favorites;
-  final IconData emptyIcon;
+  final FaIconData emptyIcon;
   final String emptyTitle;
   final String emptySubtitle;
 

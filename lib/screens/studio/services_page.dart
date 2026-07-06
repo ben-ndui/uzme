@@ -177,7 +177,7 @@ class ServicesPage extends StatelessWidget {
     );
   }
 
-  IconData _getServiceIcon(String name) {
+  FaIconData _getServiceIcon(String name) {
     final lower = name.toLowerCase();
     if (lower.contains('mix')) return FontAwesomeIcons.sliders;
     if (lower.contains('master')) return FontAwesomeIcons.compactDisc;

@@ -149,7 +149,7 @@ class _ModernSessionCardState extends State<ModernSessionCard> {
     );
   }
 
-  IconData _getTypeIcon(SessionType type) {
+  FaIconData _getTypeIcon(SessionType type) {
     switch (type) {
       case SessionType.recording:
         return FontAwesomeIcons.microphone;

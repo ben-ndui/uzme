@@ -90,24 +90,25 @@ class _ProFilterSheetState extends State<ProFilterSheet> {
 
     return Container(
       margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      child: Material(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHandle(theme),
-          _buildHeader(theme, l10n),
-          const Divider(),
-          _buildRemoteToggle(theme, l10n),
-          const Divider(),
-          _buildCityField(theme, l10n),
-          const Divider(),
-          _buildTypeSection(theme, l10n),
-          _buildActions(theme, l10n, hasFilters),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
-        ],
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHandle(theme),
+            _buildHeader(theme, l10n),
+            const Divider(),
+            _buildRemoteToggle(theme, l10n),
+            const Divider(),
+            _buildCityField(theme, l10n),
+            const Divider(),
+            _buildTypeSection(theme, l10n),
+            _buildActions(theme, l10n, hasFilters),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+          ],
+        ),
       ),
     );
   }

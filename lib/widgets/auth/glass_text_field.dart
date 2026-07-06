@@ -10,7 +10,7 @@ class GlassTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
   final String? label;
-  final IconData? prefixIcon;
+  final FaIconData? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -286,7 +286,7 @@ class GlassButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final bool isPrimary;
-  final IconData? icon;
+  final FaIconData? icon;
 
   const GlassButton({
     super.key,
@@ -440,7 +440,7 @@ class _GlassButtonState extends State<GlassButton>
 
 /// Social login button — glass in dark, surface card in light
 class GlassSocialButton extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final bool isLoading;
   final VoidCallback onPressed;

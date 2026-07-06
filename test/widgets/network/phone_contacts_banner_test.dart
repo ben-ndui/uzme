@@ -24,7 +24,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate((w) =>
-            w is FaIcon && w.icon == FontAwesomeIcons.userGroup),
+            w is FaIcon && w.icon == FontAwesomeIcons.userGroup.data),
         findsOneWidget,
       );
     });

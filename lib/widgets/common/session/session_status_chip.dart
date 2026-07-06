@@ -45,7 +45,7 @@ class SessionStatusChip extends StatelessWidget {
     );
   }
 
-  (Color, IconData, String) _resolve() {
+  (Color, FaIconData, String) _resolve() {
     // When confirmed but deposit not yet paid, show "Awaiting payment"
     if (status == SessionStatus.confirmed &&
         paymentStatus == PaymentStatus.depositPending) {

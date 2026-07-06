@@ -5,8 +5,8 @@ import 'package:smoothandesign_package/smoothandesign.dart';
 
 /// Navigation rail item configuration
 class AppNavRailItem {
-  final IconData icon;
-  final IconData selectedIcon;
+  final FaIconData icon;
+  final FaIconData selectedIcon;
   final String label;
   final bool isMessages;
   final int badgeCount;

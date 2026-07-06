@@ -101,7 +101,7 @@ class SettingsRoleSwitchTile extends StatelessWidget {
 }
 
 class _MiniIcon extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final Offset offset;
   const _MiniIcon({

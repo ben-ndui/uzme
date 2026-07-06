@@ -144,7 +144,7 @@ class _ArtistSessionsPageState extends State<ArtistSessionsPage> {
     );
   }
 
-  Widget _buildToggleButton(ColorScheme colorScheme, IconData icon, bool isActive, VoidCallback onTap) {
+  Widget _buildToggleButton(ColorScheme colorScheme, FaIconData icon, bool isActive, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(

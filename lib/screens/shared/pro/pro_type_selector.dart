@@ -81,7 +81,7 @@ class ProTypeSelector extends StatelessWidget {
     );
   }
 
-  IconData _iconForType(ProType type) {
+  FaIconData _iconForType(ProType type) {
     switch (type) {
       case ProType.soundEngineer:
         return FontAwesomeIcons.sliders;

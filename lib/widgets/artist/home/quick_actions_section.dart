@@ -103,7 +103,7 @@ class QuickActionsSection extends StatelessWidget {
 
 /// A pill-shaped quick action button
 class QuickActionPill extends StatefulWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final VoidCallback onTap;
 

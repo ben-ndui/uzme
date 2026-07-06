@@ -280,7 +280,7 @@ class PermissionDialog extends StatelessWidget {
 
 /// Icône animée dans un cercle coloré
 class _PermissionIcon extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final bool isDenied;
 
@@ -324,7 +324,7 @@ class _PermissionIcon extends StatelessWidget {
 
 /// Configuration interne pour chaque type de permission
 class _PermissionConfig {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final String title;
   final String description;

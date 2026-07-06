@@ -86,7 +86,7 @@ void main() {
       ));
 
       // Location icon should not appear when no city
-      expect(find.byIcon(FontAwesomeIcons.locationDot), findsNothing);
+      expect(find.byIcon(FontAwesomeIcons.locationDot.data), findsNothing);
     });
 
     testWidgets('shows initials fallback when no photo', (tester) async {

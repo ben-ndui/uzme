@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Chip affichant une limite du tier (sessions, rooms, etc.)
 class LimitChip extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
 
   const LimitChip({super.key, required this.icon, required this.label});
@@ -31,7 +31,7 @@ class LimitChip extends StatelessWidget {
 
 /// Chip affichant une feature active du tier
 class FeatureChip extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
 
   const FeatureChip({super.key, required this.icon, required this.label});

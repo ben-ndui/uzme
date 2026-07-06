@@ -173,7 +173,7 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
               decoration: InputDecoration(
                 labelText: l10n.studioNameRequired,
                 hintText: l10n.studioNameHint,
-                prefixIcon: const Icon(FontAwesomeIcons.microphone, size: 16),
+                prefixIcon: Icon(FontAwesomeIcons.microphone.data, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               textCapitalization: TextCapitalization.words,
@@ -192,7 +192,7 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
               decoration: InputDecoration(
                 labelText: l10n.description,
                 hintText: l10n.describeYourStudio,
-                prefixIcon: const Icon(FontAwesomeIcons.alignLeft, size: 16),
+                prefixIcon: Icon(FontAwesomeIcons.alignLeft.data, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               maxLines: 3,
@@ -205,7 +205,7 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
               initialValue: _selectedStudioType,
               decoration: InputDecoration(
                 labelText: l10n.studioTypeLabel,
-                prefixIcon: const Icon(FontAwesomeIcons.building, size: 16),
+                prefixIcon: Icon(FontAwesomeIcons.building.data, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               items: StudioType.values.map((type) {
@@ -299,7 +299,7 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
               decoration: InputDecoration(
                 labelText: l10n.phone,
                 hintText: '06 12 34 56 78',
-                prefixIcon: const Icon(FontAwesomeIcons.phone, size: 16),
+                prefixIcon: Icon(FontAwesomeIcons.phone.data, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               keyboardType: TextInputType.phone,
@@ -311,7 +311,7 @@ class _ManualStudioFormScreenState extends State<ManualStudioFormScreen> {
               decoration: InputDecoration(
                 labelText: l10n.website,
                 hintText: 'https://www.monstudio.com',
-                prefixIcon: const Icon(FontAwesomeIcons.globe, size: 16),
+                prefixIcon: Icon(FontAwesomeIcons.globe.data, size: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               keyboardType: TextInputType.url,

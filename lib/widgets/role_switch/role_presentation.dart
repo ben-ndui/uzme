@@ -9,7 +9,7 @@ import 'package:uzme/l10n/app_localizations.dart';
 @immutable
 class RolePresentation {
   final BaseUserRole role;
-  final IconData icon;
+  final FaIconData icon;
   final Color accentColor;
   final String title;
   final String subtitle;

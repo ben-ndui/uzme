@@ -418,7 +418,7 @@ class _FloatingCircle extends StatelessWidget {
 
 /// Glass link button
 class _GlassLinkButton extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final VoidCallback onTap;
 
@@ -472,7 +472,7 @@ class _GlassLinkButton extends StatelessWidget {
 /// Primary action button
 class _PrimaryButton extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final FaIconData icon;
   final bool isEnabled;
   final VoidCallback? onPressed;
 

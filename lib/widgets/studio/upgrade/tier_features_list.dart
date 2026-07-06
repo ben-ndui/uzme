@@ -48,7 +48,7 @@ class TierFeaturesList extends StatelessWidget {
     );
   }
 
-  List<(IconData, String, bool)> _getFeatures(AppLocalizations l10n) {
+  List<(FaIconData, String, bool)> _getFeatures(AppLocalizations l10n) {
     return [
       (
         FontAwesomeIcons.calendar,

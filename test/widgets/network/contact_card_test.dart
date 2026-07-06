@@ -64,7 +64,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-          find.byIcon(FontAwesomeIcons.solidCircleCheck), findsOneWidget);
+          find.byIcon(FontAwesomeIcons.solidCircleCheck.data), findsOneWidget);
     });
 
     testWidgets('hides check icon for off-platform contacts', (tester) async {
@@ -84,7 +84,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(FontAwesomeIcons.solidCircleCheck), findsNothing);
+      expect(find.byIcon(FontAwesomeIcons.solidCircleCheck.data), findsNothing);
     });
 
     testWidgets('shows first tag as chip', (tester) async {

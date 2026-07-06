@@ -276,7 +276,7 @@ class _TravelModes extends StatelessWidget {
     );
   }
 
-  IconData _iconFor(TravelMode mode) {
+  FaIconData _iconFor(TravelMode mode) {
     switch (mode) {
       case TravelMode.walking:
         return FontAwesomeIcons.personWalking;

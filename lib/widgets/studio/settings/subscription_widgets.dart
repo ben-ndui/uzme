@@ -7,7 +7,7 @@ import 'package:uzme/l10n/app_localizations.dart';
 
 /// Visual style for a subscription tier
 class TierStyle {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   TierStyle({required this.icon, required this.color});

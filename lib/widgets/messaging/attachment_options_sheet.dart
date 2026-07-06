@@ -73,7 +73,7 @@ class AttachmentOptionsSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildOptionIcon(IconData icon, Color color) {
+  Widget _buildOptionIcon(FaIconData icon, Color color) {
     return Container(
       width: 44,
       height: 44,

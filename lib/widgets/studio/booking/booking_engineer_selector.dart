@@ -163,7 +163,7 @@ class BookingEngineerSelector extends StatelessWidget {
 }
 
 class _ModeChip extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback onTap;

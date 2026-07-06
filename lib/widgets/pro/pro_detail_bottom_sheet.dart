@@ -517,7 +517,7 @@ class ProDetailBottomSheet extends StatelessWidget {
 
   Widget _badge(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required Color color,
   }) {
@@ -546,7 +546,7 @@ class ProDetailBottomSheet extends StatelessWidget {
 
   Widget _statChip(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String value,
     Color? iconColor,
   }) {

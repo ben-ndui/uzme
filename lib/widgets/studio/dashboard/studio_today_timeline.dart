@@ -187,7 +187,7 @@ class _TimelineSessionCard extends StatelessWidget {
     }
   }
 
-  IconData _getTypeIcon(SessionType type) {
+  FaIconData _getTypeIcon(SessionType type) {
     switch (type) {
       case SessionType.recording:
         return FontAwesomeIcons.microphone;

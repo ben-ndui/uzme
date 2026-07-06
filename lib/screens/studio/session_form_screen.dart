@@ -198,7 +198,7 @@ class _SessionFormScreenState extends State<SessionFormScreen> {
     );
   }
 
-  IconData _getTypeIcon(SessionType type) {
+  FaIconData _getTypeIcon(SessionType type) {
     switch (type) {
       case SessionType.recording:
         return FontAwesomeIcons.microphone;

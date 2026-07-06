@@ -145,7 +145,7 @@ class TimeOffCard extends StatelessWidget {
     );
   }
 
-  IconData _getIcon() {
+  FaIconData _getIcon() {
     final reason = timeOff.reason?.toLowerCase() ?? '';
     if (reason.contains('vacances')) return FontAwesomeIcons.umbrellaBeach;
     if (reason.contains('maladie')) return FontAwesomeIcons.houseMedical;

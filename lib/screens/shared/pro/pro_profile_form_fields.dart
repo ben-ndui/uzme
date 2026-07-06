@@ -188,7 +188,7 @@ class ProProfileFormFields extends StatelessWidget {
 class _TagField extends StatefulWidget {
   final String label;
   final String hint;
-  final IconData icon;
+  final FaIconData icon;
   final List<String> values;
   final ValueChanged<List<String>> onChanged;
 

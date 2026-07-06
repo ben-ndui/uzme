@@ -307,7 +307,7 @@ class CalendarConnectionSection extends StatelessWidget {
 }
 
 class _StatItem extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String value;
   final String label;
 

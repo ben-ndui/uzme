@@ -32,7 +32,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate((w) =>
-            w is FaIcon && w.icon == FontAwesomeIcons.addressBook),
+            w is FaIcon && w.icon == FontAwesomeIcons.addressBook.data),
         findsOneWidget,
       );
     });
@@ -45,7 +45,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate((w) =>
-            w is FaIcon && w.icon == FontAwesomeIcons.chevronRight),
+            w is FaIcon && w.icon == FontAwesomeIcons.chevronRight.data),
         findsOneWidget,
       );
     });

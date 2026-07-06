@@ -217,7 +217,7 @@ class _ConversationSettingsScreenState
 
   Widget _buildTile(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     String? subtitle,
     VoidCallback? onTap,
@@ -259,7 +259,7 @@ class _ConversationSettingsScreenState
 
   Widget _buildSwitchTile(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     String? subtitle,
     required bool value,

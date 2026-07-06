@@ -233,7 +233,7 @@ class _NewConversationBottomSheetState extends State<NewConversationBottomSheet>
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
           hintText: l10n.searchContact,
-          prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+          prefixIcon: Icon(FontAwesomeIcons.magnifyingGlass.data, size: 16),
           filled: true,
           fillColor: theme.colorScheme.surfaceContainerHighest,
           border: OutlineInputBorder(
@@ -334,7 +334,7 @@ class _NewConversationBottomSheetState extends State<NewConversationBottomSheet>
     );
   }
 
-  Widget _buildSectionHeader(ThemeData theme, String title, IconData icon) {
+  Widget _buildSectionHeader(ThemeData theme, String title, FaIconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(

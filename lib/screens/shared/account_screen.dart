@@ -118,7 +118,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget _buildTile(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     String? subtitle,
     VoidCallback? onTap,

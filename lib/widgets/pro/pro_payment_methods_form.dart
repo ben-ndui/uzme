@@ -197,7 +197,7 @@ class ProPaymentMethodsForm extends StatelessWidget {
     );
   }
 
-  IconData _iconForType(PaymentMethodType type) {
+  FaIconData _iconForType(PaymentMethodType type) {
     switch (type) {
       case PaymentMethodType.bankTransfer:
         return FontAwesomeIcons.buildingColumns;

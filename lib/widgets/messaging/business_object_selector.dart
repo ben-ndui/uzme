@@ -128,7 +128,7 @@ class _BusinessObjectSelectorBottomSheetState
 
   Widget _buildTab(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required int count,
     required bool isSelected,

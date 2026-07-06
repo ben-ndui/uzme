@@ -357,7 +357,7 @@ class _FloatingCircle extends StatelessWidget {
 /// Primary action button
 class _PrimaryButton extends StatelessWidget {
   final String label;
-  final IconData? icon;
+  final FaIconData? icon;
   final bool isLoading;
   final bool isEnabled;
   final VoidCallback? onPressed;

@@ -13,7 +13,7 @@ import 'package:uzme/widgets/map/map_filter_sheet.dart';
 /// Used by Artist, Studio, and Engineer dashboards.
 AppBar buildMapDashboardAppBar({
   required BuildContext context,
-  required IconData titleIcon,
+  required FaIconData titleIcon,
 }) {
   final theme = Theme.of(context);
   final l10n = AppLocalizations.of(context)!;
@@ -83,7 +83,7 @@ AppBar buildMapDashboardAppBar({
 
 /// Circle button with optional badge dot for map AppBars.
 class MapCircleButton extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final VoidCallback onPressed;
   final bool badge;
 

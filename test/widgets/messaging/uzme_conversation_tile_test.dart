@@ -130,7 +130,7 @@ void main() {
           currentUserId: 'me',
         ),
       );
-      expect(find.byIcon(FontAwesomeIcons.solidStar), findsOneWidget);
+      expect(find.byIcon(FontAwesomeIcons.solidStar.data), findsOneWidget);
     });
 
     testWidgets('omits the Pioneer star when isPioneer is false',
@@ -147,7 +147,7 @@ void main() {
           currentUserId: 'me',
         ),
       );
-      expect(find.byIcon(FontAwesomeIcons.solidStar), findsNothing);
+      expect(find.byIcon(FontAwesomeIcons.solidStar.data), findsNothing);
     });
 
     testWidgets('omits the role chip when participant role is missing',

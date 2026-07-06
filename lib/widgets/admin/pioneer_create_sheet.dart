@@ -224,7 +224,7 @@ class _PioneerCreateSheetState extends State<PioneerCreateSheet> {
 
 class _WeightSlider extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final FaIconData icon;
   final double value;
   final ValueChanged<double> onChanged;
 

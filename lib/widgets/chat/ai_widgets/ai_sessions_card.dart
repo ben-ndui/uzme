@@ -124,7 +124,7 @@ class AISessionsCard extends StatelessWidget {
     return null;
   }
 
-  Widget _buildHeader(ThemeData theme, String title, IconData icon, int count) {
+  Widget _buildHeader(ThemeData theme, String title, FaIconData icon, int count) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class AISessionsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyCard(ThemeData theme, String message, IconData icon) {
+  Widget _buildEmptyCard(ThemeData theme, String message, FaIconData icon) {
     return Card(
       elevation: 0,
       color: theme.colorScheme.surfaceContainerHighest.withValues(alpha:0.5),

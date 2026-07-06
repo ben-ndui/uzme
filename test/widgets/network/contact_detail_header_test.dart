@@ -53,7 +53,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate((w) =>
-            w is FaIcon && w.icon == FontAwesomeIcons.solidCircleCheck),
+            w is FaIcon && w.icon == FontAwesomeIcons.solidCircleCheck.data),
         findsOneWidget,
       );
     });
@@ -67,7 +67,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate((w) =>
-            w is FaIcon && w.icon == FontAwesomeIcons.solidCircleCheck),
+            w is FaIcon && w.icon == FontAwesomeIcons.solidCircleCheck.data),
         findsNothing,
       );
     });

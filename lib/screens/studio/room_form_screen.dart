@@ -221,7 +221,7 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
 
   Widget _buildAccessOption(
     ThemeData theme, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     required String subtitle,
     required bool isSelected,
