@@ -5,6 +5,7 @@ import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/core/blocs/map/map_event.dart';
 import 'package:uzme/core/blocs/map/map_state.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/widgets/map/map_dashboard_app_bar.dart';
 import 'package:uzme/widgets/map/map_filter_sheet.dart';
 import 'package:uzme/widgets/map/studio_detail_helper.dart';
@@ -33,16 +34,25 @@ class _DiscoverMapBody extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocListener<MapBloc, MapState>(
+      // MapState.error n'était affiché nulle part : échec de géoloc, de
+      // recherche de studios ou d'adresse = silence total sur la map.
       listenWhen: (prev, curr) =>
-          prev.selectedStudio != curr.selectedStudio &&
-          curr.selectedStudio != null,
+          curr.hasError && prev.error != curr.error,
       listener: (context, state) {
-        openStudioOrProDetail(context, state.selectedStudio!);
+        AppSnackBar.error(context, state.error!);
       },
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: _buildAppBar(context, theme, l10n),
-        body: const StudioMapView(),
+      child: BlocListener<MapBloc, MapState>(
+        listenWhen: (prev, curr) =>
+            prev.selectedStudio != curr.selectedStudio &&
+            curr.selectedStudio != null,
+        listener: (context, state) {
+          openStudioOrProDetail(context, state.selectedStudio!);
+        },
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: _buildAppBar(context, theme, l10n),
+          body: const StudioMapView(),
+        ),
       ),
     );
   }

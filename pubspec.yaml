@@ -17,7 +17,10 @@ dependencies:
   smoothandesign_package:
     git:
       url: https://github.com/ben-ndui/smoothandesign_package.git
-      ref: v1.2.4
+      # ⚠️ La CI builde avec CETTE ref (pubspec_overrides.yaml est
+      # gitignoré) — elle doit suivre les tags du package, sinon la CI
+      # compile une version antérieure à celle testée en local.
+      ref: v1.5.0
 
   # Smooth & Design Biometric Auth (Face ID / Touch ID / fingerprint)
   smoothandesign_auth_biometric:

@@ -6,6 +6,7 @@ import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/services/team_service.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/studio/team/team_exports.dart';
@@ -86,6 +87,11 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const AppLoader.compact();
         }
+        // Sans cette branche, une erreur du stream s'affichait comme
+        // « Aucun membre » — un studio pouvait croire son équipe disparue.
+        if (snapshot.hasError) {
+          return ErrorRetryCompact(onRetry: () => setState(() {}));
+        }
 
         final members = snapshot.data ?? [];
 
@@ -112,6 +118,9 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     return StreamBuilder<List<TeamInvitation>>(
       stream: _teamService.streamPendingInvitations(_studioId!),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return ErrorRetryCompact(onRetry: () => setState(() {}));
+        }
         final invitations = snapshot.data ?? [];
 
         if (invitations.isEmpty) {
@@ -204,9 +213,14 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
           FilledButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
-              await _teamService.removeFromTeam(member.uid);
-              if (mounted) {
+              // Le service catch et renvoie code 500 en cas d'échec —
+              // ne pas afficher un faux succès.
+              final response = await _teamService.removeFromTeam(member.uid);
+              if (!mounted) return;
+              if (response.isSuccess) {
                 AppSnackBar.success(context, l10n.memberRemoved);
+              } else {
+                AppSnackBar.error(context, response.message);
               }
             },
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
@@ -218,9 +232,17 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   }
 
   Future<void> _cancelInvitation(TeamInvitation invitation) async {
-    await _teamService.cancelInvitation(invitation.id);
-    if (mounted) {
-      AppSnackBar.success(context, AppLocalizations.of(context)!.invitationCancelled);
+    try {
+      await _teamService.cancelInvitation(invitation.id);
+      if (mounted) {
+        AppSnackBar.success(context, AppLocalizations.of(context)!.invitationCancelled);
+      }
+    } catch (_) {
+      // L'update Firestore peut échouer (offline, rules) : feedback
+      // d'erreur au lieu d'un faux succès ou d'un crash silencieux.
+      if (mounted) {
+        AppSnackBar.error(context, AppLocalizations.of(context)!.errorOccurred);
+      }
     }
   }
 }

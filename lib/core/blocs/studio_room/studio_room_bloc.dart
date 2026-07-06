@@ -69,6 +69,13 @@ class StudioRoomBloc extends Bloc<StudioRoomEvent, StudioRoomState> {
       if (created != null) {
         final updatedRooms = [...state.rooms, created];
         emit(state.copyWith(status: StudioRoomStatus.loaded, rooms: updatedRooms));
+      } else {
+        // Le service catch en interne et retourne null : sans état émis,
+        // le formulaire restait bloqué sur son spinner sans aucun feedback.
+        emit(state.copyWith(
+          status: StudioRoomStatus.error,
+          errorMessage: 'La création de la salle a échoué',
+        ));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -89,6 +96,11 @@ class StudioRoomBloc extends Bloc<StudioRoomEvent, StudioRoomState> {
           return r.id == event.room.id ? event.room : r;
         }).toList();
         emit(state.copyWith(rooms: updatedRooms));
+      } else {
+        emit(state.copyWith(
+          status: StudioRoomStatus.error,
+          errorMessage: 'La mise à jour de la salle a échoué',
+        ));
       }
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
@@ -104,6 +116,11 @@ class StudioRoomBloc extends Bloc<StudioRoomEvent, StudioRoomState> {
       if (success) {
         final updatedRooms = state.rooms.where((r) => r.id != event.roomId).toList();
         emit(state.copyWith(rooms: updatedRooms));
+      } else {
+        emit(state.copyWith(
+          status: StudioRoomStatus.error,
+          errorMessage: 'La suppression de la salle a échoué',
+        ));
       }
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));

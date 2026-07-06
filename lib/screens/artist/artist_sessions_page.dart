@@ -15,6 +15,7 @@ import 'package:uzme/widgets/artist/sessions/artist_session_filter_sheet.dart';
 import 'package:uzme/widgets/artist/sessions/artist_sessions_exports.dart';
 import 'package:uzme/widgets/artist/studio_selector_bottom_sheet.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 
 /// View mode for artist sessions page
 enum _ViewMode { week, month, list }
@@ -211,10 +212,24 @@ class _ArtistSessionsPageState extends State<ArtistSessionsPage> {
     );
   }
 
+  /// Relance le chargement des sessions (bouton réessayer des états
+  /// d'erreur).
+  void _retryLoadSessions() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticatedState) {
+      context
+          .read<SessionBloc>()
+          .add(LoadArtistSessionsEvent(artistId: authState.user.uid));
+    }
+  }
+
   Widget _buildMonthView(ColorScheme colorScheme, AppLocalizations l10n) {
     return BlocBuilder<SessionBloc, SessionState>(
       builder: (context, state) {
         if (state.isLoading) return const AppLoader.compact();
+        if (state is SessionErrorState) {
+          return ErrorRetryCompact(onRetry: _retryLoadSessions);
+        }
 
         final sessions = _applyFilters(state.sessions);
         final daySessions = _getSessionsForDay(sessions, _selectedDate);
@@ -391,6 +406,9 @@ class _ArtistSessionsPageState extends State<ArtistSessionsPage> {
             child: BlocBuilder<SessionBloc, SessionState>(
               builder: (context, state) {
                 if (state.isLoading) return const AppLoader.compact();
+                if (state is SessionErrorState) {
+                  return ErrorRetryCompact(onRetry: _retryLoadSessions);
+                }
 
                 final daySessions = _getSessionsForDay(state.sessions, _selectedDate);
 
@@ -451,6 +469,9 @@ class _ArtistSessionsPageState extends State<ArtistSessionsPage> {
     return BlocBuilder<SessionBloc, SessionState>(
       builder: (context, state) {
         if (state.isLoading) return const AppLoader.compact();
+        if (state is SessionErrorState) {
+          return ErrorRetryCompact(onRetry: _retryLoadSessions);
+        }
 
         final allSessions = state.sessions.where((s) => s.status != SessionStatus.cancelled).toList();
         final sessions = _applyFilters(allSessions);

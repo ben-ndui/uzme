@@ -9,6 +9,7 @@ import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/widgets/engineer/sessions/engineer_sessions_exports.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/widgets/studio/sessions/sessions_filter_sheet.dart';
@@ -34,6 +35,17 @@ class _EngineerSessionsPageState extends State<EngineerSessionsPage> {
   }
 
   DateTime _getWeekStart(DateTime date) => date.subtract(Duration(days: date.weekday - 1));
+
+  /// Relance le chargement des sessions (bouton réessayer des états
+  /// d'erreur).
+  void _retryLoadSessions() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticatedState) {
+      context
+          .read<SessionBloc>()
+          .add(LoadEngineerSessionsEvent(engineerId: authState.user.uid));
+    }
+  }
   bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 
   @override
@@ -257,6 +269,9 @@ class _EngineerSessionsPageState extends State<EngineerSessionsPage> {
             child: BlocBuilder<SessionBloc, SessionState>(
               builder: (context, state) {
                 if (state.isLoading) return const AppLoader.compact();
+                if (state is SessionErrorState) {
+                  return ErrorRetryCompact(onRetry: _retryLoadSessions);
+                }
 
                 final daySessions = _getSessionsForDay(state.sessions, _selectedDate);
 
@@ -318,6 +333,9 @@ class _EngineerSessionsPageState extends State<EngineerSessionsPage> {
     return BlocBuilder<SessionBloc, SessionState>(
       builder: (context, state) {
         if (state.isLoading) return const AppLoader.compact();
+        if (state is SessionErrorState) {
+          return ErrorRetryCompact(onRetry: _retryLoadSessions);
+        }
 
         final allSessions = state.sessions.where((s) => s.status != SessionStatus.cancelled).toList();
         final sessions = _applyFilters(allSessions);

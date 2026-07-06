@@ -6,6 +6,7 @@ import 'package:uzme/core/models/payment_method.dart';
 import 'package:uzme/core/services/payment_config_service.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
 
 /// Écran de configuration des moyens de paiement pour un studio
@@ -428,10 +429,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     });
 
     // Save to Firestore
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
   }
 
   Future<void> _updateMethodDetails(PaymentMethodType type, String details) async {
@@ -446,10 +444,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
 
     // Debounce save
     await Future.delayed(const Duration(milliseconds: 500));
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
   }
 
   Future<void> _updateMethodInstructions(
@@ -465,19 +460,14 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
 
     // Debounce save
     await Future.delayed(const Duration(milliseconds: 500));
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
   }
 
   Future<void> _saveDepositPercent(double percent) async {
     if (_studioId == null) return;
 
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!.copyWith(defaultDepositPercent: percent),
-    );
+    _config = _config!.copyWith(defaultDepositPercent: percent);
+    await _persistConfig();
   }
 
   Future<void> _updateCancellationPolicy(CancellationPolicy policy) async {
@@ -487,10 +477,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       _config = _config!.copyWith(cancellationPolicy: policy);
     });
 
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
   }
 
   Future<void> _updateCustomCancellationTerms(String terms) async {
@@ -499,10 +486,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     _config = _config!.copyWith(customCancellationTerms: terms);
 
     await Future.delayed(const Duration(milliseconds: 500));
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
   }
 
   Future<void> _updateBankDetails({
@@ -527,9 +511,23 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     _config = _config!.copyWith(methods: methods);
 
     await Future.delayed(const Duration(milliseconds: 500));
-    await _paymentService.updatePaymentConfig(
-      studioId: _studioId!,
-      config: _config!,
-    );
+    await _persistConfig();
+  }
+
+  /// Persistance commune de la config de paiement, avec feedback : le
+  /// fichier ne contenait aucun try/catch ni SnackBar — un échec
+  /// Firestore laissait l'UI optimiste sans jamais prévenir le studio.
+  Future<void> _persistConfig() async {
+    if (_studioId == null || _config == null) return;
+    try {
+      await _paymentService.updatePaymentConfig(
+        studioId: _studioId!,
+        config: _config!,
+      );
+    } catch (_) {
+      if (mounted) {
+        AppSnackBar.error(context, AppLocalizations.of(context)!.errorOccurred);
+      }
+    }
   }
 }

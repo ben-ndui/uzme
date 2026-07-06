@@ -349,7 +349,7 @@ class _BookingCard extends StatelessWidget {
     if (artistId.isEmpty) return;
 
     final service = BookingAcceptanceService();
-    await service.acceptProBooking(
+    final response = await service.acceptProBooking(
       session: session,
       proUser: user,
       artistId: artistId,
@@ -360,6 +360,13 @@ class _BookingCard extends StatelessWidget {
     );
 
     if (!context.mounted) return;
+    // Le service catch tout et renvoie code 500 en cas d'échec — sans ce
+    // check on affichait « réservation acceptée » même quand rien n'avait
+    // été accepté.
+    if (!response.isSuccess) {
+      AppSnackBar.error(context, response.message);
+      return;
+    }
     // Recharger les sessions pour refléter le changement
     context.read<SessionBloc>().add(
           LoadProSessionsEvent(proId: user.uid),

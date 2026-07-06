@@ -49,7 +49,12 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           },
           onError: (e) {
             appLog('❤️ Stream error: $e');
-            add(const FavoritesUpdatedEvent(favorites: []));
+            // Conserver le cache plutôt que d'écraser avec une liste vide :
+            // un blip du stream affichait « aucun favori » (et vidait tous
+            // les cœurs de l'app) alors que les favoris existent toujours.
+            // Le prochain LoadFavoritesEvent (chaque MainScaffold en
+            // dispatche un) recrée le stream.
+            add(FavoritesUpdatedEvent(favorites: state.favorites));
           },
         );
   }
@@ -66,7 +71,8 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         .streamFavoritesByType(event.userId, event.type)
         .listen(
           (favorites) => add(FavoritesUpdatedEvent(favorites: favorites)),
-          onError: (e) => add(const FavoritesUpdatedEvent(favorites: [])),
+          // Même logique : ne pas écraser le cache sur une erreur du stream.
+          onError: (e) => add(FavoritesUpdatedEvent(favorites: state.favorites)),
         );
   }
 

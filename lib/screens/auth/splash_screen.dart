@@ -6,6 +6,7 @@ import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/routing/router.dart';
+import 'package:uzme/core/services/notification_navigation_service.dart';
 import 'package:uzme/core/utils/app_logger.dart';
 
 /// Splash screen shown on app launch
@@ -96,6 +97,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (state is AuthLockedState) {
       // Tokens still alive — gate the dashboard behind biometric.
       appLog('🚀 Splash: Navigating to lock screen');
+      NotificationNavigationService().clearPendingRoute();
       context.go(AppRoutes.lock);
       return;
     }
@@ -107,7 +109,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       final route = AppRouter.routeForAuthenticatedUser(user);
       appLog('🚀 Splash: Navigating to $route');
       context.go(route);
+      // Rejoue le tap de notification arrivé pendant le boot (app tuée) —
+      // sans ça, le push initial était écrasé par le context.go ci-dessus.
+      NotificationNavigationService().consumePendingRoute();
     } else {
+      NotificationNavigationService().clearPendingRoute();
       context.go(AppRoutes.login);
     }
   }

@@ -12,6 +12,7 @@ import 'package:uzme/screens/shared/conversations_screen.dart';
 import 'package:uzme/screens/shared/favorites_screen.dart';
 import 'package:uzme/widgets/common/app_navigation_rail.dart';
 import 'package:uzme/widgets/common/floating_bottom_nav.dart';
+import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Main scaffold for Artist role with adaptive navigation
 class ArtistMainScaffold extends StatefulWidget {
@@ -123,19 +124,27 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop && _currentIndex != 0) _onNavTapped(0);
       },
-      child: BlocListener<AuthBloc, AuthState>(
-        listenWhen: (prev, curr) =>
-            prev is AuthAuthenticatedState &&
-            curr is AuthAuthenticatedState &&
-            prev.user.photoURL != curr.user.photoURL,
-        listener: (context, state) {
-          if (state is AuthAuthenticatedState) {
-            _syncMessagingUser(state.user);
-          }
-        },
-        child: isWide
-            ? _buildWideScaffold(l10n)
-            : _buildMobileScaffold(l10n),
+      child: BlocListener<FavoriteBloc, FavoriteState>(
+        // Un toggle de favori qui échoue (offline, Firestore) émettait
+        // FavoriteErrorState sans qu'aucun widget ne l'écoute : zéro
+        // retour visuel. Listener central, un par scaffold de rôle.
+        listenWhen: (prev, curr) => curr is FavoriteErrorState,
+        listener: (context, state) =>
+            AppSnackBar.error(context, l10n.errorOccurred),
+        child: BlocListener<AuthBloc, AuthState>(
+          listenWhen: (prev, curr) =>
+              prev is AuthAuthenticatedState &&
+              curr is AuthAuthenticatedState &&
+              prev.user.photoURL != curr.user.photoURL,
+          listener: (context, state) {
+            if (state is AuthAuthenticatedState) {
+              _syncMessagingUser(state.user);
+            }
+          },
+          child: isWide
+              ? _buildWideScaffold(l10n)
+              : _buildMobileScaffold(l10n),
+        ),
       ),
     );
   }

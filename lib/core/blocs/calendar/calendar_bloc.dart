@@ -213,6 +213,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       appLog('📅 [CalendarBloc] Stream reçu: ${unavailabilities.length} indisponibilités');
       // Dispatch internal event instead of emitting directly
       add(UnavailabilitiesUpdatedEvent(unavailabilities: unavailabilities));
+    }, onError: (e) {
+      // Bloc global jamais fermé : sans onError, un permission-denied
+      // pendant la course logout/reset devient un crash fatal Crashlytics.
+      appLog('📅 [CalendarBloc] Stream indisponibilités en erreur: $e');
     });
   }
 

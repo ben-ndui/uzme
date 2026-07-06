@@ -12,6 +12,7 @@ import 'package:uzme/screens/shared/conversations_screen.dart';
 import 'package:uzme/screens/shared/favorites_screen.dart';
 import 'package:uzme/widgets/common/app_navigation_rail.dart';
 import 'package:uzme/widgets/common/floating_bottom_nav.dart';
+import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Main scaffold for Engineer role with adaptive navigation
 class EngineerMainScaffold extends StatefulWidget {
@@ -122,19 +123,26 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop && _currentIndex != 0) _onNavTapped(0);
       },
-      child: BlocListener<AuthBloc, AuthState>(
-        listenWhen: (prev, curr) =>
-            prev is AuthAuthenticatedState &&
-            curr is AuthAuthenticatedState &&
-            prev.user.photoURL != curr.user.photoURL,
-        listener: (context, state) {
-          if (state is AuthAuthenticatedState) {
-            _syncMessagingUser(state.user);
-          }
-        },
-        child: isWide
-            ? _buildWideScaffold(l10n)
-            : _buildMobileScaffold(l10n),
+      child: BlocListener<FavoriteBloc, FavoriteState>(
+        // Feedback central des échecs de toggle favori (FavoriteErrorState
+        // n'était écouté nulle part — échec silencieux).
+        listenWhen: (prev, curr) => curr is FavoriteErrorState,
+        listener: (context, state) =>
+            AppSnackBar.error(context, l10n.errorOccurred),
+        child: BlocListener<AuthBloc, AuthState>(
+          listenWhen: (prev, curr) =>
+              prev is AuthAuthenticatedState &&
+              curr is AuthAuthenticatedState &&
+              prev.user.photoURL != curr.user.photoURL,
+          listener: (context, state) {
+            if (state is AuthAuthenticatedState) {
+              _syncMessagingUser(state.user);
+            }
+          },
+          child: isWide
+              ? _buildWideScaffold(l10n)
+              : _buildMobileScaffold(l10n),
+        ),
       ),
     );
   }

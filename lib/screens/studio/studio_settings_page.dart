@@ -9,6 +9,7 @@ import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/common/settings/settings_exports.dart';
+import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/widgets/studio/calendar_connection_section.dart';
 import 'package:uzme/widgets/studio/settings/studio_settings_exports.dart';
 import 'package:uzme/widgets/studio/studio_working_hours_section.dart';
@@ -175,7 +176,17 @@ class _StudioSettingsPageState extends State<StudioSettingsPage> {
             onPressed: () async {
               Navigator.pop(dialogContext);
               if (_userId != null) {
-                await StudioClaimService().unclaimStudio(_userId!);
+                try {
+                  await StudioClaimService().unclaimStudio(_userId!);
+                } catch (_) {
+                  // Échec (offline, rules) : sans ce catch, l'exception
+                  // interrompait le callback après la fermeture du dialog
+                  // — rien ne se passait, sans aucun message.
+                  if (mounted) {
+                    AppSnackBar.error(this.context, l10n.errorOccurred);
+                  }
+                  return;
+                }
                 sessionBloc.add(const ClearSessionsEvent());
                 artistBloc.add(const ClearArtistsEvent());
                 serviceBloc.add(const ClearServicesEvent());

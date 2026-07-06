@@ -11,6 +11,7 @@ import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/core/services/session_payment_service.dart';
 import 'package:uzme/widgets/common/cancel_session_sheet.dart';
 import 'package:uzme/widgets/common/payment_tracking_card.dart';
@@ -47,6 +48,13 @@ class _ArtistSessionDetailScreenState extends State<ArtistSessionDetailScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const AppLoader();
+          }
+
+          // Distinguer erreur du stream et session inexistante : afficher
+          // « Aucune session » sur une erreur est trompeur (la session
+          // est visible dans la liste juste derrière).
+          if (snapshot.hasError) {
+            return ErrorRetryCompact(onRetry: () => setState(() {}));
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {

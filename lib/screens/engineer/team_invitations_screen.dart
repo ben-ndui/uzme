@@ -7,6 +7,7 @@ import 'package:uzme/core/services/team_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Screen to display and manage team invitations for engineers
@@ -39,6 +40,11 @@ class _TeamInvitationsScreenState extends State<TeamInvitationsScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const AppLoader();
+              }
+              // Une erreur du stream ne doit pas s'afficher comme
+              // « Aucune invitation ».
+              if (snapshot.hasError) {
+                return ErrorRetryCompact(onRetry: () => setState(() {}));
               }
 
               final invitations = snapshot.data ?? [];

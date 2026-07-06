@@ -35,12 +35,15 @@ void main() {
       expect(route, '/sessions/session-1');
     });
 
-    test('returns bookings route for booking_confirmed', () {
+    test('booking_confirmed falls back to a safe route', () {
+      // Les routes '/bookings/*' n'existent pas dans le router (écran
+      // 404) : fallback vers la liste de sessions du rôle courant —
+      // notifications quand aucun utilisateur n'est connecté (cas test).
       final route = service.getRouteForNotification({
         'type': 'booking_confirmed',
         'bookingId': 'booking-1',
       });
-      expect(route, '/bookings/booking-1');
+      expect(route, AppRoutes.notifications);
     });
 
     test('returns engineer invitations for team_invitation', () {

@@ -4,6 +4,7 @@ import 'package:uzme/core/blocs/engineer_availability/engineer_availability_even
 import 'package:uzme/core/blocs/engineer_availability/engineer_availability_state.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/core/services/services_exports.dart';
+import 'package:uzme/core/utils/app_logger.dart';
 
 /// BLoC pour gérer les disponibilités des ingénieurs
 class EngineerAvailabilityBloc
@@ -65,6 +66,10 @@ class EngineerAvailabilityBloc
         if (!isClosed) {
           add(_TimeOffsUpdatedInternalEvent(timeOffs: timeOffs));
         }
+      }, onError: (e) {
+        // Le try/catch englobant ne couvre pas les erreurs asynchrones du
+        // stream — sans onError elles remontent en crash fatal Crashlytics.
+        appLog('⏰ [EngineerAvailability] Stream time-offs en erreur: $e');
       });
     } catch (e) {
       emit(EngineerAvailabilityErrorState(

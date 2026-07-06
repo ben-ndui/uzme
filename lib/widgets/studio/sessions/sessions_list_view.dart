@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/widgets/studio/sessions/session_card.dart';
 import 'package:uzme/widgets/studio/sessions/sessions_empty_state.dart';
 import 'package:uzme/widgets/studio/sessions/sessions_filter_sheet.dart';
@@ -30,6 +32,18 @@ class SessionsListView extends StatelessWidget {
     return BlocBuilder<SessionBloc, SessionState>(
       builder: (context, state) {
         if (state.isLoading) return const AppLoader.compact();
+        if (state is SessionErrorState) {
+          return ErrorRetryCompact(
+            onRetry: () {
+              final authState = context.read<AuthBloc>().state;
+              if (authState is AuthAuthenticatedState) {
+                context
+                    .read<SessionBloc>()
+                    .add(LoadSessionsEvent(studioId: authState.user.uid));
+              }
+            },
+          );
+        }
 
         final now = DateTime.now();
         final sessions = _applyFilters(state.sessions);
