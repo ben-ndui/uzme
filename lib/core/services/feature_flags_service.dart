@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uzme/core/models/app_user.dart';
@@ -35,18 +36,25 @@ class FeatureFlagsService {
   /// Firebase access. This matters for widget tests that import the
   /// singleton just to seed flags via [setFlagsForTesting] without
   /// running Firebase.initializeApp().
-  FeatureFlagsService({FirebaseFirestore? firestore, FirebaseFunctions? functions})
-      : _firestoreOverride = firestore,
-        _functionsOverride = functions;
+  FeatureFlagsService({
+    FirebaseFirestore? firestore,
+    FirebaseFunctions? functions,
+    FirebaseAuth? auth,
+  })  : _firestoreOverride = firestore,
+        _functionsOverride = functions,
+        _authOverride = auth;
 
   final FirebaseFirestore? _firestoreOverride;
   final FirebaseFunctions? _functionsOverride;
+  final FirebaseAuth? _authOverride;
   FirebaseFirestore get _firestore =>
       _firestoreOverride ?? FirebaseFirestore.instance;
   FirebaseFunctions get _functions =>
       _functionsOverride ?? FirebaseFunctions.instance;
+  FirebaseAuth get _authInstance => _authOverride ?? FirebaseAuth.instance;
   static const _collection = 'feature_flags';
 
+  StreamSubscription? _authSubscription;
   StreamSubscription? _subscription;
   Map<String, FeatureFlag> _flags = const {};
   // BehaviorSubject = broadcast Subject that replays its last value to
@@ -60,8 +68,25 @@ class FeatureFlagsService {
 
   /// Start listening to the flags collection. Idempotent — safe to call
   /// from main.dart at every app boot.
+  ///
+  /// L'abonnement Firestore est recréé à CHAQUE changement d'état
+  /// d'authentification, pas ouvert une seule fois : les rules exigent
+  /// un user authentifié pour lire `feature_flags`, donc l'abonnement
+  /// ouvert au boot avant login meurt en permission-denied — et un
+  /// listener Firestore en erreur ne ré-émet plus jamais. Sans le
+  /// ré-abonnement post-login, aucun flag ne se charge de toute la
+  /// session (tout paraît disabled même si Firestore dit enabled).
   void initialize() {
-    if (_subscription != null) return;
+    if (_authSubscription != null) return;
+    // authStateChanges() émet l'état courant dès la souscription, puis à
+    // chaque login / logout — chaque émission rouvre un stream propre
+    // avec les droits du moment.
+    _authSubscription =
+        _authInstance.authStateChanges().listen((_) => _resubscribe());
+  }
+
+  void _resubscribe() {
+    _subscription?.cancel();
     _subscription = _firestore
         .collection(_collection)
         .snapshots()
@@ -80,6 +105,8 @@ class FeatureFlagsService {
 
   /// Tear down the subscription. Call from main.dart on logout / dispose.
   Future<void> dispose() async {
+    await _authSubscription?.cancel();
+    _authSubscription = null;
     await _subscription?.cancel();
     _subscription = null;
     await _streamController.close();
