@@ -61,7 +61,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MessagingBloc, MessagingState>(
+    return BlocConsumer<MessagingBloc, MessagingState>(
+      // sendError est transitoire (émis puis aussitôt cleared par le bloc) :
+      // sans ce feedback, un envoi qui échoue (offline, rules) perd le
+      // message en silence.
+      listenWhen: (prev, curr) =>
+          curr is ChatOpenState && curr.sendError != null,
+      listener: (context, state) {
+        final error = (state as ChatOpenState).sendError;
+        AppSnackBar.error(
+          context,
+          AppLocalizations.of(context)!.messageSendFailed(error ?? ''),
+        );
+      },
       builder: (context, state) {
         if (state is MessagingLoadingState) {
           return _buildLoadingScaffold();

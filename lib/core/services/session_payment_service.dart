@@ -177,11 +177,13 @@ class SessionPaymentService {
       }
     }
 
-    final response = await _client.post(
-      uri,
-      headers: headers,
-      body: jsonEncode(body),
-    );
+    // Borné : le http.Client Dart n'a AUCUN timeout par défaut — sans
+    // borne, les boutons « Payer l'acompte / le solde » restent en
+    // spinner pour toujours. Le TimeoutException remonte au bloc →
+    // SessionPaymentErrorState → SnackBar.
+    final response = await _client
+        .post(uri, headers: headers, body: jsonEncode(body))
+        .timeout(const Duration(seconds: 20));
 
     debugPrint('[StripeService] ${response.statusCode} ${response.body.length > 300 ? response.body.substring(0, 300) : response.body}');
 

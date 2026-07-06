@@ -184,13 +184,16 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       await prefs.setString('terms_accepted_at', now.toIso8601String());
       await prefs.setString('terms_version', '1.0');
 
-      // Save to Firestore
+      // Save to Firestore — borné : ce write bloque l'écran de complétion
+      // d'onboarding (nouvel utilisateur, donc reviewer Apple). Sans
+      // timeout, spinner infini si le write n'est jamais ack'é ; le
+      // TimeoutException tombe dans le catch → état d'erreur affiché.
       await SmoothFirebase.collection('users').doc(event.userId).update({
         'isFirstTime': false,
         'termsAcceptedAt': now,
         'termsVersion': '1.0',
         'onboardingCompletedAt': now,
-      });
+      }).timeout(const Duration(seconds: 10));
 
       emit(const OnboardingCompletedState());
     } catch (e) {

@@ -9759,6 +9759,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Test'**
   String get adminStripeModeTest;
+
+  /// No description provided for @messageSendFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message non envoyé : {error}'**
+  String messageSendFailed(String error);
 }
 
 class _AppLocalizationsDelegate

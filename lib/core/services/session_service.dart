@@ -147,7 +147,10 @@ class SessionService {
     try {
       final docRef = _firestore.collection(_collection).doc();
       final newSession = session.copyWith(id: docRef.id);
-      await docRef.set(newSession.toMap());
+      // Borné : ce set() bloque le bouton « Envoyer la demande » de
+      // l'artiste (_isSubmitting). Le TimeoutException tombe dans le
+      // catch → SmoothResponse d'erreur → feedback à l'écran.
+      await docRef.set(newSession.toMap()).timeout(const Duration(seconds: 10));
 
       // Si c'est une demande (pending), notifier le studio ou le pro
       if (session.status == SessionStatus.pending) {

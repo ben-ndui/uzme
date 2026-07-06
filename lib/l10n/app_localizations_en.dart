@@ -5297,4 +5297,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminStripeModeTest => 'Test';
+
+  @override
+  String messageSendFailed(String error) {
+    return 'Message not sent: $error';
+  }
 }

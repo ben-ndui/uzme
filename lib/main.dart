@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:smoothandesign_auth_biometric/smoothandesign_auth_biometric.dart'
     hide RecentAccountsService;
@@ -31,6 +32,7 @@ import 'package:uzme/core/services/recent_accounts_service.dart';
 import 'package:uzme/core/utils/app_logger.dart';
 import 'package:uzme/core/utils/crashlytics_bloc_observer.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/routing/router.dart';
 import 'package:uzme/widgets/feature_flags/feature_announcement_watcher.dart';
 
@@ -261,6 +263,11 @@ void _handleRemoteLogout() {
 
     // Trigger logout
     context.read<AuthBloc>().add(const SignOutEvent());
+
+    // Sans navigation explicite, l'utilisateur reste sur son dashboard
+    // (déconnecté, donc streams morts) — aucun redirect global d'auth
+    // n'existe dans le router. Même comportement que le logout manuel.
+    context.go(AppRoutes.login);
   }
 }
 
@@ -381,6 +388,16 @@ class _UseMeAppState extends State<UseMeApp> {
                   if (curr is AuthLockedState) return false;
                   final wasAuth = prev is AuthAuthenticatedState;
                   final isAuth = curr is AuthAuthenticatedState;
+                  // Ne traiter comme déconnexion que les états TERMINAUX
+                  // réels. Les états transitoires émis pendant qu'un
+                  // utilisateur reste connecté (reset password depuis le
+                  // profil, erreur ponctuelle) ne doivent pas déclencher
+                  // les side-effects de logout (suppression token FCM,
+                  // reset calendrier, purge messagerie).
+                  if (wasAuth && !isAuth) {
+                    return curr is AuthUnauthenticatedState ||
+                        curr is AuthAccountDeletedState;
+                  }
                   return wasAuth != isAuth;
                 },
                 listener: (context, state) async {
@@ -418,6 +435,18 @@ class _UseMeAppState extends State<UseMeApp> {
                     // User logged out: remove token, reset calendar
                     notificationService.removeToken();
                     globalCalendarBloc.add(const ResetCalendarEvent());
+
+                    // Purge messagerie + favoris ICI (point central) : 3 des
+                    // 4 chemins de logout (lock screen, sheet du profil,
+                    // logout à distance) ne dispatchaient pas ces events —
+                    // les streams mouraient en permission-denied et la
+                    // messagerie restait définitivement vide après relogin.
+                    context
+                        .read<MessagingBloc>()
+                        .add(const ClearMessagingEvent());
+                    context
+                        .read<FavoriteBloc>()
+                        .add(const ClearFavoritesEvent());
 
                     // Cancel session revocation listener and clear local session
                     _sessionRevocationSubscription?.cancel();

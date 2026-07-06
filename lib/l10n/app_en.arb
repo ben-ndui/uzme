@@ -2215,5 +2215,10 @@
   "adminPioneerCreateSubmit": "Create cohort",
 
   "adminStripeModeLive": "Live",
-  "adminStripeModeTest": "Test"
+  "adminStripeModeTest": "Test",
+
+  "messageSendFailed": "Message not sent: {error}",
+  "@messageSendFailed": {
+    "placeholders": {"error": {"type": "String"}}
+  }
 }

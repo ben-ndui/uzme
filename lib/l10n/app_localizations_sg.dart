@@ -5270,4 +5270,9 @@ class AppLocalizationsSg extends AppLocalizations {
 
   @override
   String get adminStripeModeTest => 'Test';
+
+  @override
+  String messageSendFailed(String error) {
+    return 'Sango so a tokua pëpe : $error';
+  }
 }

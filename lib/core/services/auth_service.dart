@@ -79,7 +79,14 @@ class UseMeAuthService extends BaseAuthService {
       city: extraData?['city'],
     );
 
-    await SmoothFirebase.collection('users').doc(firebaseUser.uid).set(appUser.toMap());
+    // Même borne que getUserFromFirestore : ce set() bloque le flow
+    // d'inscription (email + sélection de rôle Apple/Google) derrière
+    // AuthLoadingState — sans timeout, spinner infini si le write n'est
+    // jamais ack'é. Le TimeoutException remonte aux try/catch appelants.
+    await SmoothFirebase.collection('users')
+        .doc(firebaseUser.uid)
+        .set(appUser.toMap())
+        .timeout(const Duration(seconds: 10));
   }
 
   @override
