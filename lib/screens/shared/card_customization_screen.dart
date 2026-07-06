@@ -162,11 +162,52 @@ class _CardCustomizationScreenState extends State<CardCustomizationScreen> {
           _buildPatternSelector(l10n, cs),
           const SizedBox(height: 24),
 
+          // Surbrillance gyroscopique (shimmer holographique)
+          _SectionTitle(title: l10n.cardHoloIntensity),
+          const SizedBox(height: 4),
+          _buildHoloIntensitySlider(l10n, cs),
+          const SizedBox(height: 24),
+
           // Background image (premium)
           _buildBackgroundImageSection(user, isPremium, l10n, cs),
           const SizedBox(height: 40),
         ],
       ),
+    );
+  }
+
+  // ── Surbrillance (shimmer holographique au mouvement du device) ──
+
+  Widget _buildHoloIntensitySlider(AppLocalizations l10n, ColorScheme cs) {
+    final intensity = _draft.holoIntensity;
+    return Row(
+      children: [
+        Expanded(
+          child: Slider(
+            value: intensity,
+            divisions: 10,
+            label: intensity == 0
+                ? l10n.cardHoloIntensityOff
+                : '${(intensity * 100).round()} %',
+            onChanged: (value) =>
+                setState(() => _draft = _draft.copyWith(holoIntensity: value)),
+          ),
+        ),
+        SizedBox(
+          width: 52,
+          child: Text(
+            intensity == 0
+                ? l10n.cardHoloIntensityOff
+                : '${(intensity * 100).round()} %',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: cs.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

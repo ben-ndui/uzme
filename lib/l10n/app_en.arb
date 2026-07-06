@@ -2220,5 +2220,8 @@
   "messageSendFailed": "Message not sent: {error}",
   "@messageSendFailed": {
     "placeholders": {"error": {"type": "String"}}
-  }
+  },
+
+  "cardHoloIntensity": "Shine effect",
+  "cardHoloIntensityOff": "Off"
 }

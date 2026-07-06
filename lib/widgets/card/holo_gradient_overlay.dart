@@ -9,18 +9,24 @@ class HoloGradientOverlay extends StatelessWidget {
   final Offset tilt;
   final HoloCardTheme theme;
 
+  /// Facteur d'intensité du shimmer (0.0–1.0), issu de
+  /// CardConfig.holoIntensity. À 0 le widget ne devrait pas être monté
+  /// (HoloCard le skippe), mais on scale quand même par sécurité.
+  final double intensity;
+
   const HoloGradientOverlay({
     super.key,
     required this.tilt,
     required this.theme,
+    this.intensity = 1.0,
   });
 
   @override
   Widget build(BuildContext context) {
     final tiltMagnitude = tilt.distance.clamp(0.0, 1.0);
     // More tilt = more visible holographic effect
-    final holoOpacity = 0.12 + (tiltMagnitude * 0.30);
-    final specularOpacity = 0.10 + (tiltMagnitude * 0.35);
+    final holoOpacity = (0.12 + (tiltMagnitude * 0.30)) * intensity;
+    final specularOpacity = (0.10 + (tiltMagnitude * 0.35)) * intensity;
 
     // Rotation angle derived from tilt direction
     final angle = tilt.dx * pi * 0.8 + tilt.dy * pi * 0.5;

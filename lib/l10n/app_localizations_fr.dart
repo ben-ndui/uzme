@@ -5347,4 +5347,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String messageSendFailed(String error) {
     return 'Message non envoyé : $error';
   }
+
+  @override
+  String get cardHoloIntensity => 'Surbrillance';
+
+  @override
+  String get cardHoloIntensityOff => 'Coupée';
 }

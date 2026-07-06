@@ -62,11 +62,17 @@ class CardConfig extends Equatable {
   /// Custom background image URL (Firebase Storage). Premium only.
   final String? backgroundImageUrl;
 
+  /// Intensité de la surbrillance holographique pilotée par le gyroscope
+  /// (0.0 = coupée, 1.0 = pleine). N'affecte que le shimmer/reflet — le
+  /// tilt 3D de la carte reste actif.
+  final double holoIntensity;
+
   const CardConfig({
     this.preset = CardThemePreset.defaultRole,
     this.accentColorValue,
     this.backgroundPattern = CardBackgroundPattern.none,
     this.backgroundImageUrl,
+    this.holoIntensity = 1.0,
   });
 
   /// The accent color as a Flutter Color, or null for default.
@@ -82,7 +88,8 @@ class CardConfig extends Equatable {
       preset == CardThemePreset.defaultRole &&
       accentColorValue == null &&
       backgroundPattern == CardBackgroundPattern.none &&
-      backgroundImageUrl == null;
+      backgroundImageUrl == null &&
+      holoIntensity == 1.0;
 
   factory CardConfig.fromMap(Map<String, dynamic> map) {
     return CardConfig(
@@ -96,6 +103,8 @@ class CardConfig extends Equatable {
         orElse: () => CardBackgroundPattern.none,
       ),
       backgroundImageUrl: map['backgroundImageUrl'] as String?,
+      holoIntensity:
+          ((map['holoIntensity'] as num?)?.toDouble() ?? 1.0).clamp(0.0, 1.0),
     );
   }
 
@@ -105,6 +114,7 @@ class CardConfig extends Equatable {
       if (accentColorValue != null) 'accentColorValue': accentColorValue,
       'backgroundPattern': backgroundPattern.name,
       if (backgroundImageUrl != null) 'backgroundImageUrl': backgroundImageUrl,
+      'holoIntensity': holoIntensity,
     };
   }
 
@@ -113,6 +123,7 @@ class CardConfig extends Equatable {
     int? accentColorValue,
     CardBackgroundPattern? backgroundPattern,
     String? backgroundImageUrl,
+    double? holoIntensity,
     bool clearAccentColor = false,
     bool clearBackgroundImage = false,
   }) {
@@ -124,10 +135,16 @@ class CardConfig extends Equatable {
       backgroundImageUrl: clearBackgroundImage
           ? null
           : (backgroundImageUrl ?? this.backgroundImageUrl),
+      holoIntensity: holoIntensity ?? this.holoIntensity,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [preset, accentColorValue, backgroundPattern, backgroundImageUrl];
+  List<Object?> get props => [
+        preset,
+        accentColorValue,
+        backgroundPattern,
+        backgroundImageUrl,
+        holoIntensity,
+      ];
 }

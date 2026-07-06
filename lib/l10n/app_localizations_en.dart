@@ -5302,4 +5302,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String messageSendFailed(String error) {
     return 'Message not sent: $error';
   }
+
+  @override
+  String get cardHoloIntensity => 'Shine effect';
+
+  @override
+  String get cardHoloIntensityOff => 'Off';
 }

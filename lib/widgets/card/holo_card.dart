@@ -173,7 +173,14 @@ class _HoloCardState extends State<HoloCard> {
                           theme: theme,
                         ),
                       HoloCardContent(user: widget.user, theme: theme),
-                      HoloGradientOverlay(tilt: tilt, theme: theme),
+                      // Surbrillance réglable (CardConfig.holoIntensity) —
+                      // à 0 on ne monte même pas l'overlay.
+                      if ((widget.cardConfig?.holoIntensity ?? 1.0) > 0)
+                        HoloGradientOverlay(
+                          tilt: tilt,
+                          theme: theme,
+                          intensity: widget.cardConfig?.holoIntensity ?? 1.0,
+                        ),
                     ],
                   ),
                 ),

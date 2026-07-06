@@ -2412,5 +2412,8 @@
   "messageSendFailed": "Message non envoyé : {error}",
   "@messageSendFailed": {
     "placeholders": {"error": {"type": "String"}}
-  }
+  },
+
+  "cardHoloIntensity": "Surbrillance",
+  "cardHoloIntensityOff": "Coupée"
 }

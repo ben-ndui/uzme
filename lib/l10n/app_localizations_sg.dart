@@ -5275,4 +5275,10 @@ class AppLocalizationsSg extends AppLocalizations {
   String messageSendFailed(String error) {
     return 'Sango so a tokua pëpe : $error';
   }
+
+  @override
+  String get cardHoloIntensity => 'Zäzä';
+
+  @override
+  String get cardHoloIntensityOff => 'Akanga';
 }

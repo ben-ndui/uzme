@@ -2405,5 +2405,8 @@
   "messageSendFailed": "Sango so a tokua pëpe : {error}",
   "@messageSendFailed": {
     "placeholders": {"error": {"type": "String"}}
-  }
+  },
+
+  "cardHoloIntensity": "Zäzä",
+  "cardHoloIntensityOff": "Akanga"
 }

@@ -9765,6 +9765,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Message non envoyé : {error}'**
   String messageSendFailed(String error);
+
+  /// No description provided for @cardHoloIntensity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surbrillance'**
+  String get cardHoloIntensity;
+
+  /// No description provided for @cardHoloIntensityOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coupée'**
+  String get cardHoloIntensityOff;
 }
 
 class _AppLocalizationsDelegate
