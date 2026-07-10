@@ -6,11 +6,13 @@
 
 ## Avant d'envoyer — checklist
 
-- [ ] Tester le nouveau build sur iPhone/iPad **physiques** : install fraîche ET update par-dessus l'ancienne version (le build embarque aussi la migration Flutter 3.44.4, jamais buildée en release iOS).
-- [ ] Filmer la vidéo NFC : iPhone physique + tag NFC visibles à l'image — carte digitale → partage NFC → écriture du tag → scan du tag qui ouvre `uzme.app/u/...`.
-- [ ] Uploader la vidéo (YouTube non répertorié ou Drive public) et mettre le lien dans **App Review Information** (pas seulement dans la réponse).
-- [ ] Remplacer `84` et `[VIDEO_LINK]` ci-dessous.
-- [ ] ⚠️ Le compte démo `artist@test.fr` a le rôle `worker` (ingénieur) en base alors que les notes de review le présentent comme "Compte Artiste" — corriger le rôle en `client` ou corriger les notes avant resoumission.
+- [x] Build de resoumission : **1.5.25 (84)** sur TestFlight (10/07) — tous les fixes, NFC inclus.
+- [x] Compte démo `artist@test.fr` remis en rôle `client` (custom claim resynchronisé, vérifié).
+- [x] NFC réparé et testé sur device (tags vierges + session) ; page `uzme.app/u/{id}` en ligne.
+- [ ] Filmer la vidéo NFC : iPhone physique + tag visibles — carte digitale → écriture du tag ("Profil UZME écrit !") → app fermée, tap du tag → bannière iOS → profil s'ouvre.
+- [ ] Uploader la vidéo et mettre le lien dans **App Review Information** (pas seulement dans la réponse).
+- [ ] Remplacer `[VIDEO_LINK]` ci-dessous.
+- [ ] Test conseillé sur le build 84 TestFlight : install fraîche (login direct) + update par-dessus.
 
 ## Réponse à coller dans App Store Connect
 
