@@ -28,10 +28,27 @@ class NfcShareService {
     required void Function() onSuccess,
     required void Function(String message) onError,
   }) async {
+    // Pré-nettoyage : bug du plugin nfc_manager 4.x sur iOS — quand la
+    // session est invalidée par l'utilisateur (feuille fermée) ou par
+    // timeout, le natif ne remet jamais sa référence à nil, et TOUTE
+    // session suivante lève PlatformException(session_already_exists)
+    // jusqu'au kill de l'app. stopSession() force le nettoyage de la
+    // référence (no_active_sessions avalé si l'état est déjà propre).
+    try {
+      await NfcManager.instance.stopSession();
+    } catch (_) {}
+
     try {
       await NfcManager.instance.startSession(
         pollingOptions: {NfcPollingOption.iso14443},
         alertMessageIos: 'Approche un tag NFC',
+        // Même bug : sans ce callback + stopSession, fermer la feuille
+        // iOS laisse une session zombie (cf. pré-nettoyage ci-dessus).
+        onSessionErrorIos: (_) async {
+          try {
+            await NfcManager.instance.stopSession();
+          } catch (_) {}
+        },
         onDiscovered: (NfcTag tag) async {
           try {
             final message = _buildUriMessage(userId);
@@ -51,7 +68,7 @@ class NfcShareService {
             }
 
             await NfcManager.instance.stopSession(
-              alertMessageIos: 'Profil UZME ecrit !',
+              alertMessageIos: 'Profil UZME écrit !',
             );
             onSuccess();
           } catch (e) {

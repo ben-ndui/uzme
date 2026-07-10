@@ -108,7 +108,10 @@ dependencies:
   flutter_dotenv: ^5.2.1
   add_2_calendar: ^3.0.1
   flutter_contacts: ^1.1.9+2
-  nfc_manager: ^4.1.1
+  # Vendorisé + patché (session zombie iOS + tags vierges invisibles) —
+  # voir third_party/nfc_manager/VENDORED.md avant tout retour à pub.dev.
+  nfc_manager:
+    path: third_party/nfc_manager
 
 dev_dependencies:
   flutter_test:
