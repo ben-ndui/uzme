@@ -9,7 +9,7 @@
 - [ ] Tester le nouveau build sur iPhone/iPad **physiques** : install fraîche ET update par-dessus l'ancienne version (le build embarque aussi la migration Flutter 3.44.4, jamais buildée en release iOS).
 - [ ] Filmer la vidéo NFC : iPhone physique + tag NFC visibles à l'image — carte digitale → partage NFC → écriture du tag → scan du tag qui ouvre `uzme.app/u/...`.
 - [ ] Uploader la vidéo (YouTube non répertorié ou Drive public) et mettre le lien dans **App Review Information** (pas seulement dans la réponse).
-- [ ] Remplacer `[BUILD_NUMBER]` et `[VIDEO_LINK]` ci-dessous.
+- [ ] Remplacer `84` et `[VIDEO_LINK]` ci-dessous.
 - [ ] ⚠️ Le compte démo `artist@test.fr` a le rôle `worker` (ingénieur) en base alors que les notes de review le présentent comme "Compte Artiste" — corriger le rôle en `client` ou corriger les notes avant resoumission.
 
 ## Réponse à coller dans App Store Connect
@@ -22,7 +22,7 @@ Thank you for the detailed review. We have addressed both issues.
 
 We identified the root cause: a stale authentication session persisted in the iOS keychain from a previous installation of the app (keychain data survives app uninstallation on iOS). On launch, the app attempted to restore this expired session and waited indefinitely on a network call that could never complete.
 
-We have fixed this in build [BUILD_NUMBER]:
+We have fixed this in build 84:
 
 - On a fresh installation, the app now clears any stale keychain session and starts from a clean, signed-out state.
 - All authentication network calls at startup are now bounded by a strict timeout.
