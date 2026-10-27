@@ -12,6 +12,7 @@ class DiscoveredStudio {
   final double? rating;
   final int? reviewCount;
   final String? photoUrl;
+  final List<String> photoUrls;
   final String? phoneNumber;
   final String? website;
   final bool isPartner; // Studio registered on Use Me
@@ -31,6 +32,7 @@ class DiscoveredStudio {
     this.rating,
     this.reviewCount,
     this.photoUrl,
+    this.photoUrls = const [],
     this.phoneNumber,
     this.website,
     this.isPartner = false,
@@ -43,10 +45,20 @@ class DiscoveredStudio {
     this.studioType = StudioType.independent,
   });
 
+  /// Nombre max de photos Google ramenées pour la galerie du bottom sheet —
+  /// au-delà, ça n'ajoute rien à l'écran et ça gonfle la requête Details.
+  static const _maxGooglePhotos = 5;
+
   /// Create from Google Places API response
   factory DiscoveredStudio.fromGooglePlace(Map<String, dynamic> json) {
     final location = json['geometry']?['location'];
     final photos = json['photos'] as List?;
+    final photoUrls = photos == null
+        ? const <String>[]
+        : photos
+            .take(_maxGooglePhotos)
+            .map((p) => _buildPhotoUrl(p['photo_reference']))
+            .toList();
 
     return DiscoveredStudio(
       id: json['place_id'] ?? '',
@@ -58,9 +70,8 @@ class DiscoveredStudio {
       ),
       rating: json['rating']?.toDouble(),
       reviewCount: json['user_ratings_total'],
-      photoUrl: photos != null && photos.isNotEmpty
-          ? _buildPhotoUrl(photos[0]['photo_reference'])
-          : null,
+      photoUrl: photoUrls.isNotEmpty ? photoUrls.first : null,
+      photoUrls: photoUrls,
       isPartner: false,
       isVerified: false,
     );
@@ -71,6 +82,11 @@ class DiscoveredStudio {
     Map<String, dynamic> json,
     String id,
   ) {
+    final studioPhotos = _studioProfilePhotos(json['studioProfile']);
+    final singlePhoto = json['photoURL'] ??
+        json['photoUrl'] ??
+        (studioPhotos.isNotEmpty ? studioPhotos.first : null);
+
     return DiscoveredStudio(
       id: id,
       name: json['name'] ?? json['displayName'] ?? 'Studio',
@@ -81,9 +97,10 @@ class DiscoveredStudio {
       ),
       rating: json['rating']?.toDouble(),
       reviewCount: json['reviewCount'],
-      photoUrl: json['photoURL'] ??
-          json['photoUrl'] ??
-          _firstPhoto(json['studioProfile']),
+      photoUrl: singlePhoto,
+      photoUrls: studioPhotos.isNotEmpty
+          ? studioPhotos
+          : (singlePhoto != null ? [singlePhoto] : const []),
       phoneNumber: json['phoneNumber'],
       website: json['website'],
       isPartner: true,
@@ -110,6 +127,7 @@ class DiscoveredStudio {
       rating: profile.rating,
       reviewCount: profile.reviewCount,
       photoUrl: user.displayPhotoUrl,
+      photoUrls: user.displayPhotoUrl != null ? [user.displayPhotoUrl!] : const [],
       phoneNumber: profile.phone,
       website: profile.website,
       isPartner: false,
@@ -126,6 +144,23 @@ class DiscoveredStudio {
 
   /// Copy with distance
   DiscoveredStudio copyWithDistance(double distance) {
+    return copyWith(distanceMeters: distance);
+  }
+
+  /// Copy with a freshly fetched photo gallery (Google Place Details, appelé
+  /// à l'ouverture du bottom sheet — jamais depuis la liste/carte).
+  DiscoveredStudio copyWithPhotoUrls(List<String> urls) {
+    return copyWith(
+      photoUrls: urls,
+      photoUrl: urls.isNotEmpty ? urls.first : photoUrl,
+    );
+  }
+
+  DiscoveredStudio copyWith({
+    List<String>? photoUrls,
+    String? photoUrl,
+    double? distanceMeters,
+  }) {
     return DiscoveredStudio(
       id: id,
       name: name,
@@ -133,7 +168,8 @@ class DiscoveredStudio {
       position: position,
       rating: rating,
       reviewCount: reviewCount,
-      photoUrl: photoUrl,
+      photoUrl: photoUrl ?? this.photoUrl,
+      photoUrls: photoUrls ?? this.photoUrls,
       phoneNumber: phoneNumber,
       website: website,
       isPartner: isPartner,
@@ -142,7 +178,7 @@ class DiscoveredStudio {
       isPioneer: isPioneer,
       pioneerNumber: pioneerNumber,
       services: services,
-      distanceMeters: distance,
+      distanceMeters: distanceMeters ?? this.distanceMeters,
       studioType: studioType,
     );
   }
@@ -156,14 +192,14 @@ class DiscoveredStudio {
     return '${(distanceMeters! / 1000).toStringAsFixed(1)} km';
   }
 
-  static String? _firstPhoto(dynamic studioProfile) {
+  static List<String> _studioProfilePhotos(dynamic studioProfile) {
     if (studioProfile is Map) {
       final photos = studioProfile['photos'];
-      if (photos is List && photos.isNotEmpty) {
-        return photos.first?.toString();
+      if (photos is List) {
+        return photos.map((p) => p.toString()).toList();
       }
     }
-    return null;
+    return const [];
   }
 
   static String _buildPhotoUrl(String photoReference) {

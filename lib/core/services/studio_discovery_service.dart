@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
-import 'package:uzme/core/services/env_service.dart';
+import 'package:uzme/core/services/google_places_client.dart';
 import 'package:uzme/core/services/location_service.dart';
+import 'package:uzme/core/services/studio_partner_source.dart';
 import 'package:uzme/core/utils/app_logger.dart';
 
 /// Service for discovering studios nearby using Google Places API + Firestore partners
@@ -17,36 +15,43 @@ class StudioDiscoveryService {
     FirebaseFirestore? firestore,
     LocationService? locationService,
     http.Client? httpClient,
+    GooglePlacesClient? placesClient,
   }) {
-    if (firestore != null || locationService != null || httpClient != null) {
+    if (firestore != null ||
+        locationService != null ||
+        httpClient != null ||
+        placesClient != null) {
+      final resolvedFirestore = firestore ?? FirebaseFirestore.instance;
+      final resolvedLocationService = locationService ?? LocationService();
       return StudioDiscoveryService._di(
-        firestore: firestore ?? FirebaseFirestore.instance,
-        locationService: locationService ?? LocationService(),
-        httpClient: httpClient ?? http.Client(),
+        locationService: resolvedLocationService,
+        places: placesClient ?? GooglePlacesClient(httpClient: httpClient),
+        partners: StudioPartnerSource(
+          firestore: resolvedFirestore,
+          locationService: resolvedLocationService,
+        ),
       );
     }
     return _instance;
   }
   StudioDiscoveryService._internal()
-      : _firestore = FirebaseFirestore.instance,
-        _locationService = LocationService(),
-        _httpClient = http.Client();
+      : _locationService = LocationService(),
+        _places = GooglePlacesClient(),
+        _partners = StudioPartnerSource(
+          firestore: FirebaseFirestore.instance,
+          locationService: LocationService(),
+        );
   StudioDiscoveryService._di({
-    required FirebaseFirestore firestore,
     required LocationService locationService,
-    required http.Client httpClient,
-  })  : _firestore = firestore,
-        _locationService = locationService,
-        _httpClient = httpClient;
-
-  /// Google Maps API Key from environment
-  String get _apiKey => EnvService.googleMapsApiKey;
-  static const String _baseUrl =
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+    required GooglePlacesClient places,
+    required StudioPartnerSource partners,
+  })  : _locationService = locationService,
+        _places = places,
+        _partners = partners;
 
   final LocationService _locationService;
-  final FirebaseFirestore _firestore;
-  final http.Client _httpClient;
+  final GooglePlacesClient _places;
+  final StudioPartnerSource _partners;
 
   // Cache studios for 25 minutes per position
   List<DiscoveredStudio>? _cachedStudios;
@@ -54,6 +59,10 @@ class StudioDiscoveryService {
   LatLng? _cachedPosition;
   static const Duration _cacheDuration = Duration(minutes: 25);
   static const double _cacheDistanceThreshold = 2000; // 2km
+
+  // Cache des galeries photo par placeId — l'appel Details ne doit se faire
+  // qu'une fois par studio Google, jamais depuis la liste/carte (coût API).
+  final Map<String, Future<List<String>>> _photoCache = {};
 
   /// Search for recording studios nearby (Google Places + Firestore partners)
   Future<List<DiscoveredStudio>> findNearbyStudios(
@@ -67,7 +76,8 @@ class StudioDiscoveryService {
         _cacheTime != null &&
         _cachedPosition != null &&
         DateTime.now().difference(_cacheTime!) < _cacheDuration &&
-        _locationService.distanceBetween(_cachedPosition!, position) < _cacheDistanceThreshold;
+        _locationService.distanceBetween(_cachedPosition!, position) <
+            _cacheDistanceThreshold;
 
     if (isCacheValid) {
       return _updateDistances(_cachedStudios!, position);
@@ -75,12 +85,12 @@ class StudioDiscoveryService {
 
     try {
       // Fetch Google Places
-      final googleStudios = await _searchGooglePlaces(position, radius);
+      final googleStudios = await _places.searchNearby(position, radius);
 
       // Merge with partner studios (filters out claimed Google Places)
       List<DiscoveredStudio> mergedStudios;
       try {
-        mergedStudios = await _mergeStudiosWithClaims(
+        mergedStudios = await _partners.mergeWithClaims(
           googleStudios,
           position,
           radius,
@@ -105,261 +115,9 @@ class StudioDiscoveryService {
     }
   }
 
-  /// Convert AppUser (partner) to DiscoveredStudio
-  DiscoveredStudio _partnerToDiscoveredStudio(AppUser user) {
-    final profile = user.studioProfile!;
-    return DiscoveredStudio(
-      id: user.uid, // Use user ID as studio ID for booking
-      name: profile.name,
-      address: profile.fullAddress.isNotEmpty ? profile.fullAddress : profile.address,
-      position: LatLng(
-        profile.location!.latitude,
-        profile.location!.longitude,
-      ),
-      rating: profile.rating,
-      reviewCount: profile.reviewCount,
-      photoUrl: profile.photos.isNotEmpty ? profile.photos.first : user.photoURL,
-      phoneNumber: profile.phone ?? user.phoneNumber,
-      website: profile.website,
-      isPartner: true,
-      isPioneer: user.pioneer?.isPioneer ?? false,
-      services: profile.services,
-    );
-  }
-
-  /// Merge with claimed Google Place IDs filtering
-  Future<List<DiscoveredStudio>> _mergeStudiosWithClaims(
-    List<DiscoveredStudio> googleStudios,
-    LatLng position,
-    int radius,
-  ) async {
-    if (FirebaseAuth.instance.currentUser == null) return googleStudios;
-
-    // Fetch partner studios (admin or superAdmin with isPartner)
-    // Note: Firestore doesn't support OR in where, so we query isPartner only
-    // and filter by role in Dart
-    final query = await _firestore
-        .collection('users')
-        .where('isPartner', isEqualTo: true)
-        .get()
-        .timeout(
-          const Duration(seconds: 10),
-          onTimeout: () {
-            appLog('⚠️ StudioDiscoveryService: Timeout fetching partners');
-            throw Exception('Timeout');
-          },
-        );
-
-    final partnerStudios = <DiscoveredStudio>[];
-    final claimedGooglePlaceIds = <String>{};
-
-    for (final doc in query.docs) {
-      try {
-        final user = AppUser.fromMap(doc.data(), doc.id);
-        // Only include admin or superAdmin roles
-        if (!user.isStudio && !user.isSuperAdmin) continue;
-
-        if (user.studioProfile != null) {
-          // Track claimed Google Place ID
-          if (user.studioProfile!.googlePlaceId != null) {
-            claimedGooglePlaceIds.add(user.studioProfile!.googlePlaceId!);
-          }
-          // Add partner if has location and is within radius
-          if (user.studioProfile!.location != null) {
-            final studio = _partnerToDiscoveredStudio(user);
-            final distance = _locationService.distanceBetween(position, studio.position);
-            if (distance <= radius) {
-              partnerStudios.add(studio);
-            }
-          }
-        }
-      } catch (e) {
-        appLog('⚠️ StudioDiscoveryService: Error parsing partner ${doc.id}: $e');
-      }
-    }
-
-    // Fetch pro profiles with location
-    final proStudios = await _fetchNearbyPros(position, radius);
-
-    // Filter out Google studios that are claimed
-    final filteredGoogle = googleStudios
-        .where((s) => !claimedGooglePlaceIds.contains(s.id))
-        .toList();
-
-    // Partner studios first, then pros, then remaining Google studios
-    return [...partnerStudios, ...proStudios, ...filteredGoogle];
-  }
-
-  /// Fetch available pro profiles with a location within radius.
-  Future<List<DiscoveredStudio>> _fetchNearbyPros(
-    LatLng position,
-    int radius,
-  ) async {
-    try {
-      final query = await _firestore
-          .collection('users')
-          .where('proProfile.isAvailable', isEqualTo: true)
-          .get()
-          .timeout(const Duration(seconds: 10));
-
-      final pros = <DiscoveredStudio>[];
-      for (final doc in query.docs) {
-        try {
-          final user = AppUser.fromMap(doc.data(), doc.id);
-          if (!user.hasProProfile || !user.proProfile!.hasLocation) continue;
-
-          final studio = DiscoveredStudio.fromProUser(user);
-          final distance = _locationService.distanceBetween(position, studio.position);
-          if (distance <= radius) {
-            pros.add(studio);
-          }
-        } catch (e) {
-          appLog('⚠️ StudioDiscoveryService: Error parsing pro ${doc.id}: $e');
-        }
-      }
-      return pros;
-    } catch (e) {
-      appLog('⚠️ StudioDiscoveryService: Error fetching pros: $e');
-      return [];
-    }
-  }
-
-  /// Google Place types that strongly indicate the result is NOT a
-  /// recording studio (music shops, schools, churches, etc.). The legacy
-  /// Places API doesn't have a `recording_studio` type, so we filter
-  /// post-response — Places API (New) exposes `recording_studio` natively
-  /// and would let us skip this list entirely.
-  static const _excludedPlaceTypes = {
-    'music_store',
-    'electronics_store',
-    'department_store',
-    'shopping_mall',
-    'school',
-    'university',
-    'library',
-    'church',
-    'place_of_worship',
-    'restaurant',
-    'cafe',
-    'bar',
-    'museum',
-    'tourist_attraction',
-  };
-
-  /// Substrings (case-insensitive) in the place name that strongly suggest
-  /// a non-studio business — backstop for cases where Google didn't tag
-  /// the proper type (e.g. a music shop tagged only `establishment`).
-  static const _excludedNamePatterns = [
-    'magasin',
-    'boutique',
-    ' shop',
-    'store',
-    'école',
-    'ecole',
-    'school',
-    'conservatoire',
-    'cours de',
-    'cours-de',
-    'musée',
-    'museum',
-    'instruments de musique',
-  ];
-
-  bool _isLikelyRecordingStudio(Map<String, dynamic> place) {
-    final types =
-        (place['types'] as List?)?.map((e) => e.toString()).toList() ?? const [];
-    for (final blacklisted in _excludedPlaceTypes) {
-      if (types.contains(blacklisted)) return false;
-    }
-    final name = (place['name']?.toString() ?? '').toLowerCase();
-    for (final pattern in _excludedNamePatterns) {
-      if (name.contains(pattern)) return false;
-    }
-    return true;
-  }
-
-  Future<List<DiscoveredStudio>> _searchGooglePlaces(
-    LatLng position,
-    int radius,
-  ) async {
-    final url = Uri.parse(
-      '$_baseUrl?location=${position.latitude},${position.longitude}'
-      '&radius=$radius'
-      '&keyword=recording+studio+enregistrement'
-      '&type=establishment'
-      '&key=$_apiKey',
-    );
-
-    final response = await _httpClient.get(url).timeout(const Duration(seconds: 15));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      // Google returns HTTP 200 with status:REQUEST_DENIED / OVER_QUERY_LIMIT
-      // when the API key is rejected / quota exceeded — surface those so we
-      // don't keep debugging a silent empty list.
-      _logGoogleStatusIfError(data, requestType: 'NearbySearch');
-      final results = data['results'] as List? ?? [];
-
-      return results
-          .whereType<Map<String, dynamic>>()
-          .where(_isLikelyRecordingStudio)
-          .map((place) => DiscoveredStudio.fromGooglePlace(place))
-          .where((s) => s.position.latitude != 0)
-          .toList();
-    }
-
-    throw Exception('Failed to fetch studios: ${response.statusCode}');
-  }
-
-  /// Find a place (typically a studio) by free-text query using the Google
-  /// Places Text Search API. Used when the user types a studio name that
-  /// isn't in the currently loaded nearby list — Text Search ranks by
-  /// relevance worldwide and tolerates approximate / unaccented spellings.
-  Future<DiscoveredStudio?> searchByText(String query) async {
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/textsearch/json'
-      '?query=${Uri.encodeComponent(query)}'
-      '&key=$_apiKey',
-    );
-
-    try {
-      final response =
-          await _httpClient.get(url).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode != 200) {
-        appLog('⚠️ Places TextSearch HTTP ${response.statusCode}');
-        return null;
-      }
-
-      final data = json.decode(response.body);
-      _logGoogleStatusIfError(data, requestType: 'TextSearch');
-
-      final results = data['results'] as List? ?? [];
-      if (results.isEmpty) return null;
-
-      // Top result — Text Search ranks by relevance.
-      return DiscoveredStudio.fromGooglePlace(results.first);
-    } catch (e) {
-      appLog('⚠️ Places TextSearch error: $e');
-      return null;
-    }
-  }
-
-  /// Log Google API non-OK statuses so we can debug REQUEST_DENIED /
-  /// OVER_QUERY_LIMIT / INVALID_REQUEST without rebuilds. ZERO_RESULTS is
-  /// a normal "not found" outcome and is intentionally silent.
-  void _logGoogleStatusIfError(
-    dynamic data, {
-    required String requestType,
-  }) {
-    final status = data['status']?.toString();
-    if (status == null || status == 'OK' || status == 'ZERO_RESULTS') return;
-    final errorMessage = data['error_message']?.toString() ?? '';
-    appLog(
-      '⚠️ Google Places $requestType non-OK: $status'
-      '${errorMessage.isNotEmpty ? ' — $errorMessage' : ''}',
-    );
-  }
+  /// Find a place (typically a studio) by free-text query.
+  Future<DiscoveredStudio?> searchByText(String query) =>
+      _places.searchByText(query);
 
   List<DiscoveredStudio> _updateDistances(
     List<DiscoveredStudio> studios,
@@ -386,28 +144,37 @@ class StudioDiscoveryService {
   }
 
   /// Get studio details by place ID
-  Future<DiscoveredStudio?> getStudioDetails(String placeId) async {
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/details/json'
-      '?place_id=$placeId'
-      '&fields=name,formatted_address,geometry,rating,user_ratings_total,'
-      'formatted_phone_number,website,photos'
-      '&key=$_apiKey',
-    );
+  Future<DiscoveredStudio?> getStudioDetails(String placeId) =>
+      _places.getDetails(placeId);
 
-    try {
-      final response = await _httpClient.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final result = data['result'];
-        if (result != null) {
-          return DiscoveredStudio.fromGooglePlace(result);
-        }
-      }
-    } catch (e) {
-      // Ignore errors
+  /// Galerie photo complète d'un studio, pour le header du bottom sheet.
+  ///
+  /// Partenaire ou pro : la liste vient déjà de Firestore, rien à appeler.
+  /// Studio Google : Nearby/Text Search ne rendent jamais plus d'UNE photo,
+  /// donc `studio.photoUrls` non vide ne veut pas dire "galerie complète" —
+  /// on appelle toujours Details une fois, sauf court-circuit partenaire/pro
+  /// ci-dessus. Le `Future` lui-même est caché (pas juste son résultat) pour
+  /// dédupliquer un double appel si le bottom sheet est fermé puis rouvert
+  /// avant la première réponse, et retiré du cache en cas d'échec réseau
+  /// pour ne pas figer la galerie à une photo pour le reste de la session.
+  Future<List<String>> getStudioPhotoUrls(DiscoveredStudio studio) {
+    if (studio.isPartner || studio.isPro) return Future.value(studio.photoUrls);
+
+    return _photoCache.putIfAbsent(
+      studio.id,
+      () => _fetchGooglePhotoUrls(studio),
+    );
+  }
+
+  Future<List<String>> _fetchGooglePhotoUrls(DiscoveredStudio studio) async {
+    final urls = await _places.getPhotoUrls(studio.id);
+    if (urls == null) {
+      _photoCache.remove(studio.id);
+      return studio.photoUrl != null ? [studio.photoUrl!] : const [];
     }
-    return null;
+    return urls.isNotEmpty
+        ? urls
+        : (studio.photoUrl != null ? [studio.photoUrl!] : const []);
   }
 
   /// Clear cache
@@ -415,37 +182,10 @@ class StudioDiscoveryService {
     _cachedStudios = null;
     _cacheTime = null;
     _cachedPosition = null;
+    _photoCache.clear();
   }
 
   /// Geocode an address to coordinates
-  Future<LatLng?> geocodeAddress(String address) async {
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json'
-      '?address=${Uri.encodeComponent(address)}'
-      '&key=$_apiKey',
-    );
-
-    try {
-      final response = await _httpClient.get(url).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _logGoogleStatusIfError(data, requestType: 'Geocoding');
-        final results = data['results'] as List?;
-
-        if (results != null && results.isNotEmpty) {
-          final location = results[0]['geometry']['location'];
-          return LatLng(
-            location['lat'] as double,
-            location['lng'] as double,
-          );
-        }
-      }
-    } catch (e) {
-      appLog('⚠️ Geocoding error: $e');
-    }
-
-    return null;
-  }
-
+  Future<LatLng?> geocodeAddress(String address) =>
+      _places.geocodeAddress(address);
 }

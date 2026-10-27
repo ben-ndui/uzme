@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
+import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
 import 'package:uzme/core/models/favorite.dart';
-import 'package:uzme/core/models/studio_profile.dart';
-import 'package:uzme/core/blocs/map/map_bloc.dart';
-import 'package:uzme/core/blocs/map/map_event.dart';
-import 'package:uzme/core/models/payment_method.dart';
-import 'package:uzme/core/services/navigation_service.dart';
 import 'package:uzme/core/services/payment_config_service.dart';
-import 'package:uzme/l10n/app_localizations.dart';
-import 'package:uzme/widgets/common/badges/pioneer_badge.dart';
+import 'package:uzme/core/services/studio_discovery_service.dart';
+import 'package:uzme/widgets/artist/studio_detail_actions.dart';
+import 'package:uzme/widgets/artist/studio_detail_badges.dart';
+import 'package:uzme/widgets/artist/studio_detail_info.dart';
+import 'package:uzme/widgets/common/detail_photo_header.dart';
 import 'package:uzme/widgets/favorite/favorite_button.dart';
 
 /// Bottom sheet showing studio details for authenticated artists
-class StudioDetailBottomSheet extends StatelessWidget {
+class StudioDetailBottomSheet extends StatefulWidget {
   final DiscoveredStudio studio;
+  final StudioDiscoveryService? discoveryService;
+  final PaymentConfigService? paymentConfigService;
 
-  const StudioDetailBottomSheet({super.key, required this.studio});
+  const StudioDetailBottomSheet({
+    super.key,
+    required this.studio,
+    this.discoveryService,
+    this.paymentConfigService,
+  });
 
   static Future<void> show(BuildContext context, DiscoveredStudio studio) {
     final authBloc = context.read<AuthBloc>();
@@ -47,12 +52,45 @@ class StudioDetailBottomSheet extends StatelessWidget {
   }
 
   @override
+  State<StudioDetailBottomSheet> createState() => _StudioDetailBottomSheetState();
+}
+
+class _StudioDetailBottomSheetState extends State<StudioDetailBottomSheet> {
+  late List<String> _photoUrls = widget.studio.photoUrls;
+  bool _loadingMorePhotos = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Studio Google (non-partenaire, non-pro) : un seul appel Details à
+    // l'ouverture, jamais depuis la liste/carte — caché par placeId côté
+    // service. Un partenaire ou un pro a déjà sa galerie définitive
+    // (Firestore), appeler le service dessus gaspillerait une requête
+    // Google avec un placeId qui n'en est pas un.
+    if (!widget.studio.isPartner && !widget.studio.isPro) {
+      // Nearby/Text Search ne rendent jamais plus d'une photo : tant qu'on
+      // n'a rien du tout, le header doit afficher un vrai indicateur de
+      // chargement plutôt qu'un vide silencieux.
+      _loadingMorePhotos = _photoUrls.isEmpty;
+      final discoveryService = widget.discoveryService ?? StudioDiscoveryService();
+      discoveryService.getStudioPhotoUrls(widget.studio).then((urls) {
+        if (!mounted) return;
+        setState(() {
+          _photoUrls = urls;
+          _loadingMorePhotos = false;
+        });
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final studio = widget.studio;
 
     return Container(
       margin: const EdgeInsets.all(16),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -64,413 +102,36 @@ class StudioDetailBottomSheet extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHandle(theme),
-          _buildHeader(theme, l10n),
-          if (studio.address != null) _buildAddress(theme),
-          _buildStats(theme, l10n),
-          if (studio.services.isNotEmpty) _buildServices(theme, l10n),
-          if (studio.isPartner) _buildCancellationPolicy(theme, l10n),
-          _buildActions(context, theme, l10n),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHandle(ThemeData theme) {
-    return Container(
-      width: 40,
-      height: 4,
-      margin: const EdgeInsets.only(top: 12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.outline.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(2),
-      ),
-    );
-  }
-
-  Widget _buildHeader(ThemeData theme, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          _buildStudioAvatar(theme),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        studio.name,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    FavoriteButton(
-                      targetId: studio.id,
-                      type: FavoriteType.studio,
-                      targetName: studio.name,
-                      targetPhotoUrl: studio.photoUrl,
-                      targetAddress: studio.address,
-                    ),
-                  ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DetailPhotoHeader(
+              photoUrls: _photoUrls,
+              isLoading: _loadingMorePhotos,
+              placeholderIcon: FontAwesomeIcons.buildingUser,
+              topRight: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.35),
+                  shape: BoxShape.circle,
                 ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    if (studio.isPioneer && studio.pioneerNumber != null)
-                      PioneerBadge(
-                        pioneerNumber: studio.pioneerNumber!,
-                        compact: true,
-                      ),
-                    if (studio.isVerified) _buildVerifiedBadge(theme, l10n),
-                    if (studio.isPartner && !studio.isPioneer)
-                      _buildPartnerBadge(theme, l10n),
-                    _buildStudioTypeBadge(theme, l10n),
-                  ],
+                child: FavoriteButton(
+                  targetId: studio.id,
+                  type: FavoriteType.studio,
+                  targetName: studio.name,
+                  targetPhotoUrl: studio.photoUrl,
+                  targetAddress: studio.address,
+                  size: 20,
+                  inactiveColor: Colors.white,
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStudioAvatar(ThemeData theme) {
-    return Container(
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: theme.colorScheme.primaryContainer,
-        image: studio.photoUrl != null
-            ? DecorationImage(
-                image: NetworkImage(studio.photoUrl!),
-                fit: BoxFit.cover,
-                onError: (_, __) {},
-              )
-            : null,
-      ),
-      child: Center(
-        child: FaIcon(
-          FontAwesomeIcons.buildingUser,
-          color: theme.colorScheme.primary,
-          size: 32,
+            StudioDetailTitleRow(studio: studio),
+            StudioDetailInfo(studio: studio, paymentConfigService: widget.paymentConfigService),
+            StudioDetailActions(studio: studio),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildVerifiedBadge(ThemeData theme, AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const FaIcon(FontAwesomeIcons.shieldHalved, size: 12, color: Colors.blue),
-          const SizedBox(width: 6),
-          Text(
-            l10n.verified,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: Colors.blue,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPartnerBadge(ThemeData theme, AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const FaIcon(FontAwesomeIcons.solidCircleCheck, size: 12, color: Colors.green),
-          const SizedBox(width: 6),
-          Text(
-            l10n.partner,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: Colors.green,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStudioTypeBadge(ThemeData theme, AppLocalizations l10n) {
-    final (icon, label, color) = switch (studio.studioType) {
-      StudioType.pro => (FontAwesomeIcons.building, l10n.studioTypePro, Colors.purple),
-      StudioType.independent => (FontAwesomeIcons.houseUser, l10n.studioTypeIndependent, Colors.blue),
-      StudioType.amateur => (FontAwesomeIcons.house, l10n.studioTypeAmateur, Colors.orange),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FaIcon(icon, size: 12, color: color),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddress(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          FaIcon(FontAwesomeIcons.locationDot, size: 14, color: theme.colorScheme.outline),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              studio.address!,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStats(ThemeData theme, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          if (studio.rating != null) ...[
-            _buildStatChip(
-              theme,
-              icon: FontAwesomeIcons.solidStar,
-              iconColor: Colors.amber,
-              value: studio.rating!.toStringAsFixed(1),
-              label: '(${studio.reviewCount ?? 0})',
-            ),
-            const SizedBox(width: 12),
-          ],
-          _buildStatChip(
-            theme,
-            icon: FontAwesomeIcons.locationArrow,
-            iconColor: theme.colorScheme.primary,
-            value: studio.formattedDistance,
-            label: '',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatChip(
-    ThemeData theme, {
-    required FaIconData icon,
-    required Color iconColor,
-    required String value,
-    required String label,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FaIcon(icon, size: 14, color: iconColor),
-          const SizedBox(width: 6),
-          Text(value, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-          if (label.isNotEmpty) ...[
-            const SizedBox(width: 4),
-            Text(label, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServices(ThemeData theme, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: studio.services.take(5).map((service) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              service,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildCancellationPolicy(ThemeData theme, AppLocalizations l10n) {
-    return FutureBuilder<StudioPaymentConfig>(
-      future: PaymentConfigService().getPaymentConfig(studio.id),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
-        final policy = snapshot.data!.cancellationPolicy;
-
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-          child: Row(
-            children: [
-              FaIcon(FontAwesomeIcons.scaleBalanced,
-                  size: 12, color: theme.colorScheme.outline),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  '${policy.label} — ${policy.description}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildActions(BuildContext context, ThemeData theme, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          if (studio.isPartner)
-            FilledButton.icon(
-              onPressed: () {
-                Navigator.pop(context);
-                context.push(
-                  '/artist/request?studioId=${studio.id}&studioName=${Uri.encodeComponent(studio.name)}',
-                );
-              },
-              icon: const FaIcon(FontAwesomeIcons.calendarPlus, size: 16),
-              label: Text(l10n.book),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-              ),
-            )
-          else
-            OutlinedButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const FaIcon(FontAwesomeIcons.xmark, size: 16),
-              label: Text(l10n.notAvailable),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-              ),
-            ),
-          const SizedBox(height: 10),
-          _buildDirectionsRow(context, theme, l10n),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDirectionsRow(
-    BuildContext context,
-    ThemeData theme,
-    AppLocalizations l10n,
-  ) {
-    // Check if MapBloc is available (only on map screens)
-    MapBloc? mapBloc;
-    try {
-      mapBloc = context.read<MapBloc>();
-    } catch (_) {}
-
-    if (mapBloc != null) {
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () {
-                mapBloc!.add(GetDirectionsEvent(destination: studio));
-                Navigator.pop(context);
-              },
-              icon: FaIcon(FontAwesomeIcons.route, size: 14,
-                  color: theme.colorScheme.primary),
-              label: Text(l10n.getDirections),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 50),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          OutlinedButton(
-            onPressed: () => NavigationService.openDirections(
-              destination: studio.position,
-              destinationName: studio.name,
-            ),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(50, 50),
-              padding: EdgeInsets.zero,
-            ),
-            child: FaIcon(FontAwesomeIcons.diamondTurnRight,
-                size: 16, color: theme.colorScheme.primary),
-          ),
-        ],
-      );
-    }
-
-    // No MapBloc — just show external navigation
-    return OutlinedButton.icon(
-      onPressed: () => NavigationService.openDirections(
-        destination: studio.position,
-        destinationName: studio.name,
-      ),
-      icon: FaIcon(FontAwesomeIcons.diamondTurnRight,
-          size: 16, color: theme.colorScheme.primary),
-      label: Text(l10n.getDirections),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 50),
       ),
     );
   }

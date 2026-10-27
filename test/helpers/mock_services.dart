@@ -6,6 +6,8 @@ import 'package:uzme/core/services/subscription_config_service.dart';
 import 'package:uzme/core/services/favorite_service.dart';
 import 'package:uzme/core/services/artist_service.dart';
 import 'package:uzme/core/services/location_service.dart';
+import 'package:uzme/core/services/google_places_client.dart';
+import 'package:uzme/core/services/payment_config_service.dart';
 import 'package:uzme/core/services/studio_discovery_service.dart';
 import 'package:uzme/core/services/unavailability_service.dart';
 import 'package:uzme/core/services/engineer_availability_service.dart';
@@ -28,6 +30,10 @@ class MockLocationService extends Mock implements LocationService {}
 
 class MockStudioDiscoveryService extends Mock
     implements StudioDiscoveryService {}
+
+class MockPaymentConfigService extends Mock implements PaymentConfigService {}
+
+class MockGooglePlacesClient extends Mock implements GooglePlacesClient {}
 
 class MockUnavailabilityService extends Mock
     implements UnavailabilityService {}

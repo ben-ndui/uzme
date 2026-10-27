@@ -171,20 +171,23 @@ void main() {
       expect(find.text('DJ Test'), findsOneWidget);
     });
 
-    testWidgets('shows portfolio section when urls present', (tester) async {
+    testWidgets('feeds portfolio photos into the header gallery', (tester) async {
+      // Le portfolio n'a plus sa propre section : il alimente le carrousel
+      // du header (DetailPhotoHeader), avec l'avatar éventuel devant.
       await tester.pumpWidget(buildSheet(makeUser(
-        portfolioUrls: ['https://example.com/img1.jpg'],
+        portfolioUrls: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'],
       )));
       await tester.pumpAndSettle();
 
-      expect(find.text('Portfolio'), findsOneWidget);
+      expect(find.text('Portfolio'), findsNothing);
+      expect(find.byType(PageView), findsOneWidget);
     });
 
-    testWidgets('hides portfolio section when no urls', (tester) async {
+    testWidgets('shows a placeholder icon when no avatar and no portfolio', (tester) async {
       await tester.pumpWidget(buildSheet(makeUser()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Portfolio'), findsNothing);
+      expect(find.byType(PageView), findsNothing);
     });
 
     testWidgets('shows payment methods when present', (tester) async {
