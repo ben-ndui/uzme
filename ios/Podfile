@@ -51,6 +51,11 @@ post_install do |installer|
       ]
       # Allow arm64 simulator for iPhone 17+ (iOS 26+)
       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
+      # Xcode 27 refuse les cibles < 15.0 (Target Integrity) : certains pods
+      # declarent encore un plancher plus bas dans leur podspec.
+      if Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_s) < Gem::Version.new('15.0')
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      end
     end
   end
 

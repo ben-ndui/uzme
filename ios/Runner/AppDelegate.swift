@@ -6,7 +6,7 @@ import FirebaseMessaging
 import GoogleSignIn
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -28,8 +28,14 @@ import GoogleSignIn
     UNUserNotificationCenter.current().delegate = self
     application.registerForRemoteNotifications()
 
-    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  // Cycle de vie UIScene (Xcode 27+) : l'enregistrement des plugins ne se fait
+  // plus dans didFinishLaunchingWithOptions mais ici, une fois le moteur
+  // Flutter implicite créé par le FlutterViewController du storyboard.
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
   }
 
   // Handle APNs token
@@ -37,15 +43,5 @@ import GoogleSignIn
                             didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     Messaging.messaging().apnsToken = deviceToken
     super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
-  }
-
-  // Handle Google Sign-In callback URL
-  override func application(_ app: UIApplication,
-                            open url: URL,
-                            options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-    if GIDSignIn.sharedInstance.handle(url) {
-      return true
-    }
-    return super.application(app, open: url, options: options)
   }
 }

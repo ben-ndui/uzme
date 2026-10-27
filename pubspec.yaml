@@ -107,7 +107,10 @@ dependencies:
   # Environment variables
   flutter_dotenv: ^5.2.1
   add_2_calendar: ^3.0.1
-  flutter_contacts: ^1.1.9+2
+  # Vendorisé + patché (crash au lancement sous iOS 27 / cycle UIScene) —
+  # voir third_party/flutter_contacts/VENDORED.md avant tout retour à pub.dev.
+  flutter_contacts:
+    path: third_party/flutter_contacts
   # Vendorisé + patché (session zombie iOS + tags vierges invisibles) —
   # voir third_party/nfc_manager/VENDORED.md avant tout retour à pub.dev.
   nfc_manager:
