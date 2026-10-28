@@ -1,0 +1,45 @@
+appId: com.smoothandesign.useme
+---
+# Connexion avec le compte artiste semé par seed.js. Part du principe que
+# l'app vient d'être relancée à froid sur les émulateurs (pas de session
+# cachée) — voir tools/e2e/one.sh.
+#
+# ⚠️ `tapOn: "Mot de passe"` (et `below: "Email"`) atterrissaient sur le
+# conteneur du champ EMAIL : son nœud d'accessibilité a une zone tactile
+# surdimensionnée qui recouvre l'espace visuel du champ mot de passe.
+# Coordonnées exactes à la place — MAIS mesurées une fois le clavier FERMÉ :
+# cet écran recule ses champs vers le haut dès que le clavier s'ouvre
+# (`resizeToAvoidBottomInset`), donc les coordonnées "clavier ouvert" ne
+# valent plus rien pour le PREMIER tap, avant que quoi que ce soit ne soit
+# encore ouvert. Toujours mesurer dans l'état où le flow part réellement.
+- launchApp: { stopApp: true }
+# Le premier `repeat/while` juste après `launchApp` arrivait parfois avant que
+# l'UI ait fini de se poser (l'app démarre, l'écran pas encore peint) — le
+# `while` voyait "non visible" et sautait la boucle entière. Un point
+# d'ancrage qui existe sur TOUS les écrans de connexion (connecté ou pas).
+- extendedWaitUntil: { visible: "UZME", timeout: 60000 }
+# La carte de connexion rapide arrive avec sa propre animation d'entrée —
+# "UZME" (statique) est visible avant elle. Un `repeat/while` qui évalue sa
+# condition juste après sautait la boucle entière (bouton pas encore là).
+- extendedWaitUntil:
+    visible: "Utiliser un autre compte"
+    timeout: 15000
+    optional: true
+- repeat:
+    while: { visible: "Utiliser un autre compte" }
+    commands:
+      - tapOn: "Utiliser un autre compte"
+- extendedWaitUntil: { visible: "Email", timeout: 60000 }
+- tapOn: { point: "50%,64%" }
+- inputText: "e2e.artiste@uzme.app"
+- tapOn: { point: "50%,75%" }
+- inputText: "Test1234!"
+# Le champ mot de passe a `textInputAction: done` +
+# `onFieldSubmitted: (_) => _login()` — Entrée revient au même que taper
+# "Se connecter", et évite ce bouton : il n'est QUE mesurable clavier fermé,
+# et rien ne ferme le clavier ici sans perturber la feuille DRAGGABLE
+# (un swipe vertical l'agrandit/réduit au lieu de fermer le clavier).
+- pressKey: Enter
+
+- extendedWaitUntil: { visible: "Accueil", timeout: 60000 }
+- takeScreenshot: /tmp/e2e/01-connexion

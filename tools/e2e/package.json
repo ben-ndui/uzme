@@ -1,0 +1,11 @@
+{
+  "name": "uzme-e2e",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

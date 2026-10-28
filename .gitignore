@@ -7,6 +7,9 @@ assets/.env
 # Local dependency overrides (dev only)
 pubspec_overrides.yaml
 
+# Harnais E2E Maestro (tools/e2e/) — dépendances Node, jamais commitées
+tools/e2e/node_modules/
+
 # App Store Connect API keys (NEVER commit)
 fastlane/*.p8
 

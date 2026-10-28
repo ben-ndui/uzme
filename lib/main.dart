@@ -24,6 +24,7 @@ import 'package:uzme/core/localization/sango_material_localizations.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/services/auth_service.dart';
 import 'package:uzme/core/services/deep_link_service.dart';
+import 'package:uzme/core/services/e2e_emulators.dart';
 import 'package:uzme/core/services/notification_navigation_service.dart';
 import 'package:uzme/core/services/feature_flags_service.dart';
 import 'package:uzme/core/services/notification_service.dart';
@@ -110,6 +111,12 @@ void main() {
         _bootLog('firebase:FAIL: $e');
         _bootLog('firebase:STACK: $st');
         rethrow;
+      }
+
+      // Harnais E2E Maestro (tools/e2e/) uniquement — jamais en prod/TestFlight.
+      if (useEmulators) {
+        connectToEmulatorsIfRequested();
+        _bootLog('emulators:connected');
       }
 
       try {

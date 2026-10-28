@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "uzme-app"
+  },
   "targets": {},
   "etags": {}
 }
