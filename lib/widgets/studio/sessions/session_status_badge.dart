@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uzme/core/models/session.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 
 /// Status badge for session cards
 class SessionStatusBadge extends StatelessWidget {
@@ -11,7 +12,8 @@ class SessionStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final (color, label) = _getStatusInfo(l10n);
+    final color = status.color;
+    final label = _label(l10n);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -26,25 +28,14 @@ class SessionStatusBadge extends StatelessWidget {
     );
   }
 
-  (Color, String) _getStatusInfo(AppLocalizations l10n) {
+  String _label(AppLocalizations l10n) {
     return switch (status) {
-      SessionStatus.pending => (Colors.orange, l10n.waitingStatus),
-      SessionStatus.confirmed => (Colors.blue, l10n.confirmedStatus),
-      SessionStatus.inProgress => (Colors.green, l10n.inProgressStatus),
-      SessionStatus.completed => (Colors.grey, l10n.completedStatus),
-      SessionStatus.cancelled => (Colors.red, l10n.cancelledStatus),
-      SessionStatus.noShow => (Colors.red, l10n.noShowStatus),
+      SessionStatus.pending => l10n.waitingStatus,
+      SessionStatus.confirmed => l10n.confirmedStatus,
+      SessionStatus.inProgress => l10n.inProgressStatus,
+      SessionStatus.completed => l10n.completedStatus,
+      SessionStatus.cancelled => l10n.cancelledStatus,
+      SessionStatus.noShow => l10n.noShowStatus,
     };
   }
-}
-
-/// Returns the color for a given session status
-Color getSessionStatusColor(SessionStatus status) {
-  return switch (status) {
-    SessionStatus.pending => Colors.orange,
-    SessionStatus.confirmed => Colors.blue,
-    SessionStatus.inProgress => Colors.green,
-    SessionStatus.completed => Colors.grey,
-    SessionStatus.cancelled || SessionStatus.noShow => Colors.red,
-  };
 }

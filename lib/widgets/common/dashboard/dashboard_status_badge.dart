@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 
 /// A status badge widget for sessions in dashboards
 class DashboardStatusBadge extends StatelessWidget {
@@ -15,13 +16,14 @@ class DashboardStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (color, label) = switch (status) {
-      SessionStatus.pending => (Colors.orange, l10n.waitingStatus),
-      SessionStatus.confirmed => (Colors.blue, l10n.confirmedStatus),
-      SessionStatus.inProgress => (Colors.green, l10n.inProgressStatus),
-      SessionStatus.completed => (Colors.grey, l10n.completedStatus),
-      SessionStatus.cancelled => (Colors.red, l10n.cancelledStatus),
-      SessionStatus.noShow => (Colors.red, l10n.noShowStatus),
+    final color = status.color;
+    final label = switch (status) {
+      SessionStatus.pending => l10n.waitingStatus,
+      SessionStatus.confirmed => l10n.confirmedStatus,
+      SessionStatus.inProgress => l10n.inProgressStatus,
+      SessionStatus.completed => l10n.completedStatus,
+      SessionStatus.cancelled => l10n.cancelledStatus,
+      SessionStatus.noShow => l10n.noShowStatus,
     };
 
     return Container(

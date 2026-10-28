@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 
 /// Session tile for artist calendar view
 class ArtistSessionTile extends StatelessWidget {
@@ -98,7 +99,8 @@ class ArtistSessionTile extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(ColorScheme colorScheme, AppLocalizations l10n) {
-    final (color, label) = _getStatusInfo(l10n);
+    final color = session.displayStatus.color;
+    final label = _statusLabel(l10n);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
@@ -106,14 +108,14 @@ class ArtistSessionTile extends StatelessWidget {
     );
   }
 
-  (Color, String) _getStatusInfo(AppLocalizations l10n) {
+  String _statusLabel(AppLocalizations l10n) {
     return switch (session.displayStatus) {
-      SessionStatus.pending => (Colors.orange, l10n.pendingStatus),
-      SessionStatus.confirmed => (Colors.green, l10n.confirmedStatus),
-      SessionStatus.inProgress => (Colors.blue, l10n.inProgressStatus),
-      SessionStatus.completed => (Colors.grey, l10n.completedStatus),
-      SessionStatus.cancelled => (Colors.red, l10n.cancelledStatus),
-      SessionStatus.noShow => (Colors.red, l10n.noShowStatus),
+      SessionStatus.pending => l10n.pendingStatus,
+      SessionStatus.confirmed => l10n.confirmedStatus,
+      SessionStatus.inProgress => l10n.inProgressStatus,
+      SessionStatus.completed => l10n.completedStatus,
+      SessionStatus.cancelled => l10n.cancelledStatus,
+      SessionStatus.noShow => l10n.noShowStatus,
     };
   }
 

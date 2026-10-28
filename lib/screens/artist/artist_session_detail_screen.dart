@@ -15,6 +15,7 @@ import 'package:uzme/widgets/common/error_retry_compact.dart';
 import 'package:uzme/core/services/session_payment_service.dart';
 import 'package:uzme/widgets/common/cancel_session_sheet.dart';
 import 'package:uzme/widgets/common/payment_tracking_card.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 import 'package:uzme/widgets/common/session_pay_button.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
@@ -276,7 +277,8 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (color, label) = _getStatusInfo();
+    final color = status.color;
+    final label = _label();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
@@ -291,14 +293,14 @@ class _StatusBadge extends StatelessWidget {
     );
   }
 
-  (Color, String) _getStatusInfo() {
+  String _label() {
     return switch (status) {
-      SessionStatus.pending => (Colors.orange, l10n.pendingStatus),
-      SessionStatus.confirmed => (Colors.green, l10n.confirmedStatus),
-      SessionStatus.inProgress => (Colors.blue, l10n.inProgressStatus),
-      SessionStatus.completed => (Colors.grey, l10n.completedStatus),
-      SessionStatus.cancelled => (Colors.red, l10n.cancelledStatus),
-      SessionStatus.noShow => (Colors.red, l10n.noShowStatus),
+      SessionStatus.pending => l10n.pendingStatus,
+      SessionStatus.confirmed => l10n.confirmedStatus,
+      SessionStatus.inProgress => l10n.inProgressStatus,
+      SessionStatus.completed => l10n.completedStatus,
+      SessionStatus.cancelled => l10n.cancelledStatus,
+      SessionStatus.noShow => l10n.noShowStatus,
     };
   }
 }

@@ -12,6 +12,7 @@ import 'package:uzme/core/services/pro_profile_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
 import 'package:uzme/widgets/common/payment_tracking_card.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/widgets/pro/accept_pro_booking_sheet.dart';
 
@@ -387,10 +388,10 @@ class _StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final (label, color) = switch (status) {
-      SessionStatus.pending => (l10n.proBookingPending, Colors.orange),
-      SessionStatus.confirmed => (l10n.proBookingConfirmed, Colors.green),
-      SessionStatus.cancelled => (l10n.proBookingStatusCancelled, Colors.red),
-      _ => (status.name, Colors.grey),
+      SessionStatus.pending => (l10n.proBookingPending, status.color),
+      SessionStatus.confirmed => (l10n.proBookingConfirmed, status.color),
+      SessionStatus.cancelled => (l10n.proBookingStatusCancelled, status.color),
+      _ => (status.name, status.color),
     };
 
     return Container(

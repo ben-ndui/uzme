@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/core/models/models_exports.dart';
-import 'package:uzme/widgets/studio/sessions/session_status_badge.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 
 /// Calendar widget for the sessions page
 class SessionsCalendar extends StatelessWidget {
@@ -81,7 +81,7 @@ class SessionsCalendar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: events.take(4).map((event) {
           final color = event is Session
-              ? getSessionStatusColor(event.displayStatus)
+              ? event.displayStatus.color
               : theme.colorScheme.outline;
           return Container(
             width: 6,

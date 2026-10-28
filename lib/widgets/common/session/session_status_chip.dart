@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/session/session_status_style.dart';
 
 /// A colored chip displaying session status
 class SessionStatusChip extends StatelessWidget {
@@ -57,12 +58,12 @@ class SessionStatusChip extends StatelessWidget {
     }
 
     return switch (status) {
-      SessionStatus.pending => (Colors.orange, FontAwesomeIcons.hourglass, l10n.waitingStatus),
-      SessionStatus.confirmed => (Colors.blue, FontAwesomeIcons.circleCheck, l10n.confirmedStatus),
-      SessionStatus.inProgress => (Colors.green, FontAwesomeIcons.play, l10n.inProgressStatus),
-      SessionStatus.completed => (Colors.grey, FontAwesomeIcons.check, l10n.completedStatus),
-      SessionStatus.cancelled => (Colors.red, FontAwesomeIcons.xmark, l10n.cancelledStatus),
-      SessionStatus.noShow => (Colors.red, FontAwesomeIcons.userXmark, l10n.noShowStatus),
+      SessionStatus.pending => (status.color, FontAwesomeIcons.hourglass, l10n.waitingStatus),
+      SessionStatus.confirmed => (status.color, FontAwesomeIcons.circleCheck, l10n.confirmedStatus),
+      SessionStatus.inProgress => (status.color, FontAwesomeIcons.play, l10n.inProgressStatus),
+      SessionStatus.completed => (status.color, FontAwesomeIcons.check, l10n.completedStatus),
+      SessionStatus.cancelled => (status.color, FontAwesomeIcons.xmark, l10n.cancelledStatus),
+      SessionStatus.noShow => (status.color, FontAwesomeIcons.userXmark, l10n.noShowStatus),
     };
   }
 }
