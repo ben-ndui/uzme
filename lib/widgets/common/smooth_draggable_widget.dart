@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uzme/config/useme_theme.dart';
 
+part 'smooth_draggable_background.dart';
+
 /// Collapsible draggable sheet widget - adapted from Viba
 class SmoothDraggableWidget extends StatefulWidget {
   const SmoothDraggableWidget({
@@ -15,6 +17,9 @@ class SmoothDraggableWidget extends StatefulWidget {
     this.color2,
     this.bottomPadding = 20,
     this.floatingBottomPadding = 40,
+    this.pinnedHeader,
+    this.pinnedHeaderHeight = 0,
+    this.pinnedFooter,
   });
 
   final Widget bodyContent;
@@ -27,6 +32,18 @@ class SmoothDraggableWidget extends StatefulWidget {
   final Color? color2;
   final double bottomPadding;
   final double floatingBottomPadding;
+
+  /// Barre compacte (ex. nom + note) toujours visible sous la poignée,
+  /// même feuille repliée — contrairement au contenu de [bodyContent], qui
+  /// défile. Nécessite [pinnedHeaderHeight] pour réserver sa place dans le
+  /// scroll (sinon le premier élément de [bodyContent] démarre dessous).
+  final Widget? pinnedHeader;
+  final double pinnedHeaderHeight;
+
+  /// Barre d'action ancrée en bas, toujours visible (contrairement à
+  /// [floatButtons], qui n'apparaît qu'au-delà de [threshold]). Gère
+  /// elle-même sa zone de sécurité bas d'écran.
+  final Widget? pinnedFooter;
 
   @override
   State<SmoothDraggableWidget> createState() => _SmoothDraggableWidgetState();
@@ -45,7 +62,8 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
   }
 
   void _onSheetScroll() {
-    final normalizedSize = (controller.size - widget.minSize) / (widget.maxSize - widget.minSize);
+    final normalizedSize =
+        (controller.size - widget.minSize) / (widget.maxSize - widget.minSize);
 
     // Update floating action buttons visibility
     if (controller.size <= widget.minSize) {
@@ -62,7 +80,9 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
 
     // SafeArea padding management
     final safePadding = MediaQuery.of(context).padding.top;
-    final targetPadding = controller.size >= widget.maxSize * 0.99 ? safePadding : 0;
+    final targetPadding = controller.size >= widget.maxSize * 0.99
+        ? safePadding
+        : 0;
     if (safeAreaPadding.value != targetPadding) {
       safeAreaPadding.value = targetPadding.toDouble();
     }
@@ -79,21 +99,20 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     // In dark mode: branded blue gradient. In light mode: theme surface.
-    final defaultColor1 = widget.color1 ?? (isDark ? UseMeTheme.primaryColor : Theme
-        .of(context)
-        .colorScheme
-        .surface);
+    final defaultColor1 =
+        widget.color1 ??
+        (isDark
+            ? UseMeTheme.primaryColor
+            : Theme.of(context).colorScheme.surface);
     final defaultColor2 =
-        widget.color2 ?? (isDark ? UseMeTheme.secondaryColor : Theme
-            .of(context)
-            .colorScheme
-            .surfaceContainerLow);
+        widget.color2 ??
+        (isDark
+            ? UseMeTheme.secondaryColor
+            : Theme.of(context).colorScheme.surfaceContainerLow);
 
-    return DraggableScrollableSheet(
+    final sheet = DraggableScrollableSheet(
       initialChildSize: widget.initial,
       minChildSize: widget.minSize,
       maxChildSize: widget.maxSize,
@@ -110,6 +129,10 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(child: _buildDragHandle()),
+                  if (widget.pinnedHeader != null)
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: widget.pinnedHeaderHeight),
+                    ),
                   SliverList(
                     delegate: SliverChildListDelegate([
                       ValueListenableBuilder<double>(
@@ -118,7 +141,10 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
                           return AnimatedPadding(
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
-                            padding: EdgeInsets.only(top: padding, bottom: widget.bottomPadding),
+                            padding: EdgeInsets.only(
+                              top: padding,
+                              bottom: widget.bottomPadding,
+                            ),
                             child: widget.bodyContent,
                           );
                         },
@@ -127,97 +153,54 @@ class _SmoothDraggableWidgetState extends State<SmoothDraggableWidget> {
                   ),
                 ],
               ),
+              if (widget.pinnedHeader != null)
+                Positioned(
+                  top: 28,
+                  left: 0,
+                  right: 0,
+                  child: widget.pinnedHeader!,
+                ),
               if (widget.floatButtons.isNotEmpty) _buildFloatButtons(),
             ],
           ),
         );
       },
     );
-  }
 
-  Widget _buildDragHandle() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: showDragHandle,
-      builder: (context, isVisible, child) {
-        final handleColor = Theme
-            .of(context)
-            .colorScheme
-            .onSurface
-            .withValues(alpha: 0.25);
-        return AnimatedOpacity(
-          opacity: isVisible ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 300),
-          child: Center(
-            child: Container(
-              width: 40,
-              height: 5,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(color: handleColor, borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-        );
-      },
-    );
-  }
+    if (widget.pinnedFooter == null) return sheet;
 
-  Widget _buildFloatButtons() {
-    // Account for bottom safe area (nav bar, gesture bar, etc.)
-    final bottomSafeArea = MediaQuery.of(context).viewPadding.bottom;
-
-    return ValueListenableBuilder<bool>(
-      valueListenable: showButtons,
-      builder: (context, isVisible, child) {
-        return Positioned(
-          right: 20,
-          bottom: widget.floatingBottomPadding + bottomSafeArea,
-          child: AnimatedOpacity(
-            opacity: isVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: isVisible
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: widget.floatButtons
-                        .map((btn) => Padding(padding: const EdgeInsets.only(bottom: 8), child: btn))
-                        .toList(),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// Background container — gradient in dark mode, surface in light mode
-class _SmoothBackground extends StatelessWidget {
-  final Widget child;
-  final Color color1;
-  final Color color2;
-  final bool isDark;
-
-  const _SmoothBackground({required this.child, required this.color1, required this.color2, required this.isDark});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [color1, color2], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-        border: Border(top: BorderSide(color: Theme
-            .of(context)
-            .colorScheme
-            .outlineVariant, width: 0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+    // ⚠️ Le footer vit HORS de la feuille draggable, pas dedans : la feuille
+    // ne touche jamais le vrai bas d'écran (maxChildSize < 1), donc un footer
+    // "pinned" À L'INTÉRIEUR laissait voir le voile de la modale sous lui —
+    // un bandeau noir, relevé par Ben le 28/10.
+    //
+    // ⚠️ Un `Stack` seul ne suffit pas : sans enfant non-positionné de
+    // référence, il se contente de la taille de `sheet` — qui ne se résout
+    // pas forcément sur la hauteur PLEINE de la modale. Et `SizedBox.expand`
+    // s'est révélé tout aussi fragile ici (les contraintes qu'une modale
+    // transmet à son contenu ne sont pas garanties bornées) : il a produit
+    // un footer posé PLUS BAS que l'écran lui-même en test, pas seulement
+    // trop haut. `MediaQuery.sizeOf(context).height` est la référence que
+    // `DraggableScrollableSheet` utilise lui-même en interne pour ses
+    // fractions — s'y aligner explicitement évite toute divergence entre
+    // "la feuille se voit à telle hauteur" et "le footer se pose à telle
+    // hauteur". Retrouvé le 28/10 après DEUX correctifs insuffisants.
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    return SizedBox(
+      height: screenHeight,
+      child: Stack(
+        children: [
+          sheet,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: widget.pinnedFooter!,
           ),
         ],
       ),
-      child: child,
     );
   }
+
 }
+

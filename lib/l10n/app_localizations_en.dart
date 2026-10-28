@@ -4430,6 +4430,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getDirections => 'Get directions';
 
   @override
+  String get googleReviews => 'Google reviews';
+
+  @override
+  String get googleReviewsSubtitle => 'Most recent, as published on Google';
+
+  @override
   String get cancelSessionTitle => 'Cancel session';
 
   @override

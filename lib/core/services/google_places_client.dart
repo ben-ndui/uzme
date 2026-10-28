@@ -2,75 +2,37 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:uzme/core/models/discovered_studio.dart';
+import 'package:uzme/core/models/google_review.dart';
 import 'package:uzme/core/services/env_service.dart';
+import 'package:uzme/core/services/google_place_type_filter.dart';
 import 'package:uzme/core/utils/app_logger.dart';
 
 /// Appels bruts à l'API Google Places (Nearby/Text Search, Details,
 /// Geocoding) — aucune logique métier ici (ça vit dans
 /// [StudioDiscoveryService]), juste parler à Google et parser sa réponse.
+/// Résultat du SEUL appel Details(Atmosphere) qu'on fait par studio Google :
+/// galerie photo (+ attribution par photo, voir [DiscoveredStudio.photoAttributions])
+/// et avis — tout part dans la même requête, jamais depuis la liste/carte.
+class GooglePhotoGallery {
+  const GooglePhotoGallery(
+    this.urls,
+    this.attributions, {
+    this.reviews = const [],
+  });
+  final List<String> urls;
+  final List<String?> attributions;
+  final List<GoogleReview> reviews;
+}
+
 class GooglePlacesClient {
   GooglePlacesClient({http.Client? httpClient})
-      : _httpClient = httpClient ?? http.Client();
+    : _httpClient = httpClient ?? http.Client();
 
   final http.Client _httpClient;
   String get _apiKey => EnvService.googleMapsApiKey;
 
   static const String _nearbyUrl =
       'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
-
-  /// Google Place types that strongly indicate the result is NOT a
-  /// recording studio (music shops, schools, churches, etc.). The legacy
-  /// Places API doesn't have a `recording_studio` type, so we filter
-  /// post-response — Places API (New) exposes `recording_studio` natively
-  /// and would let us skip this list entirely.
-  static const _excludedPlaceTypes = {
-    'music_store',
-    'electronics_store',
-    'department_store',
-    'shopping_mall',
-    'school',
-    'university',
-    'library',
-    'church',
-    'place_of_worship',
-    'restaurant',
-    'cafe',
-    'bar',
-    'museum',
-    'tourist_attraction',
-  };
-
-  /// Substrings (case-insensitive) in the place name that strongly suggest
-  /// a non-studio business — backstop for cases where Google didn't tag
-  /// the proper type (e.g. a music shop tagged only `establishment`).
-  static const _excludedNamePatterns = [
-    'magasin',
-    'boutique',
-    ' shop',
-    'store',
-    'école',
-    'ecole',
-    'school',
-    'conservatoire',
-    'cours de',
-    'cours-de',
-    'musée',
-    'museum',
-    'instruments de musique',
-  ];
-
-  bool _isLikelyRecordingStudio(Map<String, dynamic> place) {
-    final types = (place['types'] as List?)?.map((e) => e.toString()).toList() ??
-        const [];
-    for (final blacklisted in _excludedPlaceTypes) {
-      if (types.contains(blacklisted)) return false;
-    }
-    final name = (place['name']?.toString() ?? '').toLowerCase();
-    for (final pattern in _excludedNamePatterns) {
-      if (name.contains(pattern)) return false;
-    }
-    return true;
-  }
 
   Future<List<DiscoveredStudio>> searchNearby(
     LatLng position,
@@ -84,8 +46,9 @@ class GooglePlacesClient {
       '&key=$_apiKey',
     );
 
-    final response =
-        await _httpClient.get(url).timeout(const Duration(seconds: 15));
+    final response = await _httpClient
+        .get(url)
+        .timeout(const Duration(seconds: 15));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -97,7 +60,7 @@ class GooglePlacesClient {
 
       return results
           .whereType<Map<String, dynamic>>()
-          .where(_isLikelyRecordingStudio)
+          .where(isLikelyRecordingStudio)
           .map((place) => DiscoveredStudio.fromGooglePlace(place))
           .where((s) => s.position.latitude != 0)
           .toList();
@@ -118,8 +81,9 @@ class GooglePlacesClient {
     );
 
     try {
-      final response =
-          await _httpClient.get(url).timeout(const Duration(seconds: 10));
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
         appLog('⚠️ Places TextSearch HTTP ${response.statusCode}');
@@ -153,7 +117,9 @@ class GooglePlacesClient {
     );
 
     try {
-      final response = await _httpClient.get(url);
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final result = data['result'];
@@ -167,31 +133,41 @@ class GooglePlacesClient {
     return null;
   }
 
-  /// Galerie photo complète d'un lieu — ne demande QUE le champ `photos`
-  /// (contrairement à [getDetails]) pour ne pas payer les champs Contact
-  /// (téléphone, site) et Atmosphere (note, avis) alors qu'on veut juste
-  /// des images. Retourne `null` sur échec réseau (à distinguer de « zéro
-  /// photo », qui est une liste vide).
-  Future<List<String>?> getPhotoUrls(String placeId) async {
+  /// Galerie photo + avis d'un lieu — ne demande QUE `photos,reviews`
+  /// (contrairement à [getDetails]) pour ne pas payer en plus les champs
+  /// Contact (téléphone, site). `reviews` reste dans le tier Atmosphere
+  /// (comme `rating`), donc CET appel-là est facturé plus cher que les
+  /// Nearby/TextSearch qui le précèdent — mais c'est le même unique appel
+  /// Details par studio, pas un appel de plus. Retourne `null` sur échec
+  /// réseau ou timeout (à distinguer de « zéro photo », une galerie vide).
+  Future<GooglePhotoGallery?> getPhotoUrls(String placeId) async {
     final url = Uri.parse(
       'https://maps.googleapis.com/maps/api/place/details/json'
       '?place_id=$placeId'
-      '&fields=photos'
+      '&fields=photos,reviews'
+      '&reviews_sort=newest'
       '&key=$_apiKey',
     );
 
     try {
-      final response = await _httpClient.get(url);
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        _logStatusIfError(data, requestType: 'Details(photos)');
+        _logStatusIfError(data, requestType: 'Details(photos+reviews)');
         final result = data['result'];
         if (result != null) {
-          return DiscoveredStudio.fromGooglePlace(result).photoUrls;
+          final studio = DiscoveredStudio.fromGooglePlace(result);
+          return GooglePhotoGallery(
+            studio.photoUrls,
+            studio.photoAttributions,
+            reviews: studio.reviews,
+          );
         }
       }
     } catch (e) {
-      appLog('⚠️ Places Details(photos) error: $e');
+      appLog('⚠️ Places Details(photos+reviews) error: $e');
     }
     return null;
   }
@@ -204,8 +180,9 @@ class GooglePlacesClient {
     );
 
     try {
-      final response =
-          await _httpClient.get(url).timeout(const Duration(seconds: 10));
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -214,10 +191,7 @@ class GooglePlacesClient {
 
         if (results != null && results.isNotEmpty) {
           final location = results[0]['geometry']['location'];
-          return LatLng(
-            location['lat'] as double,
-            location['lng'] as double,
-          );
+          return LatLng(location['lat'] as double, location['lng'] as double);
         }
       }
     } catch (e) {

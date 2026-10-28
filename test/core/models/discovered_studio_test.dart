@@ -196,6 +196,28 @@ void main() {
       expect(studio.name, 'Studio inconnu');
       expect(studio.rating, isNull);
     });
+
+    test('photoAttributions mirrors photoUrls, stripped of HTML', () {
+      final studio = DiscoveredStudio.fromGooglePlace({
+        'place_id': 'gp',
+        'name': 'S',
+        'geometry': {
+          'location': {'lat': 0, 'lng': 0},
+        },
+        'photos': [
+          {
+            'photo_reference': 'ref1',
+            'html_attributions': [
+              '<a href="https://maps.google.com/x">Jean Dupont</a>',
+            ],
+          },
+          {'photo_reference': 'ref2', 'html_attributions': []},
+        ],
+      });
+
+      expect(studio.photoUrls, hasLength(2));
+      expect(studio.photoAttributions, ['Jean Dupont', null]);
+    });
   });
 
   group('defaults', () {
@@ -225,11 +247,7 @@ void main() {
         name: 'A',
         position: parisPosition,
       );
-      const b = DiscoveredStudio(
-        id: 'same',
-        name: 'B',
-        position: LatLng(0, 0),
-      );
+      const b = DiscoveredStudio(id: 'same', name: 'B', position: LatLng(0, 0));
       expect(a, equals(b));
     });
 

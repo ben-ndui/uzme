@@ -4413,6 +4413,12 @@ class AppLocalizationsSg extends AppLocalizations {
   String get getDirections => 'Gue na ndö';
 
   @override
+  String get googleReviews => 'Avis Google';
+
+  @override
+  String get googleReviewsSubtitle => 'Les plus récents, publiés sur Google';
+
+  @override
   String get cancelSessionTitle => 'Lä session';
 
   @override

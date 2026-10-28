@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/pro_profile.dart';
+import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/badges/pioneer_badge.dart';
+import 'package:uzme/widgets/common/detail_sheet_ink.dart';
 
 /// Nom + badges du pro, affichés sous le header photo du bottom sheet.
 class ProDetailTitleRow extends StatelessWidget {
   final AppUser user;
   final ProProfile profile;
 
-  const ProDetailTitleRow({super.key, required this.user, required this.profile});
+  const ProDetailTitleRow({
+    super.key,
+    required this.user,
+    required this.profile,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final ink = DetailSheetInk(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -25,15 +33,21 @@ class ProDetailTitleRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   profile.displayName,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (profile.isVerified)
-                const Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: FaIcon(FontAwesomeIcons.solidCircleCheck, size: 18, color: Colors.blue),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: FaIcon(
+                    FontAwesomeIcons.solidCircleCheck,
+                    size: 18,
+                    color: ink.accentInk,
+                  ),
                 ),
             ],
           ),
@@ -41,7 +55,7 @@ class ProDetailTitleRow extends StatelessWidget {
           Text(
             profile.proTypesLabel,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.primary,
+              color: ink.accentInk,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -53,9 +67,19 @@ class ProDetailTitleRow extends StatelessWidget {
               if (user.isPioneer && user.pioneerNumber != null)
                 PioneerBadge(pioneerNumber: user.pioneerNumber!, compact: true),
               if (profile.city != null)
-                _badge(theme, icon: FontAwesomeIcons.locationDot, label: profile.city!, color: theme.colorScheme.outline),
+                _badge(
+                  theme,
+                  icon: FontAwesomeIcons.locationDot,
+                  label: profile.city!,
+                  color: ink.mutedInk,
+                ),
               if (profile.remote)
-                _badge(theme, icon: FontAwesomeIcons.wifi, label: 'Remote', color: Colors.green),
+                _badge(
+                  theme,
+                  icon: FontAwesomeIcons.wifi,
+                  label: l10n.proDetailRemote,
+                  color: Colors.green,
+                ),
             ],
           ),
         ],
@@ -82,7 +106,10 @@ class ProDetailTitleRow extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: theme.textTheme.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w600),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

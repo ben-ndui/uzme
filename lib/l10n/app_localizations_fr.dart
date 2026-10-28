@@ -4467,6 +4467,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get getDirections => 'Y aller';
 
   @override
+  String get googleReviews => 'Avis Google';
+
+  @override
+  String get googleReviewsSubtitle => 'Les plus récents, publiés sur Google';
+
+  @override
   String get cancelSessionTitle => 'Annuler la session';
 
   @override

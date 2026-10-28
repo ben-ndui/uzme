@@ -7,8 +7,11 @@ import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/models/favorite.dart';
 import 'package:uzme/core/models/pro_profile.dart';
 import 'package:uzme/widgets/common/detail_photo_header.dart';
+import 'package:uzme/widgets/common/detail_sticky_header_bar.dart';
+import 'package:uzme/widgets/common/smooth_draggable_widget.dart';
 import 'package:uzme/widgets/favorite/favorite_button.dart';
 import 'package:uzme/widgets/pro/pro_detail_actions.dart';
+import 'package:uzme/widgets/pro/pro_detail_contact_footer.dart';
 import 'package:uzme/widgets/pro/pro_detail_header.dart';
 import 'package:uzme/widgets/pro/pro_detail_info.dart';
 
@@ -21,12 +24,15 @@ class ProDetailBottomSheet extends StatelessWidget {
   ProProfile get _profile => user.proProfile!;
 
   /// Photo de profil puis portfolio — dédupliquées (le portfolio peut déjà
-  /// contenir l'avatar) pour la galerie du header.
+  /// contenir l'avatar, ou une même photo plusieurs fois) pour la galerie
+  /// du header.
   List<String> get _photoUrls {
     final avatar = user.displayPhotoUrl;
+    final seen = <String>{if (avatar != null) avatar};
     return [
       if (avatar != null) avatar,
-      ..._profile.portfolioUrls.where((url) => url != avatar),
+      for (final url in _profile.portfolioUrls)
+        if (seen.add(url)) url,
     ];
   }
 
@@ -39,6 +45,8 @@ class ProDetailBottomSheet extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      // SmoothDraggableWidget gère déjà sa propre poignée de drag.
+      enableDrag: false,
       builder: (_) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: authBloc),
@@ -52,44 +60,44 @@ class ProDetailBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.all(16),
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 20, offset: const Offset(0, -5)),
-        ],
+    return SmoothDraggableWidget(
+      initial: 0.55,
+      minSize: 0.35,
+      maxSize: 0.92,
+      pinnedHeader: DetailStickyHeaderBar(
+        name: _profile.displayName,
+        rating: _profile.rating,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DetailPhotoHeader(
-              photoUrls: _photoUrls,
-              placeholderIcon: FontAwesomeIcons.user,
-              topRight: DecoratedBox(
-                decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.35), shape: BoxShape.circle),
-                child: FavoriteButton(
-                  targetId: user.uid,
-                  type: FavoriteType.pro,
-                  targetName: _profile.displayName,
-                  targetPhotoUrl: user.displayPhotoUrl,
-                  targetAddress: _profile.city,
-                  size: 20,
-                  inactiveColor: Colors.white,
-                ),
+      pinnedHeaderHeight: 44,
+      pinnedFooter: ProDetailContactFooter(user: user, profile: _profile),
+      bodyContent: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DetailPhotoHeader(
+            photoUrls: _photoUrls,
+            placeholderIcon: FontAwesomeIcons.user,
+            topRight: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                shape: BoxShape.circle,
+              ),
+              child: FavoriteButton(
+                targetId: user.uid,
+                type: FavoriteType.pro,
+                targetName: _profile.displayName,
+                targetPhotoUrl: user.displayPhotoUrl,
+                targetAddress: _profile.city,
+                size: 20,
+                inactiveColor: Colors.white,
               ),
             ),
-            ProDetailTitleRow(user: user, profile: _profile),
-            ProDetailInfo(profile: _profile),
-            ProDetailActions(user: user, profile: _profile),
-            SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
-          ],
-        ),
+          ),
+          ProDetailTitleRow(user: user, profile: _profile),
+          ProDetailInfo(profile: _profile),
+          ProDetailActions(user: user, profile: _profile),
+          // Espace réservé pour ne jamais passer sous la barre d'action ancrée.
+          const SizedBox(height: 90),
+        ],
       ),
     );
   }

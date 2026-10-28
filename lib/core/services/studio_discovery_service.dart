@@ -2,10 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:uzme/core/models/discovered_studio.dart';
+import 'package:uzme/core/models/google_review.dart';
 import 'package:uzme/core/services/google_places_client.dart';
 import 'package:uzme/core/services/location_service.dart';
 import 'package:uzme/core/services/studio_partner_source.dart';
 import 'package:uzme/core/utils/app_logger.dart';
+
+/// Résultat d'une recherche de galerie photo pour un studio — distingue un
+/// échec réseau (`hasError`) d'une absence réelle de photos, pour que
+/// l'écran puisse afficher autre chose qu'un vide silencieux.
+class StudioPhotoGallery {
+  const StudioPhotoGallery(
+    this.urls, {
+    this.attributions = const [],
+    this.reviews = const [],
+    this.hasError = false,
+  });
+  final List<String> urls;
+  final List<String?> attributions;
+  final List<GoogleReview> reviews;
+  final bool hasError;
+}
 
 /// Service for discovering studios nearby using Google Places API + Firestore partners
 class StudioDiscoveryService {
@@ -35,19 +52,19 @@ class StudioDiscoveryService {
     return _instance;
   }
   StudioDiscoveryService._internal()
-      : _locationService = LocationService(),
-        _places = GooglePlacesClient(),
-        _partners = StudioPartnerSource(
-          firestore: FirebaseFirestore.instance,
-          locationService: LocationService(),
-        );
+    : _locationService = LocationService(),
+      _places = GooglePlacesClient(),
+      _partners = StudioPartnerSource(
+        firestore: FirebaseFirestore.instance,
+        locationService: LocationService(),
+      );
   StudioDiscoveryService._di({
     required LocationService locationService,
     required GooglePlacesClient places,
     required StudioPartnerSource partners,
-  })  : _locationService = locationService,
-        _places = places,
-        _partners = partners;
+  }) : _locationService = locationService,
+       _places = places,
+       _partners = partners;
 
   final LocationService _locationService;
   final GooglePlacesClient _places;
@@ -62,7 +79,7 @@ class StudioDiscoveryService {
 
   // Cache des galeries photo par placeId — l'appel Details ne doit se faire
   // qu'une fois par studio Google, jamais depuis la liste/carte (coût API).
-  final Map<String, Future<List<String>>> _photoCache = {};
+  final Map<String, Future<StudioPhotoGallery>> _photoCache = {};
 
   /// Search for recording studios nearby (Google Places + Firestore partners)
   Future<List<DiscoveredStudio>> findNearbyStudios(
@@ -71,7 +88,8 @@ class StudioDiscoveryService {
     bool forceRefresh = false,
   }) async {
     // Check cache - invalidate if position changed significantly
-    final isCacheValid = !forceRefresh &&
+    final isCacheValid =
+        !forceRefresh &&
         _cachedStudios != null &&
         _cacheTime != null &&
         _cachedPosition != null &&
@@ -96,7 +114,9 @@ class StudioDiscoveryService {
           radius,
         );
       } catch (e) {
-        appLog('⚠️ StudioDiscoveryService: merge failed, using Google Places only: $e');
+        appLog(
+          '⚠️ StudioDiscoveryService: merge failed, using Google Places only: $e',
+        );
         mergedStudios = googleStudios;
       }
 
@@ -129,18 +149,18 @@ class StudioDiscoveryService {
         studio.position,
       );
       return studio.copyWithDistance(distance);
-    }).toList()
-      ..sort((a, b) {
-        // Pioneers en premier
-        if (a.isPioneer && !b.isPioneer) return -1;
-        if (!a.isPioneer && b.isPioneer) return 1;
-        // Puis partenaires
-        if (a.isPartner && !b.isPartner) return -1;
-        if (!a.isPartner && b.isPartner) return 1;
-        // Puis tri par distance croissante
-        return (a.distanceMeters ?? double.infinity)
-            .compareTo(b.distanceMeters ?? double.infinity);
-      });
+    }).toList()..sort((a, b) {
+      // Pioneers en premier
+      if (a.isPioneer && !b.isPioneer) return -1;
+      if (!a.isPioneer && b.isPioneer) return 1;
+      // Puis partenaires
+      if (a.isPartner && !b.isPartner) return -1;
+      if (!a.isPartner && b.isPartner) return 1;
+      // Puis tri par distance croissante
+      return (a.distanceMeters ?? double.infinity).compareTo(
+        b.distanceMeters ?? double.infinity,
+      );
+    });
   }
 
   /// Get studio details by place ID
@@ -157,8 +177,10 @@ class StudioDiscoveryService {
   /// dédupliquer un double appel si le bottom sheet est fermé puis rouvert
   /// avant la première réponse, et retiré du cache en cas d'échec réseau
   /// pour ne pas figer la galerie à une photo pour le reste de la session.
-  Future<List<String>> getStudioPhotoUrls(DiscoveredStudio studio) {
-    if (studio.isPartner || studio.isPro) return Future.value(studio.photoUrls);
+  Future<StudioPhotoGallery> getStudioPhotoUrls(DiscoveredStudio studio) {
+    if (studio.isPartner || studio.isPro) {
+      return Future.value(StudioPhotoGallery(studio.photoUrls));
+    }
 
     return _photoCache.putIfAbsent(
       studio.id,
@@ -166,15 +188,24 @@ class StudioDiscoveryService {
     );
   }
 
-  Future<List<String>> _fetchGooglePhotoUrls(DiscoveredStudio studio) async {
-    final urls = await _places.getPhotoUrls(studio.id);
-    if (urls == null) {
+  Future<StudioPhotoGallery> _fetchGooglePhotoUrls(
+    DiscoveredStudio studio,
+  ) async {
+    final gallery = await _places.getPhotoUrls(studio.id);
+    final fallback = studio.photoUrl != null
+        ? [studio.photoUrl!]
+        : const <String>[];
+    if (gallery == null) {
       _photoCache.remove(studio.id);
-      return studio.photoUrl != null ? [studio.photoUrl!] : const [];
+      return StudioPhotoGallery(fallback, hasError: true);
     }
-    return urls.isNotEmpty
-        ? urls
-        : (studio.photoUrl != null ? [studio.photoUrl!] : const []);
+    return gallery.urls.isNotEmpty
+        ? StudioPhotoGallery(
+            gallery.urls,
+            attributions: gallery.attributions,
+            reviews: gallery.reviews,
+          )
+        : StudioPhotoGallery(fallback, reviews: gallery.reviews);
   }
 
   /// Clear cache

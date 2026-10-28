@@ -1,5 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uzme/core/models/app_user.dart';
+import 'package:uzme/core/models/google_review.dart';
 import 'package:uzme/core/models/studio_profile.dart';
 import 'package:uzme/core/services/env_service.dart';
 
@@ -13,6 +14,15 @@ class DiscoveredStudio {
   final int? reviewCount;
   final String? photoUrl;
   final List<String> photoUrls;
+
+  /// Crédit Google par photo — même longueur/ordre que [photoUrls], `null`
+  /// quand Google n'a fourni aucune attribution (toujours le cas hors Google,
+  /// ex. partenaire/pro). Les CGU Places imposent de créditer le·a photographe.
+  final List<String?> photoAttributions;
+
+  /// Jusqu'à 5 avis Google (triés "plus récents" côté requête) — toujours
+  /// vide pour un partenaire/pro, dont les données ne viennent pas de Google.
+  final List<GoogleReview> reviews;
   final String? phoneNumber;
   final String? website;
   final bool isPartner; // Studio registered on Use Me
@@ -33,6 +43,8 @@ class DiscoveredStudio {
     this.reviewCount,
     this.photoUrl,
     this.photoUrls = const [],
+    this.photoAttributions = const [],
+    this.reviews = const [],
     this.phoneNumber,
     this.website,
     this.isPartner = false,
@@ -52,13 +64,20 @@ class DiscoveredStudio {
   /// Create from Google Places API response
   factory DiscoveredStudio.fromGooglePlace(Map<String, dynamic> json) {
     final location = json['geometry']?['location'];
-    final photos = json['photos'] as List?;
+    final photos = (json['photos'] as List?)?.take(_maxGooglePhotos).toList();
     final photoUrls = photos == null
         ? const <String>[]
-        : photos
-            .take(_maxGooglePhotos)
-            .map((p) => _buildPhotoUrl(p['photo_reference']))
-            .toList();
+        : photos.map((p) => _buildPhotoUrl(p['photo_reference'])).toList();
+    final photoAttributions = photos == null
+        ? const <String?>[]
+        : photos.map(_firstAttribution).toList();
+    final reviewsJson = json['reviews'] as List?;
+    final reviews = reviewsJson == null
+        ? const <GoogleReview>[]
+        : reviewsJson
+              .whereType<Map<String, dynamic>>()
+              .map(GoogleReview.fromJson)
+              .toList();
 
     return DiscoveredStudio(
       id: json['place_id'] ?? '',
@@ -70,20 +89,32 @@ class DiscoveredStudio {
       ),
       rating: json['rating']?.toDouble(),
       reviewCount: json['user_ratings_total'],
+      reviews: reviews,
       photoUrl: photoUrls.isNotEmpty ? photoUrls.first : null,
       photoUrls: photoUrls,
+      photoAttributions: photoAttributions,
       isPartner: false,
       isVerified: false,
     );
   }
 
+  /// Google rend `html_attributions` sous forme de lien HTML (ex.
+  /// `<a href="...">Jean Dupont</a>`) — on ne garde que le texte affichable.
+  static String? _firstAttribution(dynamic photo) {
+    final attributions = photo['html_attributions'] as List?;
+    if (attributions == null || attributions.isEmpty) return null;
+    final text = attributions.first
+        .toString()
+        .replaceAll(RegExp(r'<[^>]*>'), '')
+        .trim();
+    return text.isEmpty ? null : text;
+  }
+
   /// Create from internal Firestore document
-  factory DiscoveredStudio.fromFirestore(
-    Map<String, dynamic> json,
-    String id,
-  ) {
+  factory DiscoveredStudio.fromFirestore(Map<String, dynamic> json, String id) {
     final studioPhotos = _studioProfilePhotos(json['studioProfile']);
-    final singlePhoto = json['photoURL'] ??
+    final singlePhoto =
+        json['photoURL'] ??
         json['photoUrl'] ??
         (studioPhotos.isNotEmpty ? studioPhotos.first : null);
 
@@ -105,7 +136,8 @@ class DiscoveredStudio {
       website: json['website'],
       isPartner: true,
       isVerified: json['isVerified'] ?? false,
-      isPioneer: json['pioneer'] != null &&
+      isPioneer:
+          json['pioneer'] != null &&
           (json['pioneer'] as Map)['isPioneer'] == true,
       pioneerNumber: json['pioneer'] != null
           ? (json['pioneer'] as Map)['pioneerNumber'] as int?
@@ -127,7 +159,9 @@ class DiscoveredStudio {
       rating: profile.rating,
       reviewCount: profile.reviewCount,
       photoUrl: user.displayPhotoUrl,
-      photoUrls: user.displayPhotoUrl != null ? [user.displayPhotoUrl!] : const [],
+      photoUrls: user.displayPhotoUrl != null
+          ? [user.displayPhotoUrl!]
+          : const [],
       phoneNumber: profile.phone,
       website: profile.website,
       isPartner: false,
@@ -147,15 +181,6 @@ class DiscoveredStudio {
     return copyWith(distanceMeters: distance);
   }
 
-  /// Copy with a freshly fetched photo gallery (Google Place Details, appelé
-  /// à l'ouverture du bottom sheet — jamais depuis la liste/carte).
-  DiscoveredStudio copyWithPhotoUrls(List<String> urls) {
-    return copyWith(
-      photoUrls: urls,
-      photoUrl: urls.isNotEmpty ? urls.first : photoUrl,
-    );
-  }
-
   DiscoveredStudio copyWith({
     List<String>? photoUrls,
     String? photoUrl,
@@ -170,6 +195,8 @@ class DiscoveredStudio {
       reviewCount: reviewCount,
       photoUrl: photoUrl ?? this.photoUrl,
       photoUrls: photoUrls ?? this.photoUrls,
+      photoAttributions: photoAttributions,
+      reviews: reviews,
       phoneNumber: phoneNumber,
       website: website,
       isPartner: isPartner,

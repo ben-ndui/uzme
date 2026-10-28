@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
@@ -18,13 +19,13 @@ void main() {
     mockAuthBloc = MockAuthBloc();
     mockMessagingBloc = MockMessagingBloc();
     mockFavoriteBloc = MockFavoriteBloc();
-    when(() => mockAuthBloc.state).thenReturn(
-      AuthAuthenticatedState(user: testAppUser()),
-    );
+    when(
+      () => mockAuthBloc.state,
+    ).thenReturn(AuthAuthenticatedState(user: testAppUser()));
     when(() => mockMessagingBloc.state).thenReturn(MessagingInitialState());
-    when(() => mockFavoriteBloc.state).thenReturn(
-      const FavoriteState(favorites: []),
-    );
+    when(
+      () => mockFavoriteBloc.state,
+    ).thenReturn(const FavoriteState(favorites: []));
   });
 
   AppUser makeUser({
@@ -84,7 +85,9 @@ void main() {
       await tester.pumpWidget(buildSheet(makeUser()));
       await tester.pumpAndSettle();
 
-      expect(find.text('DJ Test'), findsOneWidget);
+      // Apparaît deux fois : la barre compacte toujours visible
+      // (pinnedHeader) et le titre complet sous la photo.
+      expect(find.text('DJ Test'), findsNWidgets(2));
       expect(find.text('Musicien'), findsOneWidget);
     });
 
@@ -106,7 +109,8 @@ void main() {
       await tester.pumpWidget(buildSheet(makeUser(remote: true)));
       await tester.pumpAndSettle();
 
-      expect(find.text('Remote'), findsOneWidget);
+      // Localisé (l10n.proDetailRemote) — plus un texte en dur.
+      expect(find.text('Accepts remote'), findsOneWidget);
     });
 
     testWidgets('shows rate stat', (tester) async {
@@ -124,8 +128,9 @@ void main() {
     });
 
     testWidgets('shows specialties tags', (tester) async {
-      await tester
-          .pumpWidget(buildSheet(makeUser(specialties: ['Mixing', 'Mastering'])));
+      await tester.pumpWidget(
+        buildSheet(makeUser(specialties: ['Mixing', 'Mastering'])),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Specialties'), findsOneWidget);
@@ -134,8 +139,7 @@ void main() {
     });
 
     testWidgets('shows genres tags', (tester) async {
-      await tester
-          .pumpWidget(buildSheet(makeUser(genres: ['Hip-Hop', 'R&B'])));
+      await tester.pumpWidget(buildSheet(makeUser(genres: ['Hip-Hop', 'R&B'])));
       await tester.pumpAndSettle();
 
       expect(find.text('Genres'), findsOneWidget);
@@ -143,17 +147,19 @@ void main() {
     });
 
     testWidgets('shows contact button', (tester) async {
-      await tester.pumpWidget(buildTestApp(
-        authBloc: mockAuthBloc,
-        messagingBloc: mockMessagingBloc,
-        favoriteBloc: mockFavoriteBloc,
-        child: Scaffold(
-          body: SizedBox(
-            height: 800,
-            child: ProDetailBottomSheet(user: makeUser()),
+      await tester.pumpWidget(
+        buildTestApp(
+          authBloc: mockAuthBloc,
+          messagingBloc: mockMessagingBloc,
+          favoriteBloc: mockFavoriteBloc,
+          child: Scaffold(
+            body: SizedBox(
+              height: 800,
+              child: ProDetailBottomSheet(user: makeUser()),
+            ),
           ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.scrollUntilVisible(
@@ -168,35 +174,62 @@ void main() {
       await tester.pumpWidget(buildSheet(makeUser(isVerified: true)));
       await tester.pumpAndSettle();
 
-      expect(find.text('DJ Test'), findsOneWidget);
+      expect(find.text('DJ Test'), findsNWidgets(2));
     });
 
-    testWidgets('feeds portfolio photos into the header gallery', (tester) async {
+    testWidgets('feeds portfolio photos into the header gallery', (
+      tester,
+    ) async {
       // Le portfolio n'a plus sa propre section : il alimente le carrousel
       // du header (DetailPhotoHeader), avec l'avatar éventuel devant.
-      await tester.pumpWidget(buildSheet(makeUser(
-        portfolioUrls: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'],
-      )));
+      await tester.pumpWidget(
+        buildSheet(
+          makeUser(
+            portfolioUrls: [
+              'https://example.com/img1.jpg',
+              'https://example.com/img2.jpg',
+            ],
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Portfolio'), findsNothing);
       expect(find.byType(PageView), findsOneWidget);
     });
 
-    testWidgets('shows a placeholder icon when no avatar and no portfolio', (tester) async {
+    testWidgets('shows a placeholder icon when no avatar and no portfolio', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSheet(makeUser()));
       await tester.pumpAndSettle();
 
+      // Le header porte aussi l'icône du bouton favori, et l'icône "user"
+      // réapparaît ailleurs dans la fiche (plus petite) : on cible
+      // précisément le placeholder (taille 40) du header.
       expect(find.byType(PageView), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon == FontAwesomeIcons.user.data &&
+              w.size == 40,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows payment methods when present', (tester) async {
-      await tester.pumpWidget(buildSheet(makeUser(
-        paymentMethods: [
-          {'type': 'paypal', 'isEnabled': true},
-          {'type': 'bankTransfer', 'isEnabled': true},
-        ],
-      )));
+      await tester.pumpWidget(
+        buildSheet(
+          makeUser(
+            paymentMethods: [
+              {'type': 'paypal', 'isEnabled': true},
+              {'type': 'bankTransfer', 'isEnabled': true},
+            ],
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Accepted payment methods'), findsOneWidget);

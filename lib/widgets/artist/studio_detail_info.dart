@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
 import 'package:uzme/core/models/payment_method.dart';
 import 'package:uzme/core/services/payment_config_service.dart';
+import 'package:uzme/widgets/common/detail_sheet_ink.dart';
 
 /// Adresse, stats (note/distance), services et politique d'annulation.
 class StudioDetailInfo extends StatelessWidget {
@@ -14,12 +15,13 @@ class StudioDetailInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ink = DetailSheetInk(context);
 
     return Column(
       children: [
-        if (studio.address != null) _buildAddress(theme),
-        _buildStats(theme),
-        if (studio.services.isNotEmpty) _buildServices(theme),
+        if (studio.address != null) _buildAddress(theme, ink),
+        _buildStats(theme, ink),
+        if (studio.services.isNotEmpty) _buildServices(theme, ink),
         if (studio.isPartner)
           _CancellationPolicySection(
             studioId: studio.id,
@@ -29,17 +31,17 @@ class StudioDetailInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildAddress(ThemeData theme) {
+  Widget _buildAddress(ThemeData theme, DetailSheetInk ink) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
       child: Row(
         children: [
-          FaIcon(FontAwesomeIcons.locationDot, size: 14, color: theme.colorScheme.outline),
+          FaIcon(FontAwesomeIcons.locationDot, size: 14, color: ink.mutedInk),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               studio.address!,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
+              style: theme.textTheme.bodyMedium?.copyWith(color: ink.mutedInk),
             ),
           ),
         ],
@@ -47,7 +49,7 @@ class StudioDetailInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildStats(ThemeData theme) {
+  Widget _buildStats(ThemeData theme, DetailSheetInk ink) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(
@@ -55,6 +57,7 @@ class StudioDetailInfo extends StatelessWidget {
           if (studio.rating != null) ...[
             _statChip(
               theme,
+              ink,
               icon: FontAwesomeIcons.solidStar,
               iconColor: Colors.amber,
               value: studio.rating!.toStringAsFixed(1),
@@ -64,8 +67,9 @@ class StudioDetailInfo extends StatelessWidget {
           ],
           _statChip(
             theme,
+            ink,
             icon: FontAwesomeIcons.locationArrow,
-            iconColor: theme.colorScheme.primary,
+            iconColor: ink.accentInk,
             value: studio.formattedDistance,
             label: '',
           ),
@@ -75,7 +79,8 @@ class StudioDetailInfo extends StatelessWidget {
   }
 
   Widget _statChip(
-    ThemeData theme, {
+    ThemeData theme,
+    DetailSheetInk ink, {
     required FaIconData icon,
     required Color iconColor,
     required String value,
@@ -84,7 +89,7 @@ class StudioDetailInfo extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: ink.chipBackground,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -92,17 +97,21 @@ class StudioDetailInfo extends StatelessWidget {
         children: [
           FaIcon(icon, size: 14, color: iconColor),
           const SizedBox(width: 6),
-          Text(value, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600, color: ink.isDark ? Colors.white : null),
+          ),
           if (label.isNotEmpty) ...[
             const SizedBox(width: 4),
-            Text(label, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
+            Text(label, style: theme.textTheme.bodySmall?.copyWith(color: ink.mutedInk)),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildServices(ThemeData theme) {
+  Widget _buildServices(ThemeData theme, DetailSheetInk ink) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Wrap(
@@ -112,13 +121,15 @@ class StudioDetailInfo extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
+              color: ink.isDark
+                  ? Colors.white.withValues(alpha: 0.18)
+                  : theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               service,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.primary,
+                color: ink.accentInk,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -152,6 +163,7 @@ class _CancellationPolicySectionState extends State<_CancellationPolicySection> 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ink = DetailSheetInk(context);
 
     return FutureBuilder<StudioPaymentConfig>(
       future: _future,
@@ -167,13 +179,13 @@ class _CancellationPolicySectionState extends State<_CancellationPolicySection> 
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: Row(
             children: [
-              FaIcon(FontAwesomeIcons.scaleBalanced, size: 12, color: theme.colorScheme.outline),
+              FaIcon(FontAwesomeIcons.scaleBalanced, size: 12, color: ink.mutedInk),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   '${policy.label} — ${policy.description}',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
+                    color: ink.mutedInk,
                     fontSize: 11,
                   ),
                 ),

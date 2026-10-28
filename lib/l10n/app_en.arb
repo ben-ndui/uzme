@@ -1820,6 +1820,8 @@
   "refresh": "Refresh",
 
   "getDirections": "Get directions",
+  "googleReviews": "Google reviews",
+  "googleReviewsSubtitle": "Most recent, as published on Google",
   "cancelSessionTitle": "Cancel session",
   "selectCancellationReason": "Select a reason",
   "cancellationReasonSchedule": "Schedule change",

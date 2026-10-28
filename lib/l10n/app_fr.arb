@@ -2012,6 +2012,8 @@
   "refresh": "Actualiser",
 
   "getDirections": "Y aller",
+  "googleReviews": "Avis Google",
+  "googleReviewsSubtitle": "Les plus récents, publiés sur Google",
   "cancelSessionTitle": "Annuler la session",
   "selectCancellationReason": "Sélectionnez une raison",
   "cancellationReasonSchedule": "Changement de planning",

@@ -6,12 +6,16 @@ import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
 import 'package:uzme/core/models/favorite.dart';
+import 'package:uzme/core/models/google_review.dart';
 import 'package:uzme/core/services/payment_config_service.dart';
 import 'package:uzme/core/services/studio_discovery_service.dart';
 import 'package:uzme/widgets/artist/studio_detail_actions.dart';
 import 'package:uzme/widgets/artist/studio_detail_badges.dart';
 import 'package:uzme/widgets/artist/studio_detail_info.dart';
+import 'package:uzme/widgets/artist/studio_detail_reviews.dart';
 import 'package:uzme/widgets/common/detail_photo_header.dart';
+import 'package:uzme/widgets/common/detail_sticky_header_bar.dart';
+import 'package:uzme/widgets/common/smooth_draggable_widget.dart';
 import 'package:uzme/widgets/favorite/favorite_button.dart';
 
 /// Bottom sheet showing studio details for authenticated artists
@@ -40,6 +44,10 @@ class StudioDetailBottomSheet extends StatefulWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      // SmoothDraggableWidget gère déjà sa propre poignée de drag — un
+      // deuxième système de drag (celui de la modale) ferait les deux se
+      // disputer le même geste vertical.
+      enableDrag: false,
       builder: (_) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: authBloc),
@@ -52,12 +60,16 @@ class StudioDetailBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<StudioDetailBottomSheet> createState() => _StudioDetailBottomSheetState();
+  State<StudioDetailBottomSheet> createState() =>
+      _StudioDetailBottomSheetState();
 }
 
 class _StudioDetailBottomSheetState extends State<StudioDetailBottomSheet> {
   late List<String> _photoUrls = widget.studio.photoUrls;
+  List<String?> _photoAttributions = const [];
+  List<GoogleReview> _reviews = const [];
   bool _loadingMorePhotos = false;
+  bool _photosError = false;
 
   @override
   void initState() {
@@ -72,66 +84,82 @@ class _StudioDetailBottomSheetState extends State<StudioDetailBottomSheet> {
       // n'a rien du tout, le header doit afficher un vrai indicateur de
       // chargement plutôt qu'un vide silencieux.
       _loadingMorePhotos = _photoUrls.isEmpty;
-      final discoveryService = widget.discoveryService ?? StudioDiscoveryService();
-      discoveryService.getStudioPhotoUrls(widget.studio).then((urls) {
-        if (!mounted) return;
-        setState(() {
-          _photoUrls = urls;
-          _loadingMorePhotos = false;
-        });
-      });
+      final discoveryService =
+          widget.discoveryService ?? StudioDiscoveryService();
+      discoveryService
+          .getStudioPhotoUrls(widget.studio)
+          .then((gallery) {
+            if (!mounted) return;
+            setState(() {
+              _photoUrls = gallery.urls;
+              _photoAttributions = gallery.attributions;
+              _reviews = gallery.reviews;
+              _loadingMorePhotos = false;
+              _photosError = gallery.hasError;
+            });
+          })
+          .catchError((Object _) {
+            // Le service n'est pas censé laisser filtrer d'exception (toutes
+            // les erreurs réseau sont déjà captées et traduites en hasError) —
+            // ce filet évite juste au spinner de tourner pour toujours si ça
+            // changeait un jour.
+            if (!mounted) return;
+            setState(() {
+              _loadingMorePhotos = false;
+              _photosError = true;
+            });
+          });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final studio = widget.studio;
 
-    return Container(
-      margin: const EdgeInsets.all(16),
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
+    return SmoothDraggableWidget(
+      initial: 0.55,
+      minSize: 0.35,
+      maxSize: 0.92,
+      pinnedHeader: DetailStickyHeaderBar(
+        name: studio.name,
+        rating: studio.rating,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DetailPhotoHeader(
-              photoUrls: _photoUrls,
-              isLoading: _loadingMorePhotos,
-              placeholderIcon: FontAwesomeIcons.buildingUser,
-              topRight: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  shape: BoxShape.circle,
-                ),
-                child: FavoriteButton(
-                  targetId: studio.id,
-                  type: FavoriteType.studio,
-                  targetName: studio.name,
-                  targetPhotoUrl: studio.photoUrl,
-                  targetAddress: studio.address,
-                  size: 20,
-                  inactiveColor: Colors.white,
-                ),
+      pinnedHeaderHeight: 44,
+      pinnedFooter: StudioDetailActions(studio: studio),
+      bodyContent: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DetailPhotoHeader(
+            photoUrls: _photoUrls,
+            attributions: _photoAttributions,
+            isLoading: _loadingMorePhotos,
+            hasError: _photosError,
+            placeholderIcon: FontAwesomeIcons.buildingUser,
+            topRight: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                shape: BoxShape.circle,
+              ),
+              child: FavoriteButton(
+                targetId: studio.id,
+                type: FavoriteType.studio,
+                targetName: studio.name,
+                targetPhotoUrl: studio.photoUrl,
+                targetAddress: studio.address,
+                size: 20,
+                inactiveColor: Colors.white,
               ),
             ),
-            StudioDetailTitleRow(studio: studio),
-            StudioDetailInfo(studio: studio, paymentConfigService: widget.paymentConfigService),
-            StudioDetailActions(studio: studio),
-            SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
-          ],
-        ),
+          ),
+          StudioDetailTitleRow(studio: studio),
+          StudioDetailInfo(
+            studio: studio,
+            paymentConfigService: widget.paymentConfigService,
+          ),
+          StudioDetailReviews(reviews: _reviews),
+          // Espace réservé pour ne jamais passer sous la barre d'action ancrée.
+          const SizedBox(height: 90),
+        ],
       ),
     );
   }

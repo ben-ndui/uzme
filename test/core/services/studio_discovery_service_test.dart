@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
+import 'package:uzme/core/services/google_places_client.dart';
 import 'package:uzme/core/services/studio_discovery_service.dart';
 
 import '../../helpers/mock_services.dart';
@@ -43,84 +44,100 @@ void main() {
 
   group('getStudioPhotoUrls', () {
     test(
-        'still calls Details for a Google studio that already has a single '
-        'preview photo — Nearby/Text Search never return more than one',
-        () async {
-      when(() => mockPlaces.getPhotoUrls(any())).thenAnswer(
-        (_) async => const ['url1', 'url2', 'url3'],
-      );
+      'still calls Details for a Google studio that already has a single '
+      'preview photo — Nearby/Text Search never return more than one',
+      () async {
+        when(() => mockPlaces.getPhotoUrls(any())).thenAnswer(
+          (_) async => const GooglePhotoGallery(
+            ['url1', 'url2', 'url3'],
+            [null, 'Jean Dupont', null],
+          ),
+        );
 
-      final urls = await service.getStudioPhotoUrls(
-        googleStudio(photoUrl: 'url1'),
-      );
+        final gallery = await service.getStudioPhotoUrls(
+          googleStudio(photoUrl: 'url1'),
+        );
 
-      verify(() => mockPlaces.getPhotoUrls('place_1')).called(1);
-      expect(urls, ['url1', 'url2', 'url3']);
-    });
+        verify(() => mockPlaces.getPhotoUrls('place_1')).called(1);
+        expect(gallery.urls, ['url1', 'url2', 'url3']);
+        expect(gallery.attributions, [null, 'Jean Dupont', null]);
+        expect(gallery.hasError, isFalse);
+      },
+    );
 
     test('never calls Google for a partner studio', () async {
-      final studio = googleStudio(isPartner: true, photoUrl: null)
-          .copyWith(photoUrls: ['firestore_url']);
+      final studio = googleStudio(
+        isPartner: true,
+        photoUrl: null,
+      ).copyWith(photoUrls: ['firestore_url']);
 
-      final urls = await service.getStudioPhotoUrls(studio);
+      final gallery = await service.getStudioPhotoUrls(studio);
 
       verifyNever(() => mockPlaces.getPhotoUrls(any()));
-      expect(urls, ['firestore_url']);
+      expect(gallery.urls, ['firestore_url']);
+      expect(gallery.hasError, isFalse);
     });
 
     test('never calls Google for a pro marker', () async {
       final studio = googleStudio(isPro: true, photoUrl: 'avatar');
 
-      final urls = await service.getStudioPhotoUrls(studio);
+      final gallery = await service.getStudioPhotoUrls(studio);
 
       verifyNever(() => mockPlaces.getPhotoUrls(any()));
-      expect(urls, ['avatar']);
+      expect(gallery.urls, ['avatar']);
     });
 
-    test('falls back to the known preview photo on network failure, '
-        'and does not cache the failure', () async {
+    test('flags hasError on network failure, falls back to the known '
+        'preview photo, and does not cache the failure', () async {
       when(() => mockPlaces.getPhotoUrls(any())).thenAnswer((_) async => null);
 
-      final urls = await service.getStudioPhotoUrls(
+      final gallery = await service.getStudioPhotoUrls(
         googleStudio(photoUrl: 'url1'),
       );
-      expect(urls, ['url1']);
+      expect(gallery.urls, ['url1']);
+      expect(gallery.hasError, isTrue);
 
       // Un second appel doit retenter l'API, pas rester bloqué sur l'échec.
       when(() => mockPlaces.getPhotoUrls(any())).thenAnswer(
-        (_) async => const ['url1', 'url2'],
+        (_) async => const GooglePhotoGallery(['url1', 'url2'], [null, null]),
       );
       final retried = await service.getStudioPhotoUrls(
         googleStudio(photoUrl: 'url1'),
       );
       verify(() => mockPlaces.getPhotoUrls('place_1')).called(2);
-      expect(retried, ['url1', 'url2']);
+      expect(retried.urls, ['url1', 'url2']);
+      expect(retried.hasError, isFalse);
     });
 
-    test('returns an empty list when Google has nothing and there was no '
-        'preview photo either', () async {
-      when(() => mockPlaces.getPhotoUrls(any())).thenAnswer((_) async => const []);
+    test('returns an empty gallery, no error, when Google has nothing and '
+        'there was no preview photo either', () async {
+      when(
+        () => mockPlaces.getPhotoUrls(any()),
+      ).thenAnswer((_) async => const GooglePhotoGallery([], []));
 
-      final urls = await service.getStudioPhotoUrls(googleStudio());
+      final gallery = await service.getStudioPhotoUrls(googleStudio());
 
-      expect(urls, isEmpty);
+      expect(gallery.urls, isEmpty);
+      expect(gallery.hasError, isFalse);
     });
 
-    test('dedupes concurrent calls for the same studio into one Details call',
-        () async {
-      when(() => mockPlaces.getPhotoUrls(any())).thenAnswer(
-        (_) async => const ['url1', 'url2'],
-      );
+    test(
+      'dedupes concurrent calls for the same studio into one Details call',
+      () async {
+        when(() => mockPlaces.getPhotoUrls(any())).thenAnswer(
+          (_) async => const GooglePhotoGallery(['url1', 'url2'], [null, null]),
+        );
 
-      final studio = googleStudio(photoUrl: 'url1');
-      final results = await Future.wait([
-        service.getStudioPhotoUrls(studio),
-        service.getStudioPhotoUrls(studio),
-      ]);
+        final studio = googleStudio(photoUrl: 'url1');
+        final results = await Future.wait([
+          service.getStudioPhotoUrls(studio),
+          service.getStudioPhotoUrls(studio),
+        ]);
 
-      verify(() => mockPlaces.getPhotoUrls('place_1')).called(1);
-      expect(results[0], ['url1', 'url2']);
-      expect(results[1], ['url1', 'url2']);
-    });
+        verify(() => mockPlaces.getPhotoUrls('place_1')).called(1);
+        expect(results[0].urls, ['url1', 'url2']);
+        expect(results[1].urls, ['url1', 'url2']);
+      },
+    );
   });
 }

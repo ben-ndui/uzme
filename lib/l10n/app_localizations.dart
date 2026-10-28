@@ -8302,6 +8302,18 @@ abstract class AppLocalizations {
   /// **'Y aller'**
   String get getDirections;
 
+  /// No description provided for @googleReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis Google'**
+  String get googleReviews;
+
+  /// No description provided for @googleReviewsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les plus récents, publiés sur Google'**
+  String get googleReviewsSubtitle;
+
   /// No description provided for @cancelSessionTitle.
   ///
   /// In fr, this message translates to:
