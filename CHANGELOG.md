@@ -5,6 +5,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [1.5.27] - 2026-10-28
+
+### Security
+- Chiffrement fail-fast des clés sensibles (Stripe/IBAN jamais écrites en clair)
+- Codes d'invitation d'équipe (`TEAM-...`) imprévisibles, remplace un schéma séquentiel
+- Suppression d'une clé API App Store Connect committée par erreur
+
+### Fixed
+- Migration iOS vers le cycle de vie UIScene (`flutter_contacts` vendorisé)
+- **Thème dark unifié** : toute la palette dérive désormais du bleu de marque — plus aucun gris/noir neutre (fond de page, cartes, puces, bottom sheets, dialogs, feuilles de filtre)
+- Couleur de statut de session harmonisée entre les écrans (dashboard, calendrier studio, détail artiste) — les mêmes statuts rendaient des couleurs différentes selon l'écran
+
+### Added
+- Barre de navigation flottante conforme à la charte 2026-2027 (`UzmeNavBar`) — géométrie unifiée, mode compact à partir de 5 onglets
+- Galerie photos + avis Google unifiés sur les fiches détail studio/pro, avec gestion d'erreur réseau et attribution photographe
+
+---
+
 ## [1.5.26] - 2026-08-03
 
 ### Changed
