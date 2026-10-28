@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
-import 'package:uzme/widgets/artist/studio_selector_bottom_sheet.dart';
 import 'package:uzme/widgets/common/glass/glass_exports.dart';
 import 'package:uzme/widgets/common/session/session_exports.dart';
 
@@ -48,12 +47,15 @@ class UpcomingSessionsSection extends StatelessWidget {
 
               final upcoming = _getUpcomingSessions(state.sessions);
               if (upcoming.isEmpty) {
+                // Pas de bouton ici : le FAB "Réserver" du portail
+                // (ArtistPortalPage) fait déjà exactement cette action, et
+                // il est visible dès qu'on défile jusqu'à cette section —
+                // un second bouton identique juste en dessous se dupliquait
+                // visuellement. Relevé par Ben le 28/10.
                 return GlassEmptyState(
                   icon: FontAwesomeIcons.calendarXmark,
                   title: l10n.noUpcomingSessions,
                   subtitle: l10n.bookNextSession,
-                  actionLabel: l10n.book,
-                  onAction: () => StudioSelectorBottomSheet.showAndNavigate(context),
                 );
               }
 
