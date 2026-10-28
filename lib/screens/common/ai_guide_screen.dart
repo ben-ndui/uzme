@@ -184,6 +184,10 @@ class _AIGuideScreenState extends State<AIGuideScreen> {
   }
 
   Widget _buildSection(ThemeData theme, TipSection section, int sectionIndex) {
+    // Un seul accent pour tout le guide — pas une couleur par catégorie
+    // (relevé par Ben le 28/10, même correctif que `tips_screen.dart`).
+    final accent = theme.colorScheme.primary;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 28),
       child: Column(
@@ -195,11 +199,11 @@ class _AIGuideScreenState extends State<AIGuideScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: section.color.withValues(alpha: 0.15),
+                  color: accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
-                  child: FaIcon(section.icon, size: 16, color: section.color),
+                  child: FaIcon(section.icon, size: 16, color: accent),
                 ),
               ),
               const SizedBox(width: 12),
@@ -219,7 +223,7 @@ class _AIGuideScreenState extends State<AIGuideScreen> {
             return SlideInRight(
               delay: Duration(milliseconds: 50 * tipIndex),
               duration: const Duration(milliseconds: 300),
-              child: _buildTipCard(theme, tip, section.color, tipKey),
+              child: _buildTipCard(theme, tip, accent, tipKey),
             );
           }),
         ],
@@ -252,12 +256,12 @@ class _AIGuideScreenState extends State<AIGuideScreen> {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: isExpanded
-              ? (tip.iconColor ?? accentColor).withValues(alpha: 0.08)
+              ? accentColor.withValues(alpha: 0.08)
               : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isExpanded
-                ? (tip.iconColor ?? accentColor).withValues(alpha: 0.3)
+                ? accentColor.withValues(alpha: 0.3)
                 : theme.colorScheme.outline.withValues(alpha: 0.1),
             width: isExpanded ? 1.5 : 1,
           ),
@@ -272,15 +276,14 @@ class _AIGuideScreenState extends State<AIGuideScreen> {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: (tip.iconColor ?? accentColor)
-                        .withValues(alpha: isExpanded ? 0.2 : 0.12),
+                    color: accentColor.withValues(alpha: isExpanded ? 0.3 : 0.2),
                     borderRadius: BorderRadius.circular(11),
                   ),
                   child: Center(
                     child: FaIcon(
                       tip.icon,
                       size: 17,
-                      color: tip.iconColor ?? accentColor,
+                      color: accentColor,
                     ),
                   ),
                 ),

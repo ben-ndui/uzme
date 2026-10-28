@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/core/models/refund_calculation.dart';
 import 'package:uzme/core/services/payment_config_service.dart';
@@ -122,7 +123,7 @@ class _CancelSessionSheetState extends State<CancelSessionSheet> {
         maxHeight: MediaQuery.of(context).size.height * 0.85,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: _isLoading

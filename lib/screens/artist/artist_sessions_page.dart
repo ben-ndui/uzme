@@ -51,7 +51,6 @@ class _ArtistSessionsPageState extends State<ArtistSessionsPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
       appBar: _buildAppBar(context, l10n, colorScheme),
       body: switch (_viewMode) {
         _ViewMode.list => _buildAllSessionsList(colorScheme, l10n),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/core/services/contact_service.dart';
 import 'package:uzme/l10n/app_localizations.dart';
@@ -176,7 +177,7 @@ class _NewConversationBottomSheetState extends State<NewConversationBottomSheet>
       height: MediaQuery.of(context).size.height * 0.75,
       margin: EdgeInsets.only(bottom: bottomPadding),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(

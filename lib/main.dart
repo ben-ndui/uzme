@@ -34,6 +34,7 @@ import 'package:uzme/core/utils/crashlytics_bloc_observer.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/routing/router.dart';
+import 'package:uzme/widgets/common/gradient_surface.dart';
 import 'package:uzme/widgets/feature_flags/feature_announcement_watcher.dart';
 
 /// Global navigator key for notification navigation
@@ -471,12 +472,23 @@ class _UseMeAppState extends State<UseMeApp> {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   routerConfig: _router,
+                  // Posé ICI (pas écran par écran) : wrapper le Navigator
+                  // lui-même dans le `builder` de MaterialApp est le SEUL
+                  // point qui couvre aussi les bottom sheets/dialogs — ceux-ci
+                  // montent dans l'Overlay du Navigator, un niveau AU-DESSUS
+                  // de tout ce qu'un écran peut envelopper lui-même. Relevé
+                  // le 28/10 : "Nouvelle conversation", "Ajouter un contact"
+                  // et le picker "Apparence" restaient noirs malgré l'écran
+                  // appelant déjà aligné.
+                  //
                   // Watcher mounted once near the root so any
                   // newly-available feature with an announcement pops
                   // its bottomsheet, regardless of which scaffold the
                   // user lands on.
-                  builder: (context, child) => FeatureAnnouncementWatcher(
-                    child: child ?? const SizedBox.shrink(),
+                  builder: (context, child) => GradientSurface(
+                    child: FeatureAnnouncementWatcher(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 ),
               );

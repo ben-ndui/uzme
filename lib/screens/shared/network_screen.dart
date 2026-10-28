@@ -12,6 +12,7 @@ import 'package:uzme/widgets/card/holo_card.dart';
 import 'package:uzme/widgets/network/add_contact_bottom_sheet.dart';
 import 'package:uzme/widgets/network/contact_card.dart';
 import 'package:uzme/widgets/network/contact_detail_bottom_sheet.dart';
+import 'package:uzme/widgets/common/gradient_scaffold.dart';
 
 /// Screen showing the user's professional network.
 /// Supports list view (default) and card grid view toggle.
@@ -30,7 +31,7 @@ class _NetworkScreenState extends State<NetworkScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(
         title: Text(l10n.myNetwork),
         actions: [

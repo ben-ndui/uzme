@@ -10,6 +10,7 @@ import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/main.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/routing/app_routes.dart';
+import 'package:uzme/widgets/common/gradient_scaffold.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Account management screen for email, password, and account deletion.
@@ -46,7 +47,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(title: Text(l10n.account)),
       body: Center(
         child: ConstrainedBox(

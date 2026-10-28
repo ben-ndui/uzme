@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/payment_method.dart';
 import 'package:uzme/core/models/pro_profile.dart';
 import 'package:uzme/core/models/session.dart';
@@ -128,7 +129,7 @@ class _AcceptProBookingSheetState extends State<AcceptProBookingSheet> {
         maxHeight: MediaQuery.of(context).size.height * 0.9,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius:
             const BorderRadius.vertical(top: Radius.circular(20)),
       ),

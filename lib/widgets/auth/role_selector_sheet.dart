@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 
 /// Bottom sheet for selecting user role (used after social login)
@@ -30,7 +31,7 @@ class RoleSelectorSheet extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: SafeArea(

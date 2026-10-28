@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/app_user.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 
@@ -116,7 +117,7 @@ class _StudioSelectorBottomSheetState extends State<StudioSelectorBottomSheet> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(

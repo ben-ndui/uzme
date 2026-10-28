@@ -7,9 +7,11 @@ import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/screens/shared/conversations_screen.dart';
 import 'package:uzme/widgets/common/app_navigation_rail.dart';
-import 'package:uzme/widgets/common/floating_bottom_nav.dart';
+import 'package:uzme/widgets/common/gradient_surface.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
+import 'package:uzme/widgets/common/uzme_nav_bar.dart';
 import 'studio_dashboard_page.dart';
+import 'studio_nav_items.dart';
 import 'sessions_page.dart';
 import 'artists_page.dart';
 import 'studio_settings_page.dart';
@@ -54,7 +56,9 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
       context.read<ServiceBloc>().add(LoadServicesEvent(studioId: user.uid));
       context.read<FavoriteBloc>().add(LoadFavoritesEvent(userId: user.uid));
       _syncMessagingUser(user);
-      context.read<MessagingBloc>().add(LoadConversationsEvent(userId: user.uid));
+      context.read<MessagingBloc>().add(
+        LoadConversationsEvent(userId: user.uid),
+      );
     }
   }
 
@@ -84,36 +88,10 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
     }
   }
 
-  List<AppNavRailItem> _railItems(AppLocalizations l10n, {int pendingCount = 0}) => [
-        AppNavRailItem(
-          icon: FontAwesomeIcons.house,
-          selectedIcon: FontAwesomeIcons.houseChimney,
-          label: l10n.home,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.calendar,
-          selectedIcon: FontAwesomeIcons.solidCalendar,
-          label: l10n.sessionsLabel,
-          badgeCount: pendingCount,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.users,
-          selectedIcon: FontAwesomeIcons.userGroup,
-          label: l10n.artistsLabel,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.comment,
-          selectedIcon: FontAwesomeIcons.solidComment,
-          label: l10n.messages,
-          isMessages: true,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.gear,
-          selectedIcon: FontAwesomeIcons.gear,
-          label: l10n.settings,
-          badgeCount: pendingCount,
-        ),
-      ];
+  /// L'accueil gère déjà son propre dégradé ; les autres doivent vivre
+  /// DANS [GradientSurface] pour que leur `build()` lise un thème réécrit.
+  Widget _tabAt(int index) =>
+      index == 0 ? _pages[index] : GradientSurface(child: _pages[index]);
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +119,7 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
               _syncMessagingUser(state.user);
             }
           },
-          child: isWide
-              ? _buildWideScaffold(l10n)
-              : _buildMobileScaffold(l10n),
+          child: isWide ? _buildWideScaffold(l10n) : _buildMobileScaffold(l10n),
         ),
       ),
     );
@@ -159,9 +135,12 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
               AppNavigationRail(
                 selectedIndex: _currentIndex,
                 onDestinationSelected: _onNavTap,
-                items: _railItems(l10n, pendingCount: sessionState.pendingCount),
+                items: studioRailItems(
+                  l10n,
+                  pendingCount: sessionState.pendingCount,
+                ),
               ),
-              Expanded(child: _pages[_currentIndex]),
+              Expanded(child: _tabAt(_currentIndex)),
             ],
           );
         },
@@ -177,7 +156,7 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
         physics: _currentIndex == 0
             ? const NeverScrollableScrollPhysics()
             : const BouncingScrollPhysics(),
-        children: _pages,
+        children: [for (var i = 0; i < _pages.length; i++) _tabAt(i)],
       ),
       extendBody: true,
       bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
@@ -185,8 +164,12 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
         builder: (context, sessionState) {
           return BlocBuilder<MessagingBloc, MessagingState>(
             buildWhen: (previous, current) {
-              final prevCount = previous is ConversationsLoadedState ? previous.totalUnreadCount : 0;
-              final currCount = current is ConversationsLoadedState ? current.totalUnreadCount : 0;
+              final prevCount = previous is ConversationsLoadedState
+                  ? previous.totalUnreadCount
+                  : 0;
+              final currCount = current is ConversationsLoadedState
+                  ? current.totalUnreadCount
+                  : 0;
               return prevCount != currCount;
             },
             builder: (context, messagingState) {
@@ -194,33 +177,33 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
                   ? messagingState.totalUnreadCount
                   : 0;
 
-              return FloatingBottomNav(
-                currentIndex: _currentIndex,
-                onTap: _onNavTap,
+              return UzmeNavBar.compact(
+                activeIndex: _currentIndex,
+                onChanged: _onNavTap,
                 items: [
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.house,
                     selectedIcon: FontAwesomeIcons.houseChimney,
                     label: l10n.home,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.calendar,
                     selectedIcon: FontAwesomeIcons.solidCalendar,
                     label: l10n.sessionsLabel,
                     badgeCount: sessionState.pendingCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.users,
                     selectedIcon: FontAwesomeIcons.userGroup,
                     label: l10n.artistsLabel,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.comment,
                     selectedIcon: FontAwesomeIcons.solidComment,
                     label: l10n.messages,
                     badgeCount: unreadCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.gear,
                     selectedIcon: FontAwesomeIcons.gears,
                     label: l10n.settings,

@@ -14,6 +14,7 @@ import 'package:uzme/main.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/auth/lock_or_signout_sheet.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/gradient_scaffold.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Profile screen - Edit user profile
@@ -101,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         final user = authState.user as AppUser;
 
-        return Scaffold(
+        return GradientScaffold(
           appBar: AppBar(
             title: Text(l10n.myProfile),
             actions: [

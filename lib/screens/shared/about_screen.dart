@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/common/gradient_scaffold.dart';
 
 /// About screen showing app info and legal links.
 class AboutScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(title: Text(l10n.about)),
       body: Center(
         child: ConstrainedBox(
@@ -49,19 +50,12 @@ class _AboutScreenState extends State<AboutScreen> {
           Center(
             child: Column(
               children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.music,
-                      size: 48,
-                      color: theme.colorScheme.primary,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Image.asset(
+                    'assets/logo/appstore.png',
+                    width: 100,
+                    height: 100,
                   ),
                 ),
                 const SizedBox(height: 16),

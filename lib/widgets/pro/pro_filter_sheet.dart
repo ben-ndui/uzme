@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/models/pro_profile.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 
@@ -91,7 +92,7 @@ class _ProFilterSheetState extends State<ProFilterSheet> {
     return Container(
       margin: const EdgeInsets.all(16),
       child: Material(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: BorderRadius.circular(24),
         clipBehavior: Clip.antiAlias,
         child: Column(

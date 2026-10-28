@@ -18,6 +18,19 @@ class UseMeTheme {
   static const Color errorColor = Color(0xFFE17055);
   static const Color infoColor = Color(0xFF74B9FF);
 
+  /// Fond d'une feuille maison qui construit elle-même son `Container`
+  /// (pas via `BottomSheetThemeData`) — `colorScheme.surface` n'est plus
+  /// réécrit globalement (trop de fichiers le lisent avec leur propre
+  /// logique dark, cf. `gradient_surface.dart`), donc ces feuilles restaient
+  /// quasi-noires au lieu du bleu de marque demandé par Ben le 28/10
+  /// ("pourquoi ce n'est pas notre dégradé de bleu ici").
+  static Color sheetBackground(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.brightness == Brightness.dark
+        ? secondaryColor
+        : theme.colorScheme.surface;
+  }
+
   // Light Theme
   static ThemeData get lightTheme {
     final colorScheme = ColorScheme.fromSeed(
@@ -97,19 +110,36 @@ class UseMeTheme {
     );
   }
 
-  // Dark Theme Colors
-  static const Color _darkSurface = Color(0xFF0D0D0F);
-  static const Color _darkSurfaceContainer = Color(0xFF151518);
-  static const Color _darkSurfaceContainerHigh = Color(0xFF1C1C20);
-  static const Color _darkSurfaceContainerHighest = Color(0xFF252529);
+  // Dark Theme Colors — TOUT dérivé de notre bleu (primaryColor/secondaryColor),
+  // plus aucun gris/noir neutre. Décrété par Ben le 28/10/2026 : "en theme
+  // dark, je ne devrais voir de noir nulle part, notre dark à nous c'est le
+  // bleu du dégradé de SmoothDraggableWidget". Avant ce correctif, un wrapper
+  // (`GradientSurface`) tentait de repeindre ces tokens APRÈS coup pour
+  // certains écrans seulement — source d'incohérences et de régressions en
+  // chaîne (cf. historique du 28/10). Corrigé ICI, à la source : une seule
+  // définition, lue partout, pas de double-thème qui se contredisent.
+  static const Color _darkSurface = secondaryColor; // 0xFF031473
+  static const Color _darkSurfaceContainerLowest = Color(0xFF02103D);
+  static const Color _darkSurfaceContainerLow = Color(0xFF0A2566);
+  static const Color _darkSurfaceContainer = Color(0xFF123490);
+  static const Color _darkSurfaceContainerHigh = Color(0xFF1E47B5);
+  static const Color _darkSurfaceContainerHighest = Color(0xFF2E5CD6);
   static const Color _darkPrimary = Color(0xFF5B7FE8);
   static const Color _darkOnPrimary = Color(0xFFFFFFFF);
   static const Color _darkPrimaryContainer = Color(0xFF1A2B5E);
   static const Color _darkOnPrimaryContainer = Color(0xFFB8C8FF);
-  static const Color _darkSecondary = Color(0xFF7B8AB5);
+  static const Color _darkSecondary = Color(0xFF6D86C4);
+  static const Color _darkOnSecondary = Color(0xFFFFFFFF);
+  static const Color _darkSecondaryContainer = Color(0xFF24345E);
+  static const Color _darkOnSecondaryContainer = Color(0xFFD8DCE8);
   static const Color _darkTertiary = Color(0xFF4DD5D1);
-  static const Color _darkOutline = Color(0xFF45454D);
-  static const Color _darkOutlineVariant = Color(0xFF2E2E35);
+  static const Color _darkOnTertiary = secondaryColor;
+  static const Color _darkOutline = Color(0xFF7C92D9);
+  static const Color _darkOutlineVariant = Color(0xFF2A4A9E);
+  static const Color _darkOnSurfaceVariant = Color(0xFFA8B5D9);
+  // Texte/icône en sourdine (hint, switch désactivé) : un bleu-gris lisible,
+  // jamais un gris neutre qui recrée l'effet "noir" sur le dégradé.
+  static const Color _darkMuted = Color(0xFF5A6FA8);
 
   // Dark Theme
   static ThemeData get darkTheme {
@@ -120,11 +150,11 @@ class UseMeTheme {
       primaryContainer: _darkPrimaryContainer,
       onPrimaryContainer: _darkOnPrimaryContainer,
       secondary: _darkSecondary,
-      onSecondary: Color(0xFF0D0D0F),
-      secondaryContainer: Color(0xFF2A2F42),
-      onSecondaryContainer: Color(0xFFD8DCE8),
+      onSecondary: _darkOnSecondary,
+      secondaryContainer: _darkSecondaryContainer,
+      onSecondaryContainer: _darkOnSecondaryContainer,
       tertiary: _darkTertiary,
-      onTertiary: Color(0xFF0D0D0F),
+      onTertiary: _darkOnTertiary,
       tertiaryContainer: Color(0xFF0A3A38),
       onTertiaryContainer: Color(0xFFB8F5F2),
       error: Color(0xFFFFB4AB),
@@ -133,14 +163,14 @@ class UseMeTheme {
       onErrorContainer: Color(0xFFFFDAD6),
       surface: _darkSurface,
       onSurface: Color(0xFFE8E8EC),
-      onSurfaceVariant: Color(0xFFA8A8B3),
+      onSurfaceVariant: _darkOnSurfaceVariant,
       outline: _darkOutline,
       outlineVariant: _darkOutlineVariant,
       inverseSurface: Color(0xFFE8E8EC),
-      onInverseSurface: Color(0xFF1A1A1D),
+      onInverseSurface: secondaryColor,
       inversePrimary: primaryColor,
-      surfaceContainerLowest: Color(0xFF080809),
-      surfaceContainerLow: Color(0xFF121214),
+      surfaceContainerLowest: _darkSurfaceContainerLowest,
+      surfaceContainerLow: _darkSurfaceContainerLow,
       surfaceContainer: _darkSurfaceContainer,
       surfaceContainerHigh: _darkSurfaceContainerHigh,
       surfaceContainerHighest: _darkSurfaceContainerHighest,
@@ -184,7 +214,7 @@ class UseMeTheme {
           borderSide: const BorderSide(color: _darkPrimary, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: const TextStyle(color: Color(0xFF6E6E78)),
+        hintStyle: const TextStyle(color: _darkMuted),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -242,19 +272,19 @@ class UseMeTheme {
       dividerTheme: const DividerThemeData(color: _darkOutlineVariant, thickness: 0.5),
       listTileTheme: const ListTileThemeData(
         tileColor: Colors.transparent,
-        iconColor: Color(0xFFA8A8B3),
+        iconColor: _darkOnSurfaceVariant,
       ),
-      iconTheme: const IconThemeData(color: Color(0xFFA8A8B3)),
+      iconTheme: const IconThemeData(color: _darkOnSurfaceVariant),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) return _darkPrimary;
-          return const Color(0xFF6E6E78);
+          return _darkMuted;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return _darkPrimary.withValues(alpha: 0.3);
           }
-          return const Color(0xFF2E2E35);
+          return _darkOutlineVariant;
         }),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(

@@ -44,7 +44,6 @@ class _SessionsPageState extends State<SessionsPage>
     final locale = intlLocale(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
       appBar: _buildAppBar(theme, l10n),
       body: _isListView
           ? SessionsListView(

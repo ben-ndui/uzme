@@ -10,9 +10,11 @@ import 'package:uzme/screens/engineer/engineer_sessions_page.dart';
 import 'package:uzme/screens/engineer/engineer_settings_page.dart';
 import 'package:uzme/screens/shared/conversations_screen.dart';
 import 'package:uzme/screens/shared/favorites_screen.dart';
+import 'package:uzme/screens/engineer/engineer_nav_items.dart';
 import 'package:uzme/widgets/common/app_navigation_rail.dart';
-import 'package:uzme/widgets/common/floating_bottom_nav.dart';
+import 'package:uzme/widgets/common/gradient_surface.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
+import 'package:uzme/widgets/common/uzme_nav_bar.dart';
 
 /// Main scaffold for Engineer role with adaptive navigation
 class EngineerMainScaffold extends StatefulWidget {
@@ -49,10 +51,14 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticatedState) {
       final user = authState.user;
-      context.read<SessionBloc>().add(LoadEngineerSessionsEvent(engineerId: user.uid));
+      context.read<SessionBloc>().add(
+        LoadEngineerSessionsEvent(engineerId: user.uid),
+      );
       context.read<FavoriteBloc>().add(LoadFavoritesEvent(userId: user.uid));
       _syncMessagingUser(user);
-      context.read<MessagingBloc>().add(LoadConversationsEvent(userId: user.uid));
+      context.read<MessagingBloc>().add(
+        LoadConversationsEvent(userId: user.uid),
+      );
     }
   }
 
@@ -82,36 +88,10 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
     }
   }
 
-  List<AppNavRailItem> _railItems(AppLocalizations l10n, {int pendingCount = 0}) => [
-        AppNavRailItem(
-          icon: FontAwesomeIcons.house,
-          selectedIcon: FontAwesomeIcons.houseChimney,
-          label: l10n.home,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.calendarDays,
-          selectedIcon: FontAwesomeIcons.calendarCheck,
-          label: l10n.sessionsLabel,
-          badgeCount: pendingCount,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.heart,
-          selectedIcon: FontAwesomeIcons.solidHeart,
-          label: l10n.favorites,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.comment,
-          selectedIcon: FontAwesomeIcons.solidComment,
-          label: l10n.messages,
-          isMessages: true,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.gear,
-          selectedIcon: FontAwesomeIcons.gears,
-          label: l10n.settings,
-          badgeCount: pendingCount,
-        ),
-      ];
+  /// L'accueil gère déjà son propre dégradé ; les autres doivent vivre
+  /// DANS [GradientSurface] pour que leur `build()` lise un thème réécrit.
+  Widget _tabAt(int index) =>
+      index == 0 ? _pages[index] : GradientSurface(child: _pages[index]);
 
   @override
   Widget build(BuildContext context) {
@@ -139,9 +119,7 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
               _syncMessagingUser(state.user);
             }
           },
-          child: isWide
-              ? _buildWideScaffold(l10n)
-              : _buildMobileScaffold(l10n),
+          child: isWide ? _buildWideScaffold(l10n) : _buildMobileScaffold(l10n),
         ),
       ),
     );
@@ -157,9 +135,12 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
               AppNavigationRail(
                 selectedIndex: _currentIndex,
                 onDestinationSelected: _onNavTapped,
-                items: _railItems(l10n, pendingCount: sessionState.pendingCount),
+                items: engineerRailItems(
+                  l10n,
+                  pendingCount: sessionState.pendingCount,
+                ),
               ),
-              Expanded(child: _pages[_currentIndex]),
+              Expanded(child: _tabAt(_currentIndex)),
             ],
           );
         },
@@ -176,15 +157,19 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
         physics: _currentIndex == 0
             ? const NeverScrollableScrollPhysics()
             : const BouncingScrollPhysics(),
-        children: _pages,
+        children: [for (var i = 0; i < _pages.length; i++) _tabAt(i)],
       ),
       bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
         buildWhen: (prev, curr) => prev.pendingCount != curr.pendingCount,
         builder: (context, sessionState) {
           return BlocBuilder<MessagingBloc, MessagingState>(
             buildWhen: (previous, current) {
-              final prevCount = previous is ConversationsLoadedState ? previous.totalUnreadCount : 0;
-              final currCount = current is ConversationsLoadedState ? current.totalUnreadCount : 0;
+              final prevCount = previous is ConversationsLoadedState
+                  ? previous.totalUnreadCount
+                  : 0;
+              final currCount = current is ConversationsLoadedState
+                  ? current.totalUnreadCount
+                  : 0;
               return prevCount != currCount;
             },
             builder: (context, messagingState) {
@@ -192,33 +177,33 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
                   ? messagingState.totalUnreadCount
                   : 0;
 
-              return FloatingBottomNav(
-                currentIndex: _currentIndex,
-                onTap: _onNavTapped,
+              return UzmeNavBar.compact(
+                activeIndex: _currentIndex,
+                onChanged: _onNavTapped,
                 items: [
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.house,
                     selectedIcon: FontAwesomeIcons.houseChimney,
                     label: l10n.home,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.calendarDays,
                     selectedIcon: FontAwesomeIcons.calendarCheck,
                     label: l10n.sessionsLabel,
                     badgeCount: sessionState.pendingCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.heart,
                     selectedIcon: FontAwesomeIcons.solidHeart,
                     label: l10n.favorites,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.comment,
                     selectedIcon: FontAwesomeIcons.solidComment,
                     label: l10n.messages,
                     badgeCount: unreadCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.gear,
                     selectedIcon: FontAwesomeIcons.gears,
                     label: l10n.settings,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/session.dart';
 import 'package:uzme/l10n/app_localizations.dart';
@@ -109,7 +110,7 @@ class _ArtistSessionFilterSheetState extends State<ArtistSessionFilterSheet> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(

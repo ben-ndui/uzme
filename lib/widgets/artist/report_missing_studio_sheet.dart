@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
+import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
@@ -88,7 +89,7 @@ class _ReportMissingStudioSheetState extends State<ReportMissingStudioSheet> {
     return Container(
       margin: EdgeInsets.only(bottom: bottomPadding),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: UseMeTheme.sheetBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: _isSuccess ? _buildSuccessContent(theme, l10n) : _buildFormContent(theme, l10n),

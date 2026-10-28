@@ -5,14 +5,16 @@ import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/screens/artist/artist_nav_items.dart';
 import 'package:uzme/screens/artist/artist_portal_page.dart';
 import 'package:uzme/screens/artist/artist_sessions_page.dart';
 import 'package:uzme/screens/artist/artist_settings_page.dart';
 import 'package:uzme/screens/shared/conversations_screen.dart';
 import 'package:uzme/screens/shared/favorites_screen.dart';
 import 'package:uzme/widgets/common/app_navigation_rail.dart';
-import 'package:uzme/widgets/common/floating_bottom_nav.dart';
+import 'package:uzme/widgets/common/gradient_surface.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
+import 'package:uzme/widgets/common/uzme_nav_bar.dart';
 
 /// Main scaffold for Artist role with adaptive navigation
 class ArtistMainScaffold extends StatefulWidget {
@@ -31,7 +33,7 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
   final List<Widget> _pages = const [
     ArtistPortalPage(),
     ArtistSessionsPage(),
-    FavoritesScreen(), 
+    FavoritesScreen(),
     ConversationsScreen(),
     ArtistSettingsPage(),
   ];
@@ -49,11 +51,15 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticatedState) {
       final user = authState.user;
-      context.read<SessionBloc>().add(LoadArtistSessionsEvent(artistId: user.uid));
+      context.read<SessionBloc>().add(
+        LoadArtistSessionsEvent(artistId: user.uid),
+      );
       context.read<FavoriteBloc>().add(LoadFavoritesEvent(userId: user.uid));
       context.read<NetworkBloc>().add(LoadContactsEvent(userId: user.uid));
       _syncMessagingUser(user);
-      context.read<MessagingBloc>().add(LoadConversationsEvent(userId: user.uid));
+      context.read<MessagingBloc>().add(
+        LoadConversationsEvent(userId: user.uid),
+      );
     }
   }
 
@@ -71,6 +77,11 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
     super.dispose();
   }
 
+  /// L'accueil gère déjà son propre dégradé ; les autres doivent vivre
+  /// DANS [GradientSurface] pour que leur `build()` lise un thème réécrit.
+  Widget _tabAt(int index) =>
+      index == 0 ? _pages[index] : GradientSurface(child: _pages[index]);
+
   void _onNavTapped(int index) {
     if (context.isTabletOrLarger) {
       setState(() => _currentIndex = index);
@@ -82,37 +93,6 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
       );
     }
   }
-
-  List<AppNavRailItem> _railItems(AppLocalizations l10n, {int pendingCount = 0}) => [
-        AppNavRailItem(
-          icon: FontAwesomeIcons.house,
-          selectedIcon: FontAwesomeIcons.houseChimney,
-          label: l10n.home,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.calendarDays,
-          selectedIcon: FontAwesomeIcons.calendarCheck,
-          label: l10n.sessionsLabel,
-          badgeCount: pendingCount,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.heart,
-          selectedIcon: FontAwesomeIcons.solidHeart,
-          label: l10n.favorites,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.comment,
-          selectedIcon: FontAwesomeIcons.solidComment,
-          label: l10n.messages,
-          isMessages: true,
-        ),
-        AppNavRailItem(
-          icon: FontAwesomeIcons.gear,
-          selectedIcon: FontAwesomeIcons.gears,
-          label: l10n.settings,
-          badgeCount: pendingCount,
-        ),
-      ];
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +121,7 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
               _syncMessagingUser(state.user);
             }
           },
-          child: isWide
-              ? _buildWideScaffold(l10n)
-              : _buildMobileScaffold(l10n),
+          child: isWide ? _buildWideScaffold(l10n) : _buildMobileScaffold(l10n),
         ),
       ),
     );
@@ -159,9 +137,12 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
               AppNavigationRail(
                 selectedIndex: _currentIndex,
                 onDestinationSelected: _onNavTapped,
-                items: _railItems(l10n, pendingCount: sessionState.pendingCount),
+                items: artistRailItems(
+                  l10n,
+                  pendingCount: sessionState.pendingCount,
+                ),
               ),
-              Expanded(child: _pages[_currentIndex]),
+              Expanded(child: _tabAt(_currentIndex)),
             ],
           );
         },
@@ -178,15 +159,19 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
         physics: _currentIndex == 0
             ? const NeverScrollableScrollPhysics()
             : const BouncingScrollPhysics(),
-        children: _pages,
+        children: [for (var i = 0; i < _pages.length; i++) _tabAt(i)],
       ),
       bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
         buildWhen: (prev, curr) => prev.pendingCount != curr.pendingCount,
         builder: (context, sessionState) {
           return BlocBuilder<MessagingBloc, MessagingState>(
             buildWhen: (previous, current) {
-              final prevCount = previous is ConversationsLoadedState ? previous.totalUnreadCount : 0;
-              final currCount = current is ConversationsLoadedState ? current.totalUnreadCount : 0;
+              final prevCount = previous is ConversationsLoadedState
+                  ? previous.totalUnreadCount
+                  : 0;
+              final currCount = current is ConversationsLoadedState
+                  ? current.totalUnreadCount
+                  : 0;
               return prevCount != currCount;
             },
             builder: (context, messagingState) {
@@ -194,33 +179,33 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
                   ? messagingState.totalUnreadCount
                   : 0;
 
-              return FloatingBottomNav(
-                currentIndex: _currentIndex,
-                onTap: _onNavTapped,
+              return UzmeNavBar.compact(
+                activeIndex: _currentIndex,
+                onChanged: _onNavTapped,
                 items: [
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.house,
                     selectedIcon: FontAwesomeIcons.houseChimney,
                     label: l10n.home,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.calendarDays,
                     selectedIcon: FontAwesomeIcons.calendarCheck,
                     label: l10n.sessionsLabel,
                     badgeCount: sessionState.pendingCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.heart,
                     selectedIcon: FontAwesomeIcons.solidHeart,
                     label: l10n.favorites,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.comment,
                     selectedIcon: FontAwesomeIcons.solidComment,
                     label: l10n.messages,
                     badgeCount: unreadCount,
                   ),
-                  FloatingNavItem(
+                  UzmeNavItem(
                     icon: FontAwesomeIcons.gear,
                     selectedIcon: FontAwesomeIcons.gears,
                     label: l10n.settings,

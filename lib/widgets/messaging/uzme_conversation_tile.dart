@@ -31,43 +31,57 @@ class UzmeConversationTile extends StatelessWidget {
     final otherRole = _resolveOtherRole();
     final otherIsPioneer = _resolveOtherIsPioneer();
 
-    return ListTile(
-      onTap: onTap,
-      onLongPress: onLongPress,
-      leading: _Avatar(
-        name: displayName,
-        avatarUrl: avatarUrl,
-        roleAccent: _roleAccent(otherRole),
-        roleIcon: _roleIcon(otherRole),
-      ),
-      title: Row(
-        children: [
-          Flexible(
-            child: Text(
-              displayName,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+    // Fond card translucide en dark : sur le dégradé bleu des écrans
+    // principaux, une ligne sans fond ne se détachait plus du tout
+    // (relevé par Ben le 28/10). En light, le thème reste transparent
+    // (inchangé, pas de souci signalé là-dessus).
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Material(
+        color: isDark ? theme.colorScheme.surfaceContainer : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          onTap: onTap,
+          onLongPress: onLongPress,
+          leading: _Avatar(
+            name: displayName,
+            avatarUrl: avatarUrl,
+            roleAccent: _roleAccent(otherRole),
+            roleIcon: _roleIcon(otherRole),
           ),
-          if (otherIsPioneer) ...[
-            const SizedBox(width: 4),
-            const FaIcon(
-              FontAwesomeIcons.solidStar,
-              size: 11,
-              color: Color(0xFFFFB800),
-            ),
-          ],
-          if (otherRole != null) ...[
-            const SizedBox(width: 6),
-            _RoleChip(role: otherRole),
-          ],
-        ],
+          title: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  displayName,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (otherIsPioneer) ...[
+                const SizedBox(width: 4),
+                const FaIcon(
+                  FontAwesomeIcons.solidStar,
+                  size: 11,
+                  color: Color(0xFFFFB800),
+                ),
+              ],
+              if (otherRole != null) ...[
+                const SizedBox(width: 6),
+                _RoleChip(role: otherRole),
+              ],
+            ],
+          ),
+          subtitle: _buildSubtitle(theme, hasUnread),
+          trailing: _buildTrailing(theme, unreadCount),
+        ),
       ),
-      subtitle: _buildSubtitle(theme, hasUnread),
-      trailing: _buildTrailing(theme, unreadCount),
     );
   }
 

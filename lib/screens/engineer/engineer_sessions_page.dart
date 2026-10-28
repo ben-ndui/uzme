@@ -55,7 +55,6 @@ class _EngineerSessionsPageState extends State<EngineerSessionsPage> {
     final locale = intlLocale(context);
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
       appBar: _buildAppBar(context, l10n, colorScheme),
       body: Center(
         child: ConstrainedBox(

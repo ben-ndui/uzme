@@ -9,6 +9,7 @@ import 'package:uzme/core/services/block_service.dart';
 import 'package:uzme/core/services/report_service.dart';
 import 'package:uzme/routing/app_routes.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
+import 'package:uzme/widgets/common/gradient_scaffold.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Settings screen for a conversation.
@@ -53,7 +54,7 @@ class _ConversationSettingsScreenState
         }
 
         if (conversation == null) {
-          return Scaffold(
+          return GradientScaffold(
             appBar: AppBar(title: Text(l10n.conversationSettings)),
             body: const AppLoader(),
           );
@@ -64,7 +65,7 @@ class _ConversationSettingsScreenState
         final avatarUrl = conversation.getAvatarUrl(currentUserId);
         final isGroup = conversation.type == ConversationType.group;
 
-        return Scaffold(
+        return GradientScaffold(
           appBar: AppBar(title: Text(l10n.conversationSettings)),
           body: Center(
             child: ConstrainedBox(

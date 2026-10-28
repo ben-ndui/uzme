@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import '../../config/responsive_config.dart';
 import '../../widgets/common/app_loader.dart';
+import '../../widgets/common/gradient_scaffold.dart';
 import '../../widgets/common/permission_dialog.dart';
 import '../../widgets/common/snackbar/app_snackbar.dart';
 import '../../l10n/app_localizations.dart';
@@ -84,13 +85,13 @@ class _ChatScreenState extends State<ChatScreen> {
         if (state is ChatOpenState) {
           return _buildChatScaffold(state);
         }
-        return Scaffold(appBar: AppBar(), body: const SizedBox.shrink());
+        return GradientScaffold(appBar: AppBar(), body: const SizedBox.shrink());
       },
     );
   }
 
   Widget _buildLoadingScaffold() {
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.loading)),
       body: const AppLoader(),
     );
@@ -98,7 +99,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildErrorScaffold(String message) {
     final theme = Theme.of(context);
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.error)),
       body: Center(
         child: Column(
@@ -114,7 +115,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildChatScaffold(ChatOpenState state) {
-    return Scaffold(
+    return GradientScaffold(
       appBar: _buildAppBar(state.conversation),
       body: Center(
         child: ConstrainedBox(
