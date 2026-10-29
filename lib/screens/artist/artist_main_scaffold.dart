@@ -209,7 +209,6 @@ class _ArtistMainScaffoldState extends State<ArtistMainScaffold> {
                     icon: FontAwesomeIcons.gear,
                     selectedIcon: FontAwesomeIcons.gears,
                     label: l10n.settings,
-                    badgeCount: sessionState.pendingCount,
                   ),
                 ],
               );

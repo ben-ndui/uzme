@@ -31,8 +31,7 @@ List<AppNavRailItem> studioRailItems(
   ),
   AppNavRailItem(
     icon: FontAwesomeIcons.gear,
-    selectedIcon: FontAwesomeIcons.gear,
+    selectedIcon: FontAwesomeIcons.gears,
     label: l10n.settings,
-    badgeCount: pendingCount,
   ),
 ];

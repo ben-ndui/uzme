@@ -207,7 +207,6 @@ class _EngineerMainScaffoldState extends State<EngineerMainScaffold> {
                     icon: FontAwesomeIcons.gear,
                     selectedIcon: FontAwesomeIcons.gears,
                     label: l10n.settings,
-                    badgeCount: sessionState.pendingCount,
                   ),
                 ],
               );

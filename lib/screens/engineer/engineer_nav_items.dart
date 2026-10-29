@@ -33,6 +33,5 @@ List<AppNavRailItem> engineerRailItems(
     icon: FontAwesomeIcons.gear,
     selectedIcon: FontAwesomeIcons.gears,
     label: l10n.settings,
-    badgeCount: pendingCount,
   ),
 ];
