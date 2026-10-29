@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uzme/core/models/favorite.dart';
 import 'package:uzme/core/services/favorite_service.dart';
@@ -15,8 +16,14 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   FavoriteBloc({FavoriteService? favoriteService})
       : _favoriteService = favoriteService ?? FavoriteService(),
         super(const FavoriteInitialState()) {
-    on<LoadFavoritesEvent>(_onLoadFavorites);
-    on<LoadFavoritesByTypeEvent>(_onLoadFavoritesByType);
+    // restartable() : chaque MainScaffold dispatche LoadFavoritesEvent au
+    // démarrage. Sans ça, deux dispatches rapprochés tournent en parallèle
+    // (comportement par défaut d'un bloc) et le second abonnement au flux
+    // Firestore écrase la référence du premier sans l'annuler : l'ancien
+    // reste actif, invisible, et ses émissions concurrentes avec le nouveau
+    // ont fait apparaître des favoris en double jusqu'au prochain restart.
+    on<LoadFavoritesEvent>(_onLoadFavorites, transformer: restartable());
+    on<LoadFavoritesByTypeEvent>(_onLoadFavoritesByType, transformer: restartable());
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<RemoveFavoriteEvent>(_onRemoveFavorite);
     on<FavoritesUpdatedEvent>(_onFavoritesUpdated);

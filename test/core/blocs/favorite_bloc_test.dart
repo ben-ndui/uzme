@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -70,6 +72,40 @@ void main() {
         isA<FavoritesLoadedState>(),
         // Second load is skipped (already loaded for same user)
       ],
+    );
+
+    test(
+      'cancels the previous Firestore subscription when fired twice rapidly '
+      '(regression: favoris en double jusqu au restart, 29/10/2026)',
+      () async {
+        final controller1 = StreamController<List<Favorite>>();
+        final controller2 = StreamController<List<Favorite>>();
+        var call = 0;
+        when(() => mockFavoriteService.streamFavorites('user-1'))
+            .thenAnswer((_) {
+          call++;
+          return call == 1 ? controller1.stream : controller2.stream;
+        });
+
+        final bloc = buildBloc();
+        addTearDown(bloc.close);
+
+        // Deux MainScaffold qui dispatchent au démarrage, sans attendre l'un
+        // l'autre : exactement le scénario qui laissait l'ancien flux vivant.
+        bloc.add(const LoadFavoritesEvent(userId: 'user-1'));
+        bloc.add(const LoadFavoritesEvent(userId: 'user-1'));
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+
+        expect(
+          controller1.hasListener,
+          isFalse,
+          reason: 'le premier flux doit être annulé par restartable()',
+        );
+        expect(controller2.hasListener, isTrue);
+
+        await controller1.close();
+        await controller2.close();
+      },
     );
   });
 
