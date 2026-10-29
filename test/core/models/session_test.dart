@@ -303,6 +303,43 @@ void main() {
       expect(session.artistIds, isEmpty);
       expect(session.artistNames, isEmpty);
     });
+
+    test(
+      'round-trips studioName/studioAddress '
+      '(regression: carte et détail sans info studio, Ben 29/10/2026)',
+      () {
+        final session = SessionFactory.future().copyWith(
+          studioName: 'Studio Lumière',
+          studioAddress: '12 rue des Oliviers, Nice',
+        );
+        final restored = Session.fromMap(session.toMap());
+
+        expect(restored.studioName, 'Studio Lumière');
+        expect(restored.studioAddress, '12 rue des Oliviers, Nice');
+      },
+    );
+
+    test('fromMap without studioName/studioAddress (session antérieure au 29/10/2026)', () {
+      final map = {
+        'id': 'old-session',
+        'studioId': 'studio-1',
+        'artistIds': ['artist-1'],
+        'artistNames': ['Test Artist'],
+        'status': 'confirmed',
+        'type': 'recording',
+        'scheduledStart': DateTime.now().millisecondsSinceEpoch,
+        'scheduledEnd':
+            DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+        'durationMinutes': 60,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      };
+      final session = Session.fromMap(map);
+
+      // null, pas une chaîne vide ni un nom inventé : l'appelant (carte,
+      // écran de détail) sait qu'il doit résoudre via studioId.
+      expect(session.studioName, isNull);
+      expect(session.studioAddress, isNull);
+    });
   });
 
   group('Session.isOnDate', () {
