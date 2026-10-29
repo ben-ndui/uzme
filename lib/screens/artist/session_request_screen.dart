@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/core/services/services_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
-import 'package:uzme/widgets/artist/availability_picker.dart';
 import 'package:uzme/widgets/artist/engineer_selector_bottom_sheet.dart';
 import 'package:uzme/widgets/artist/session_request/session_request_exports.dart';
 import 'package:uzme/config/responsive_config.dart';
@@ -26,7 +24,6 @@ class SessionRequestScreen extends StatefulWidget {
 }
 
 class _SessionRequestScreenState extends State<SessionRequestScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _notesController = TextEditingController();
   final _sessionService = SessionService();
   final _roomService = StudioRoomService();
@@ -42,17 +39,18 @@ class _SessionRequestScreenState extends State<SessionRequestScreen> {
   bool _isSubmitting = false;
   WorkingHours? _studioWorkingHours;
   bool _allowNoEngineer = false;
+  String? _studioAddress;
 
   @override
   void initState() {
     super.initState();
     if (widget.studioId != null) {
       _loadRooms();
-      _loadStudioWorkingHours();
+      _loadStudioProfile();
     }
   }
 
-  Future<void> _loadStudioWorkingHours() async {
+  Future<void> _loadStudioProfile() async {
     try {
       final doc = await FirebaseFirestore.instance.collection('users').doc(widget.studioId).get();
       if (doc.exists) {
@@ -66,11 +64,12 @@ class _SessionRequestScreenState extends State<SessionRequestScreen> {
               );
             }
             _allowNoEngineer = studioProfileData['allowNoEngineer'] ?? false;
+            _studioAddress = studioProfileData['address']?.toString();
           });
         }
       }
     } catch (e) {
-      appLog('Erreur chargement horaires studio: $e');
+      appLog('Erreur chargement profil studio: $e');
     }
   }
 
@@ -95,7 +94,6 @@ class _SessionRequestScreenState extends State<SessionRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -106,176 +104,45 @@ class _SessionRequestScreenState extends State<SessionRequestScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: Responsive.maxFormWidth),
           child: widget.studioId == null
-          ? _buildNoStudioState(theme, l10n)
-          : Form(
-              key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  _buildInfoCard(theme, l10n),
-                  const SizedBox(height: 24),
-                  _buildSectionTitle(context, l10n.sessionType),
-                  const SizedBox(height: 8),
-                  SessionTypeSelector(
-                    selectedTypes: _selectedTypes,
-                    onTypesChanged: (types) => setState(() => _selectedTypes
-                      ..clear()
-                      ..addAll(types)),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSectionTitle(context, l10n.sessionDuration),
-                  const SizedBox(height: 8),
-                  _buildDurationSelector(context),
-                  const SizedBox(height: 24),
-                  if (_availableRooms.isNotEmpty) ...[
-                    _buildSectionTitle(context, l10n.selectRoom),
-                    const SizedBox(height: 8),
-                    SessionRoomSelector(
-                      availableRooms: _availableRooms,
-                      selectedRoom: _selectedRoom,
-                      isLoading: _loadingRooms,
-                      onRoomSelected: (room) => setState(() {
-                        _selectedRoom = room;
-                        if (room != null && !room.requiresEngineer) _selectedEngineer = null;
-                      }),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-                  _buildSectionTitle(context, l10n.chooseSlot),
-                  const SizedBox(height: 8),
-                  AvailabilityPicker(
-                    studioId: widget.studioId!,
-                    durationMinutes: _durationHours * 60,
-                    workingHours: _studioWorkingHours,
-                    allowNoEngineer: _allowNoEngineer,
-                    onSlotSelected: (date, slot) => setState(() {
-                      _selectedDate = date;
-                      _selectedSlot = slot;
-                      _selectedEngineer = null;
-                    }),
-                  ),
-                  const SizedBox(height: 24),
-                  if (_selectedSlot != null &&
-                      _selectedSlot!.availableEngineers.isNotEmpty &&
-                      (_selectedRoom == null || _selectedRoom!.requiresEngineer)) ...[
-                    _buildSectionTitle(context, l10n.engineerPreference),
-                    const SizedBox(height: 8),
-                    SessionEngineerSelector(
-                      selectedEngineer: _selectedEngineer,
-                      availableCount: _selectedSlot!.availableCount,
-                      onTap: () => _showEngineerSelector(context),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-                  if (_selectedRoom != null && !_selectedRoom!.requiresEngineer) ...[
-                    const SelfServiceInfoCard(),
-                    const SizedBox(height: 24),
-                  ],
-                  _buildSectionTitle(context, l10n.notesOptional),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _notesController,
-                    maxLines: 3,
-                    decoration: InputDecoration(hintText: l10n.describeProject),
-                  ),
-                  const SizedBox(height: 32),
-                  if (_selectedSlot != null && _selectedDate != null)
-                    SessionRequestSummary(
-                      date: _selectedDate!,
-                      slotStart: _selectedSlot!.start,
-                      slotEnd: _selectedSlot!.end,
-                      selectedRoom: _selectedRoom,
-                      selectedEngineer: _selectedEngineer,
-                    ),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: _canSubmit ? () => _submitRequest(l10n) : null,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            )
-                          : Text(l10n.sendRequest),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            ),
+              ? SessionRequestNoStudioState(l10n: l10n, onBack: () => context.pop())
+              : SessionRequestFormBody(
+                  l10n: l10n,
+                  studioId: widget.studioId!,
+                  selectedTypes: _selectedTypes,
+                  onTypesChanged: (types) => setState(() => _selectedTypes
+                    ..clear()
+                    ..addAll(types)),
+                  durationHours: _durationHours,
+                  onDurationChanged: (hours) => setState(() {
+                    _durationHours = hours;
+                    _selectedSlot = null;
+                    _selectedEngineer = null;
+                  }),
+                  availableRooms: _availableRooms,
+                  selectedRoom: _selectedRoom,
+                  loadingRooms: _loadingRooms,
+                  onRoomSelected: (room) => setState(() {
+                    _selectedRoom = room;
+                    if (room != null && !room.requiresEngineer) _selectedEngineer = null;
+                  }),
+                  studioWorkingHours: _studioWorkingHours,
+                  allowNoEngineer: _allowNoEngineer,
+                  selectedDate: _selectedDate,
+                  selectedSlot: _selectedSlot,
+                  onSlotSelected: (date, slot) => setState(() {
+                    _selectedDate = date;
+                    _selectedSlot = slot;
+                    _selectedEngineer = null;
+                  }),
+                  selectedEngineer: _selectedEngineer,
+                  onShowEngineerSelector: () => _showEngineerSelector(context),
+                  notesController: _notesController,
+                  canSubmit: _canSubmit,
+                  isSubmitting: _isSubmitting,
+                  onSubmit: () => _submitRequest(l10n),
+                ),
         ),
       ),
-    );
-  }
-
-  Widget _buildNoStudioState(ThemeData theme, AppLocalizations l10n) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FaIcon(FontAwesomeIcons.buildingUser, size: 48, color: theme.colorScheme.outline),
-            const SizedBox(height: 16),
-            Text(l10n.noStudioSelected, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(
-              l10n.selectStudioFirst,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
-            ),
-            const SizedBox(height: 24),
-            OutlinedButton.icon(
-              onPressed: () => context.pop(),
-              icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 14),
-              label: Text(l10n.back),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(ThemeData theme, AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          FaIcon(FontAwesomeIcons.circleInfo, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(width: 12),
-          Expanded(child: Text(l10n.slotInfoText, style: theme.textTheme.bodySmall)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600));
-  }
-
-  Widget _buildDurationSelector(BuildContext context) {
-    return Wrap(
-      children: [1, 2, 3, 4, 6, 8].map((hours) {
-        final isSelected = _durationHours == hours;
-        return Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: ChoiceChip(
-            label: Text('${hours}h'),
-            selected: isSelected,
-            onSelected: (_) => setState(() {
-              _durationHours = hours;
-              _selectedSlot = null;
-              _selectedEngineer = null;
-            }),
-          ),
-        );
-      }).toList(),
     );
   }
 
@@ -303,6 +170,8 @@ class _SessionRequestScreenState extends State<SessionRequestScreen> {
       final session = Session(
         id: '',
         studioId: widget.studioId!,
+        studioName: widget.studioName,
+        studioAddress: _studioAddress,
         roomId: _selectedRoom?.id,
         roomName: _selectedRoom?.name,
         artistIds: [authState.user.uid],

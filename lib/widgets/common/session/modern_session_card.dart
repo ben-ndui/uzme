@@ -8,6 +8,7 @@ import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/session/session_date_badge.dart';
+import 'package:uzme/widgets/common/session/session_location_line.dart';
 import 'package:uzme/widgets/common/session/session_status_chip.dart';
 
 /// A modern glass-style session card for artist home feed
@@ -115,6 +116,15 @@ class _ModernSessionCardState extends State<ModernSessionCard> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 4),
+                SessionLocationLine(
+                  session: widget.session,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: cs.onSurface.withValues(alpha: 0.6),
+                  ),
+                  iconColor: cs.onSurface.withValues(alpha: 0.45),
                 ),
               ],
             ),

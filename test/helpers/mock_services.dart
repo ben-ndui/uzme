@@ -14,6 +14,7 @@ import 'package:uzme/core/services/engineer_availability_service.dart';
 import 'package:uzme/core/services/team_service.dart';
 import 'package:uzme/core/services/service_catalog_service.dart';
 import 'package:uzme/core/services/studio_room_service.dart';
+import 'package:uzme/core/services/pro_profile_service.dart';
 
 class MockSessionService extends Mock implements SessionService {}
 
@@ -60,3 +61,5 @@ class MockStudioRoomService extends Mock implements StudioRoomService {}
 class FakeStudioRoom extends Fake implements StudioRoom {}
 
 class FakeTimeOff extends Fake implements TimeOff {}
+
+class MockProProfileService extends Mock implements ProProfileService {}

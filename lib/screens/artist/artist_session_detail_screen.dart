@@ -1,4 +1,3 @@
-import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,18 +5,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/config/responsive_config.dart';
-import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/core/localization/intl_locale.dart';
 import 'package:uzme/core/models/models_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
+import 'package:uzme/widgets/artist/session_detail/session_detail_exports.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
 import 'package:uzme/widgets/common/error_retry_compact.dart';
-import 'package:uzme/core/services/session_payment_service.dart';
-import 'package:uzme/widgets/common/cancel_session_sheet.dart';
 import 'package:uzme/widgets/common/payment_tracking_card.dart';
-import 'package:uzme/widgets/common/session/session_status_style.dart';
+import 'package:uzme/widgets/common/session/session_exports.dart';
 import 'package:uzme/widgets/common/session_pay_button.dart';
-import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 
 /// Session detail screen for artists to view their booked sessions
 class ArtistSessionDetailScreen extends StatefulWidget {
@@ -96,9 +92,11 @@ class _ArtistSessionDetailContent extends StatelessWidget {
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _StatusBadge(status: session.displayStatus, l10n: l10n),
+          SessionDetailStatusBadge(status: session.displayStatus, l10n: l10n),
           const SizedBox(height: 24),
-          _InfoCard(
+          SessionStudioInfoCard(session: session, l10n: l10n),
+          const SizedBox(height: 12),
+          SessionDetailInfoCard(
             icon: FontAwesomeIcons.calendar,
             title: l10n.dateAndTime,
             value: '${dateFormat.format(session.scheduledStart)}\n'
@@ -106,14 +104,14 @@ class _ArtistSessionDetailContent extends StatelessWidget {
             theme: theme,
           ),
           const SizedBox(height: 12),
-          _InfoCard(
+          SessionDetailInfoCard(
             icon: FontAwesomeIcons.clock,
             title: l10n.duration,
             value: '${session.durationMinutes ~/ 60}h${session.durationMinutes % 60 > 0 ? ' ${session.durationMinutes % 60}min' : ''}',
             theme: theme,
           ),
           const SizedBox(height: 12),
-          _InfoCard(
+          SessionDetailInfoCard(
             icon: FontAwesomeIcons.music,
             title: l10n.sessionType,
             value: session.typeLabel,
@@ -123,7 +121,7 @@ class _ArtistSessionDetailContent extends StatelessWidget {
           if (session.hasRoom)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _InfoCard(
+              child: SessionDetailInfoCard(
                 icon: FontAwesomeIcons.doorOpen,
                 title: l10n.rooms,
                 value: session.roomName ?? '-',
@@ -133,15 +131,15 @@ class _ArtistSessionDetailContent extends StatelessWidget {
           if (session.hasEngineer)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _EngineerCard(session: session, l10n: l10n, theme: theme),
+              child: SessionDetailEngineerCard(session: session, l10n: l10n, theme: theme),
             ),
           if (!session.hasEngineer && session.status == SessionStatus.pending)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _PendingEngineerCard(l10n: l10n, theme: theme),
+              child: SessionDetailPendingEngineerCard(l10n: l10n, theme: theme),
             ),
           if (session.notes != null && session.notes!.isNotEmpty)
-            _InfoCard(
+            SessionDetailInfoCard(
               icon: FontAwesomeIcons.noteSticky,
               title: l10n.notesOptional,
               value: session.notes!,
@@ -167,296 +165,13 @@ class _ArtistSessionDetailContent extends StatelessWidget {
               session.displayStatus != SessionStatus.cancelled &&
               session.displayStatus != SessionStatus.noShow) ...[
             const SizedBox(height: 24),
-            _AddToCalendarButton(session: session, l10n: l10n),
+            SessionDetailAddToCalendarButton(session: session, l10n: l10n),
           ],
           const SizedBox(height: 12),
           if (session.canBeCancelled)
-            _CancelButton(session: session, l10n: l10n),
+            SessionDetailCancelButton(session: session, l10n: l10n),
         ],
       ),
-      ),
-    );
-  }
-}
-
-class _EngineerCard extends StatelessWidget {
-  final Session session;
-  final AppLocalizations l10n;
-  final ThemeData theme;
-
-  const _EngineerCard({required this.session, required this.l10n, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: FaIcon(FontAwesomeIcons.headphones, size: 18, color: theme.colorScheme.primary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.engineer, style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 4),
-                Text(session.engineerName ?? '-', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(l10n.confirmed, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.green)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PendingEngineerCard extends StatelessWidget {
-  final AppLocalizations l10n;
-  final ThemeData theme;
-
-  const _PendingEngineerCard({required this.l10n, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-            child: const FaIcon(FontAwesomeIcons.headphones, size: 18, color: Colors.orange),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.engineer, style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 4),
-                Text(l10n.toBeAssigned, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.orange)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final SessionStatus status;
-  final AppLocalizations l10n;
-
-  const _StatusBadge({required this.status, required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = status.color;
-    final label = _label();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-          const SizedBox(width: 8),
-          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color)),
-        ],
-      ),
-    );
-  }
-
-  String _label() {
-    return switch (status) {
-      SessionStatus.pending => l10n.pendingStatus,
-      SessionStatus.confirmed => l10n.confirmedStatus,
-      SessionStatus.inProgress => l10n.inProgressStatus,
-      SessionStatus.completed => l10n.completedStatus,
-      SessionStatus.cancelled => l10n.cancelledStatus,
-      SessionStatus.noShow => l10n.noShowStatus,
-    };
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final FaIconData icon;
-  final String title;
-  final String value;
-  final ThemeData theme;
-
-  const _InfoCard({required this.icon, required this.title, required this.value, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
-            child: FaIcon(icon, size: 16, color: theme.colorScheme.primary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 4),
-                Text(value, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AddToCalendarButton extends StatelessWidget {
-  final Session session;
-  final AppLocalizations l10n;
-
-  const _AddToCalendarButton({required this.session, required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton.icon(
-        onPressed: () => _addToCalendar(context),
-        icon: const FaIcon(FontAwesomeIcons.calendarPlus, size: 16),
-        label: Text(l10n.addToCalendar),
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  void _addToCalendar(BuildContext context) {
-    final event = Event(
-      title: l10n.sessionCalendarTitle(session.typeLabel),
-      description: session.notes ?? '',
-      startDate: session.scheduledStart,
-      endDate: session.scheduledEnd,
-    );
-
-    Add2Calendar.addEvent2Cal(event).then((success) {
-      if (success && context.mounted) {
-        AppSnackBar.success(context, l10n.addedToCalendar);
-      }
-    });
-  }
-}
-
-class _CancelButton extends StatelessWidget {
-  final Session session;
-  final AppLocalizations l10n;
-
-  const _CancelButton({required this.session, required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: () => _showCancelConfirmation(context),
-        icon: const FaIcon(FontAwesomeIcons.xmark, size: 16),
-        label: Text(l10n.cancelSession),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.red,
-          side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  void _showCancelConfirmation(BuildContext context) async {
-    final authState = context.read<AuthBloc>().state;
-    if (authState is! AuthAuthenticatedState) return;
-
-    // If payment was made, show full cancel sheet with refund preview
-    if (session.hasPaymentTracking &&
-        session.paymentStatus != PaymentStatus.none) {
-      final result = await CancelSessionSheet.show(
-        context,
-        session: session,
-        isCancelledByStudio: false,
-      );
-      if (result == null || !context.mounted) return;
-
-      // Call backend for refund + cancel
-      try {
-        await SessionPaymentService().requestRefund(
-          sessionId: session.id,
-          userId: authState.user.uid,
-          reason: result.reason,
-          customReason: result.customReason,
-          isCancelledByStudio: false,
-        );
-        if (context.mounted) {
-          AppSnackBar.success(context, l10n.sessionCancelledNoRefund);
-        }
-      } catch (e) {
-        if (context.mounted) {
-          AppSnackBar.error(context, l10n.paymentFailed);
-        }
-      }
-      return;
-    }
-
-    // No payment — simple cancel dialog
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.cancelSession),
-        content: Text(l10n.confirmCancelSession),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context.read<SessionBloc>().add(UpdateSessionStatusEvent(sessionId: session.id, status: SessionStatus.cancelled));
-            },
-            child: Text(l10n.confirm, style: const TextStyle(color: Colors.red)),
-          ),
-        ],
       ),
     );
   }
