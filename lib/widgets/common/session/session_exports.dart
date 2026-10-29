@@ -1,4 +1,5 @@
 export 'modern_session_card.dart';
+export 'session_contact_actions.dart';
 export 'session_date_badge.dart';
 export 'session_location_line.dart';
 export 'session_shimmer_card.dart';

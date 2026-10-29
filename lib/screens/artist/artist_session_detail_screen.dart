@@ -95,6 +95,11 @@ class _ArtistSessionDetailContent extends StatelessWidget {
           SessionDetailStatusBadge(status: session.displayStatus, l10n: l10n),
           const SizedBox(height: 24),
           SessionStudioInfoCard(session: session, l10n: l10n),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SessionContactActions(session: session, showDirections: true),
+          ),
           const SizedBox(height: 12),
           SessionDetailInfoCard(
             icon: FontAwesomeIcons.calendar,
