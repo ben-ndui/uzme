@@ -3226,7 +3226,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proProfileActivateDesc => 'Proposez vos services sur UZME';
 
   @override
-  String get proProfileManage => 'Gerez votre profil professionnel';
+  String get proProfileManage => 'Gérez votre profil professionnel';
 
   @override
   String get proProfileActive => 'Actif';
@@ -3235,13 +3235,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proProfileInactive => 'Inactif';
 
   @override
-  String get proProfileSelectType => 'Selectionnez au moins un type de service';
+  String get proProfileSelectType => 'Sélectionnez au moins un type de service';
 
   @override
   String get proProfileTypeLabel => 'Que proposez-vous ?';
 
   @override
-  String get proProfileTypeHint => 'Selectionnez un ou plusieurs roles';
+  String get proProfileTypeHint => 'Sélectionnez un ou plusieurs rôles';
 
   @override
   String get proProfileDisplayName => 'Nom professionnel';
@@ -3419,19 +3419,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proBookingDesc =>
-      'Selectionnez une date, un creneau et la duree souhaitee.';
+      'Sélectionnez une date, un créneau et la durée souhaitée.';
 
   @override
   String get proBookingDate => 'Date';
 
   @override
-  String get proBookingTime => 'Heure de debut';
+  String get proBookingTime => 'Heure de début';
 
   @override
-  String get proBookingDuration => 'Duree';
+  String get proBookingDuration => 'Durée';
 
   @override
-  String get proBookingNotes => 'Decrivez votre projet';
+  String get proBookingNotes => 'Décrivez votre projet';
 
   @override
   String get proBookingNotesHint => 'Ex: Mix d\'un EP 5 titres, style R&B...';
@@ -3449,10 +3449,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proBookingSent => 'Demande envoyee !';
 
   @override
-  String get proBookingSelectDate => 'Veuillez selectionner une date';
+  String get proBookingSelectDate => 'Veuillez sélectionner une date';
 
   @override
-  String get proBookingSelectTime => 'Veuillez selectionner un creneau';
+  String get proBookingSelectTime => 'Veuillez sélectionner un créneau';
 
   @override
   String get proBookingsReceived => 'Demandes reçues';

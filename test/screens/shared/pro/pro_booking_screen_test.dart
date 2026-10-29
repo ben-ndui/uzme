@@ -28,12 +28,14 @@ void main() {
     List<ProType> proTypes = const [ProType.soundEngineer],
     double? hourlyRate,
     bool remote = false,
+    String? photoURL,
   }) {
     return AppUser.fromMap({
       'uid': 'pro1',
       'name': 'Pro',
       'email': 'pro@test.com',
       'role': 'client',
+      'photoURL': photoURL,
       'proProfile': {
         'displayName': displayName,
         'proTypes': proTypes.map((t) => t.name).toList(),
@@ -199,5 +201,18 @@ void main() {
 
       expect(find.text('D'), findsOneWidget);
     });
+
+    testWidgets(
+      'hides the initial letter when a photo is set '
+      '(regression: lettre dessinee par-dessus la vraie photo, Ben 29/10/2026)',
+      (tester) async {
+        await tester.pumpWidget(
+          buildScreen(makeProUser(photoURL: 'https://example.com/photo.jpg')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('D'), findsNothing);
+      },
+    );
   });
 }

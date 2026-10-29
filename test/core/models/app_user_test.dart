@@ -262,6 +262,29 @@ void main() {
       expect(user.photoURL, 'https://photo.com/img.jpg');
     });
 
+    test(
+      'lit photoURL (champ pose a l inscription, avant tout toMap()) '
+      '(regression: photo masquee pour un compte tout juste cree, Ben 29/10/2026)',
+      () {
+        final user = AppUser.fromMap({
+          'uid': 'u',
+          'email': 'e',
+          'photoURL': 'https://photo.com/inscription.jpg',
+        });
+        expect(user.photoURL, 'https://photo.com/inscription.jpg');
+      },
+    );
+
+    test('photoURL vide ne masque pas photoUrl pose ensuite', () {
+      final user = AppUser.fromMap({
+        'uid': 'u',
+        'email': 'e',
+        'photoURL': '',
+        'photoUrl': 'https://photo.com/plus-tard.jpg',
+      });
+      expect(user.photoURL, 'https://photo.com/plus-tard.jpg');
+    });
+
     test('handles phone legacy field', () {
       final user = AppUser.fromMap({
         'uid': 'u',

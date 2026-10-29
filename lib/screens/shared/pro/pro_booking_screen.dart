@@ -111,17 +111,19 @@ class _ProBookingScreenState extends State<ProBookingScreen> {
                   )
                 : null,
           ),
-          child: Center(
-            child: Text(
-              _profile.displayName.isNotEmpty
-                  ? _profile.displayName[0].toUpperCase()
-                  : '?',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          child: widget.proUser.photoURL != null
+              ? null
+              : Center(
+                  child: Text(
+                    _profile.displayName.isNotEmpty
+                        ? _profile.displayName[0].toUpperCase()
+                        : '?',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
         ),
         const SizedBox(width: 12),
         Expanded(

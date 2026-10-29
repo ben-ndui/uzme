@@ -6043,7 +6043,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileManage.
   ///
   /// In fr, this message translates to:
-  /// **'Gerez votre profil professionnel'**
+  /// **'Gérez votre profil professionnel'**
   String get proProfileManage;
 
   /// No description provided for @proProfileActive.
@@ -6061,7 +6061,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileSelectType.
   ///
   /// In fr, this message translates to:
-  /// **'Selectionnez au moins un type de service'**
+  /// **'Sélectionnez au moins un type de service'**
   String get proProfileSelectType;
 
   /// No description provided for @proProfileTypeLabel.
@@ -6073,7 +6073,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileTypeHint.
   ///
   /// In fr, this message translates to:
-  /// **'Selectionnez un ou plusieurs roles'**
+  /// **'Sélectionnez un ou plusieurs rôles'**
   String get proProfileTypeHint;
 
   /// No description provided for @proProfileDisplayName.
@@ -6409,7 +6409,7 @@ abstract class AppLocalizations {
   /// No description provided for @proBookingDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Selectionnez une date, un creneau et la duree souhaitee.'**
+  /// **'Sélectionnez une date, un créneau et la durée souhaitée.'**
   String get proBookingDesc;
 
   /// No description provided for @proBookingDate.
@@ -6421,19 +6421,19 @@ abstract class AppLocalizations {
   /// No description provided for @proBookingTime.
   ///
   /// In fr, this message translates to:
-  /// **'Heure de debut'**
+  /// **'Heure de début'**
   String get proBookingTime;
 
   /// No description provided for @proBookingDuration.
   ///
   /// In fr, this message translates to:
-  /// **'Duree'**
+  /// **'Durée'**
   String get proBookingDuration;
 
   /// No description provided for @proBookingNotes.
   ///
   /// In fr, this message translates to:
-  /// **'Decrivez votre projet'**
+  /// **'Décrivez votre projet'**
   String get proBookingNotes;
 
   /// No description provided for @proBookingNotesHint.
@@ -6469,13 +6469,13 @@ abstract class AppLocalizations {
   /// No description provided for @proBookingSelectDate.
   ///
   /// In fr, this message translates to:
-  /// **'Veuillez selectionner une date'**
+  /// **'Veuillez sélectionner une date'**
   String get proBookingSelectDate;
 
   /// No description provided for @proBookingSelectTime.
   ///
   /// In fr, this message translates to:
-  /// **'Veuillez selectionner un creneau'**
+  /// **'Veuillez sélectionner un créneau'**
   String get proBookingSelectTime;
 
   /// No description provided for @proBookingsReceived.

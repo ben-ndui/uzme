@@ -153,7 +153,11 @@ class AppUser extends BaseUser {
       email: map['email'] ?? '',
       name: map['name'],
       displayName: map['displayName'],
-      photoURL: map['photoUrl'] ?? map['photo_Url'],
+      // L'inscription écrit `photoURL` ; toMap() écrit `photoUrl`/`photo_Url`.
+      // Lire `photoURL` en dernier masquerait une vraie photo tout juste
+      // posée à l'inscription (même piège documenté dans BaseUser.fromMap
+      // du package partagé : ne pas le refaire ici).
+      photoURL: _firstNonEmpty(map, const ['photoURL', 'photoUrl', 'photo_Url']),
       phoneNumber: map['phoneNumber'] ?? map['phone'],
       role: BaseUserRoleExtension.fromString(map['role']),
       fcmToken: map['fcmToken'],
@@ -192,6 +196,16 @@ class AppUser extends BaseUser {
       lastActiveDate: FirestoreModel.dateTimeFromFirestore(map['lastActiveDate']),
       isDevMaster: map['isDevMaster'] ?? false,
     );
+  }
+
+  /// Première valeur non vide parmi plusieurs clés candidates (une chaîne
+  /// vide compte comme absente, pas comme une vraie valeur).
+  static String? _firstNonEmpty(Map<String, dynamic> map, List<String> keys) {
+    for (final key in keys) {
+      final value = map[key];
+      if (value is String && value.isNotEmpty) return value;
+    }
+    return null;
   }
 
   @override
