@@ -46,7 +46,6 @@ class AppRoutes {
   static const String engineerSessionDetail = '/engineer/sessions/:id';
   static const String engineerAvailability = '/engineer/availability';
   static const String engineerInvitations = '/engineer/invitations';
-  static const String engineerStudioFolder = '/engineer/studio-folder';
 
   // Artist (Client) portal routes
   static const String artistPortal = '/artist';
@@ -85,6 +84,9 @@ class AppRoutes {
   static const String conversations = '/conversations';
   static const String chat = '/conversations/:id';
   static const String conversationSettings = '/conversations/:id/settings';
+
+  // Dossier d'enregistrement (macOS) — partagé engineer/studio, scopé par uid
+  static const String studioFolder = '/studio-folder';
 
   // About
   static const String about = '/about';

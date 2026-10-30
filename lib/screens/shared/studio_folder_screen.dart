@@ -10,11 +10,16 @@ import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/core/services/studio_folder_preferences.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/app_loader.dart';
-import 'package:uzme/widgets/engineer/conversation_picker_sheet.dart';
-import 'package:uzme/widgets/engineer/studio_folder_file_tile.dart';
+import 'package:uzme/widgets/common/studio_folder_file_tile.dart';
+import 'package:uzme/widgets/messaging/conversation_picker_sheet.dart';
 
-/// Dossier d'enregistrement surveillé par l'ingénieur — macOS uniquement
+/// Dossier d'enregistrement surveillé — macOS uniquement
 /// (DirectorySurveillance / Xplor, repris le 30/10/2026).
+///
+/// Ouvert depuis les réglages ingénieur OU studio (Ben, 30/10/2026 : « c'est
+/// une fonctionnalité qui peut être utilisée par les studios aussi ») —
+/// n'importe quel compte peut enregistrer et envoyer ses fichiers, le
+/// dossier choisi est scopé par uid, pas par rôle.
 ///
 /// Choisir un dossier, voir les fichiers apparaître en direct, les envoyer
 /// à un artiste sans ouvrir le chat.

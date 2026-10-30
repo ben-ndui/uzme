@@ -71,7 +71,7 @@ class EngineerSettingsPage extends StatelessWidget {
               icon: FontAwesomeIcons.folderOpen,
               title: l10n.studioFolderSettingsTitle,
               subtitle: l10n.studioFolderSettingsSubtitle,
-              onTap: () => context.push(AppRoutes.engineerStudioFolder),
+              onTap: () => context.push(AppRoutes.studioFolder),
             ),
 
           const Divider(height: 32),

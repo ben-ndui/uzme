@@ -28,7 +28,7 @@ import 'package:uzme/screens/engineer/engineer_main_scaffold.dart';
 import 'package:uzme/screens/engineer/session_tracking_screen.dart';
 import 'package:uzme/screens/engineer/engineer_availability_screen.dart';
 import 'package:uzme/screens/engineer/team_invitations_screen.dart';
-import 'package:uzme/screens/engineer/studio_folder_screen.dart';
+import 'package:uzme/screens/shared/studio_folder_screen.dart';
 import 'package:uzme/screens/artist/artist_main_scaffold.dart';
 import 'package:uzme/screens/artist/artist_session_detail_screen.dart';
 import 'package:uzme/screens/artist/session_request_screen.dart';
@@ -234,10 +234,6 @@ class AppRouter {
               _featureGuard(context, FeatureFlagKeys.teamManagement.key),
           builder: (context, state) => const TeamInvitationsScreen(),
         ),
-        GoRoute(
-          path: AppRoutes.engineerStudioFolder,
-          builder: (context, state) => const StudioFolderScreen(),
-        ),
 
         // Artist portal routes
         GoRoute(
@@ -421,6 +417,12 @@ class AppRouter {
             final conversationId = state.pathParameters['id']!;
             return ConversationSettingsScreen(conversationId: conversationId);
           },
+        ),
+
+        // Dossier d'enregistrement (macOS) — partagé engineer/studio
+        GoRoute(
+          path: AppRoutes.studioFolder,
+          builder: (context, state) => const StudioFolderScreen(),
         ),
 
         // About
