@@ -1235,6 +1235,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get partnerLabel => 'Partner';
 
   @override
+  String get openInMaps => 'Open in Maps';
+
+  @override
   String get newConversation => 'New conversation';
 
   @override

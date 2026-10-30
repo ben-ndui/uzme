@@ -1,21 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smoothandesign_package/core/widgets/common/common_exports.dart';
 import 'package:uzme/config/map_styles.dart';
-import 'package:uzme/config/useme_theme.dart';
 import 'package:uzme/core/blocs/map/map_bloc.dart';
 import 'package:uzme/core/blocs/map/map_event.dart';
 import 'package:uzme/core/blocs/map/map_state.dart';
 import 'package:uzme/core/models/discovered_studio.dart';
-import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/common/permission_dialog.dart';
-import 'package:uzme/widgets/map/custom_studio_pin.dart';
 import 'package:uzme/widgets/map/map_search_bar.dart';
+import 'package:uzme/widgets/map/studio_map_list_fallback.dart';
+import 'package:uzme/widgets/map/studio_map_loading.dart';
+import 'package:uzme/widgets/map/studio_map_pins_mixin.dart';
 import 'package:uzme/widgets/map/studios_count_chip.dart';
 
-/// Google Maps view showing nearby studios with custom pins
+/// Google Maps view showing nearby studios with custom pins.
+///
+/// Sur macOS : `google_maps_flutter` n'a aucune implémentation pour cette
+/// plateforme (bannière "not yet supported", constaté 30/10/2026) — on bascule
+/// sur une liste ([StudioMapListFallback]) plutôt que de laisser un écran
+/// cassé. Même source de données (`MapBloc`), juste sans widget carte.
 class StudioMapView extends StatefulWidget {
   final Function(GoogleMapController)? onMapCreated;
   final Function(DiscoveredStudio)? onStudioTap;
@@ -26,24 +33,13 @@ class StudioMapView extends StatefulWidget {
   State<StudioMapView> createState() => _StudioMapViewState();
 }
 
-class _StudioMapViewState extends State<StudioMapView> {
+class _StudioMapViewState extends State<StudioMapView> with StudioMapPinsMixin {
   GoogleMapController? _mapController;
   bool _isControllerDisposed = false;
   LatLng? _currentCameraPosition;
 
   /// Cache statique : une fois la permission accordée, ne plus redemander
   static bool _locationPermissionHandled = false;
-
-  // Cached custom pins
-  BitmapDescriptor? _partnerPin;
-  BitmapDescriptor? _defaultPin;
-  BitmapDescriptor? _proPin;
-  final Map<String, BitmapDescriptor> _studioPins = {};
-
-  // Selected studio pin (regenerated on selection change)
-  String? _selectedStudioId;
-  BitmapDescriptor? _selectedStudioPin;
-  Brightness? _lastBrightness;
 
   @override
   void initState() {
@@ -55,15 +51,14 @@ class _StudioMapViewState extends State<StudioMapView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final brightness = Theme.of(context).brightness;
-    if (_lastBrightness != brightness) {
-      _lastBrightness = brightness;
-      _loadDefaultPins();
+    if (lastBrightness != brightness) {
+      lastBrightness = brightness;
+      loadDefaultPins();
     }
   }
 
   Future<void> _initWithPermission() async {
     if (!_locationPermissionHandled) {
-      // Use geolocator (same package as login screen map) for consistent status
       final geoPermission = await geo.Geolocator.checkPermission();
       final alreadyGranted =
           geoPermission == geo.LocationPermission.whileInUse ||
@@ -91,26 +86,6 @@ class _StudioMapViewState extends State<StudioMapView> {
     super.dispose();
   }
 
-  Future<void> _loadDefaultPins() async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    _partnerPin = await CustomStudioPin.createPinWithImage(
-      imageUrl: null,
-      pinColor: Colors.green,
-      isDark: isDark,
-    );
-    _defaultPin = await CustomStudioPin.createPinWithImage(
-      imageUrl: null,
-      pinColor: UseMeTheme.primaryColor,
-      isDark: isDark,
-    );
-    _proPin = await CustomStudioPin.createPinWithImage(
-      imageUrl: null,
-      pinColor: UseMeTheme.accentColor,
-      isDark: isDark,
-    );
-    if (mounted) setState(() {});
-  }
-
   void _safeAnimateCamera(LatLng location, double zoom) {
     if (_isControllerDisposed || _mapController == null || !mounted) return;
     try {
@@ -118,6 +93,16 @@ class _StudioMapViewState extends State<StudioMapView> {
     } catch (e) {
       // Controller was disposed, ignore
     }
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+    widget.onMapCreated?.call(controller);
+  }
+
+  void _onSelectStudio(DiscoveredStudio studio) {
+    context.read<MapBloc>().add(SelectStudioEvent(studio: studio));
+    widget.onStudioTap?.call(studio);
   }
 
   @override
@@ -128,16 +113,13 @@ class _StudioMapViewState extends State<StudioMapView> {
         final searchCompleted = previous.isSearchingAddress && !current.isSearchingAddress;
         final studiosLoaded = previous.isLoading && !current.isLoading;
         final newStudios = previous.nearbyStudios.length != current.nearbyStudios.length;
-        final selectionChanged =
-            previous.selectedStudio != current.selectedStudio;
-        final directionsChanged =
-            previous.directions != current.directions;
+        final selectionChanged = previous.selectedStudio != current.selectedStudio;
+        final directionsChanged = previous.directions != current.directions;
         return searchCompleted || studiosLoaded || newStudios || selectionChanged || directionsChanged;
       },
       listener: (context, state) {
         if (!mounted || _isControllerDisposed) return;
 
-        // Fit camera to route bounds when directions arrive
         if (state.hasDirections && _mapController != null) {
           _mapController!.animateCamera(
             CameraUpdate.newLatLngBounds(state.directions!.bounds, 80),
@@ -149,38 +131,46 @@ class _StudioMapViewState extends State<StudioMapView> {
           final zoom = state.selectedStudio != null ? 16.0 : 13.0;
           _safeAnimateCamera(state.searchCenter, zoom);
         }
-        // Update highlighted pin for selected / deselected studio
-        _updateSelectedPin(state.selectedStudio);
-        // Load custom pins for new studios
-        if (mounted) _loadStudioPins(state.nearbyStudios);
+        updateSelectedPin(state.selectedStudio);
+        if (mounted) loadStudioPins(state.nearbyStudios);
       },
       builder: (context, state) {
+        if (Platform.isMacOS) {
+          return Stack(
+            children: [
+              StudioMapListFallback(
+                isLoading: state.isLoading,
+                studios: state.filteredStudios,
+                onStudioTap: _onSelectStudio,
+              ),
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+                child: const MapSearchBar(),
+              ),
+            ],
+          );
+        }
+
         if (state.isLoading && state.nearbyStudios.isEmpty) {
-          return _buildLoadingMap(state);
+          return StudioMapLoading(state: state, onMapCreated: _onMapCreated);
         }
 
         return Stack(
           children: [
             GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: state.userLocation,
-                zoom: 14,
-              ),
+              initialCameraPosition: CameraPosition(target: state.userLocation, zoom: 14),
               style: MapStyles.forBrightness(Theme.of(context).brightness),
-              markers: _buildMarkers(state),
+              markers: buildMarkers(state.filteredStudios, _onSelectStudio),
               polylines: state.routePolylines,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
               mapToolbarEnabled: false,
               compassEnabled: false,
-              onMapCreated: (controller) {
-                _mapController = controller;
-                widget.onMapCreated?.call(controller);
-              },
-              onCameraMove: (position) {
-                _currentCameraPosition = position.target;
-              },
+              onMapCreated: _onMapCreated,
+              onCameraMove: (position) => _currentCameraPosition = position.target,
               onCameraIdle: () {
                 if (_currentCameraPosition != null) {
                   context.read<MapBloc>().add(
@@ -188,195 +178,32 @@ class _StudioMapViewState extends State<StudioMapView> {
                       );
                 }
               },
-              onTap: (_) {
-                context.read<MapBloc>().add(const DeselectStudioEvent());
-              },
+              onTap: (_) => context.read<MapBloc>().add(const DeselectStudioEvent()),
             ),
-            // Floating search bar (top left, right-constrained for tablet)
             Positioned(
               top: MediaQuery.of(context).padding.top + 60,
               left: 16,
               right: 16,
               child: const MapSearchBar(),
             ),
-            // Studios count chip — draggable libre, position initiale
-            // sous la search bar côté droit. Width estimée ~180px → on
-            // calcule l'X pour rester aligné droite par défaut.
             DraggableWidget(
               initialX: MediaQuery.of(context).size.width - 180 - 16,
               initialY: MediaQuery.of(context).padding.top + 60 + 48 + 12,
               child: const StudiosCountChip(),
             ),
-            // Location button
             Positioned(
               bottom: 180,
               right: 16,
-              child: _buildLocationButton(context, state),
+              child: FloatingActionButton.small(
+                heroTag: 'location',
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                onPressed: () => _safeAnimateCamera(state.userLocation, 15),
+                child: Icon(Icons.my_location, color: Theme.of(context).colorScheme.primary),
+              ),
             ),
           ],
         );
       },
-    );
-  }
-
-  Color _pinColor(DiscoveredStudio studio) {
-    if (studio.isPioneer) return const Color(0xFFFFD700); // Gold
-    if (studio.isPro) return UseMeTheme.accentColor;
-    if (studio.isPartner) return Colors.green;
-    return UseMeTheme.primaryColor;
-  }
-
-  /// Generate a highlighted pin for the selected studio.
-  Future<void> _updateSelectedPin(DiscoveredStudio? studio) async {
-    if (studio == null) {
-      if (_selectedStudioId != null) {
-        setState(() {
-          _selectedStudioId = null;
-          _selectedStudioPin = null;
-        });
-      }
-      return;
-    }
-    if (studio.id == _selectedStudioId) return;
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final pin = await CustomStudioPin.createPinWithImage(
-      imageUrl: studio.photoUrl,
-      pinColor: _pinColor(studio),
-      isSelected: true,
-      isDark: isDark,
-    );
-    if (mounted) {
-      setState(() {
-        _selectedStudioId = studio.id;
-        _selectedStudioPin = pin;
-      });
-    }
-  }
-
-  Future<void> _loadStudioPins(List<DiscoveredStudio> studios) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    for (final studio in studios) {
-      if (!_studioPins.containsKey(studio.id) && studio.photoUrl != null) {
-        try {
-          final pin = await CustomStudioPin.createPinWithImage(
-            imageUrl: studio.photoUrl,
-            pinColor: _pinColor(studio),
-            isDark: isDark,
-          );
-          if (mounted) {
-            setState(() {
-              _studioPins[studio.id] = pin;
-            });
-          }
-        } catch (e) {
-          // Use default pin
-        }
-      }
-    }
-  }
-
-  Widget _buildLoadingMap(MapState state) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      color: isDark ? const Color(0xFF0D0D0F) : Colors.grey.shade200,
-      child: Stack(
-        children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: state.userLocation,
-              zoom: 14,
-            ),
-            style: MapStyles.forBrightness(Theme.of(context).brightness),
-            myLocationEnabled: false,
-            zoomControlsEnabled: false,
-            mapToolbarEnabled: false,
-            onMapCreated: (controller) {
-              _mapController = controller;
-              widget.onMapCreated?.call(controller);
-            },
-          ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 12),
-                  Text(AppLocalizations.of(context)!.searchingStudios),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Set<Marker> _buildMarkers(MapState state) {
-    final markers = <Marker>{};
-
-    for (final studio in state.filteredStudios) {
-      // Use highlighted pin for the selected studio
-      final isSelected = studio.id == _selectedStudioId;
-      BitmapDescriptor icon;
-      if (isSelected && _selectedStudioPin != null) {
-        icon = _selectedStudioPin!;
-      } else if (_studioPins.containsKey(studio.id)) {
-        icon = _studioPins[studio.id]!;
-      } else if (studio.isPro && _proPin != null) {
-        icon = _proPin!;
-      } else if (studio.isPartner && _partnerPin != null) {
-        icon = _partnerPin!;
-      } else if (_defaultPin != null) {
-        icon = _defaultPin!;
-      } else {
-        icon = studio.isPro
-            ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
-            : studio.isPartner
-                ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)
-                : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
-      }
-
-      markers.add(
-        Marker(
-          markerId: MarkerId(studio.id),
-          position: studio.position,
-          infoWindow: InfoWindow(
-            title: studio.name,
-            snippet: studio.isPro
-                ? '${studio.formattedDistance} • Pro'
-                : '${studio.formattedDistance}${studio.isPartner ? ' • ${AppLocalizations.of(context)!.partnerLabel}' : ''}',
-          ),
-          icon: icon,
-          onTap: () {
-            context.read<MapBloc>().add(SelectStudioEvent(studio: studio));
-            widget.onStudioTap?.call(studio);
-          },
-        ),
-      );
-    }
-
-    return markers;
-  }
-
-  Widget _buildLocationButton(BuildContext context, MapState state) {
-    return FloatingActionButton.small(
-      heroTag: 'location',
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      onPressed: () => _safeAnimateCamera(state.userLocation, 15),
-      child: Icon(Icons.my_location, color: Theme.of(context).colorScheme.primary),
     );
   }
 }

@@ -1231,6 +1231,9 @@ class AppLocalizationsSg extends AppLocalizations {
   String get partnerLabel => 'Partner';
 
   @override
+  String get openInMaps => 'Ouvrir dans Maps';
+
+  @override
   String get newConversation => 'Bîanî tî finî';
 
   @override

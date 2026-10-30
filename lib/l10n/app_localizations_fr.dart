@@ -1241,6 +1241,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get partnerLabel => 'Partenaire';
 
   @override
+  String get openInMaps => 'Ouvrir dans Maps';
+
+  @override
   String get newConversation => 'Nouvelle conversation';
 
   @override

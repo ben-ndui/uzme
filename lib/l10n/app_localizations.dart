@@ -2434,6 +2434,12 @@ abstract class AppLocalizations {
   /// **'Partenaire'**
   String get partnerLabel;
 
+  /// No description provided for @openInMaps.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir dans Maps'**
+  String get openInMaps;
+
   /// No description provided for @newConversation.
   ///
   /// In fr, this message translates to:
