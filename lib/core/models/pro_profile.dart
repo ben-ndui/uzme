@@ -22,13 +22,13 @@ enum ProType {
   String get label {
     switch (this) {
       case ProType.soundEngineer:
-        return 'Ingenieur son';
+        return 'Ingénieur son';
       case ProType.musician:
         return 'Musicien';
       case ProType.artisticDirector:
         return 'Directeur artistique';
       case ProType.producer:
-        return 'Realisateur / Beatmaker';
+        return 'Réalisateur / Beatmaker';
       case ProType.vocalist:
         return 'Chanteur / Choriste';
       case ProType.composer:

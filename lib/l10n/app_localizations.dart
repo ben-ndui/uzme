@@ -6025,7 +6025,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileSetupDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Proposez vos services aux artistes et studios sur UZME. Remplissez votre profil pour apparaitre dans la marketplace.'**
+  /// **'Proposez vos services aux artistes et studios sur UZME. Remplissez votre profil pour apparaître dans la marketplace.'**
   String get proProfileSetupDesc;
 
   /// No description provided for @proProfileActivate.
@@ -6103,7 +6103,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileCityHelper.
   ///
   /// In fr, this message translates to:
-  /// **'Utilisee pour vous positionner sur la carte'**
+  /// **'Utilisée pour vous positionner sur la carte'**
   String get proProfileCityHelper;
 
   /// No description provided for @proProfileWebsite.
@@ -6115,13 +6115,13 @@ abstract class AppLocalizations {
   /// No description provided for @proProfilePhone.
   ///
   /// In fr, this message translates to:
-  /// **'Telephone'**
+  /// **'Téléphone'**
   String get proProfilePhone;
 
   /// No description provided for @proProfileSpecialties.
   ///
   /// In fr, this message translates to:
-  /// **'Specialites'**
+  /// **'Spécialités'**
   String get proProfileSpecialties;
 
   /// No description provided for @proProfileSpecialtiesHint.
@@ -6169,7 +6169,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfileRemote.
   ///
   /// In fr, this message translates to:
-  /// **'Services a distance'**
+  /// **'Services à distance'**
   String get proProfileRemote;
 
   /// No description provided for @proProfileRemoteDesc.
@@ -6235,7 +6235,7 @@ abstract class AppLocalizations {
   /// No description provided for @proProfilePhotoDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Choisissez la photo affichee sur votre profil pro'**
+  /// **'Choisissez la photo affichée sur votre profil pro'**
   String get proProfilePhotoDesc;
 
   /// No description provided for @proDetailPortfolio.
@@ -6247,7 +6247,7 @@ abstract class AppLocalizations {
   /// No description provided for @proDetailPaymentMethods.
   ///
   /// In fr, this message translates to:
-  /// **'Moyens de paiement acceptes'**
+  /// **'Moyens de paiement acceptés'**
   String get proDetailPaymentMethods;
 
   /// No description provided for @requiredField.
@@ -6271,7 +6271,7 @@ abstract class AppLocalizations {
   /// No description provided for @proDiscoverySubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Ingenieurs, producteurs & plus'**
+  /// **'Ingénieurs, producteurs & plus'**
   String get proDiscoverySubtitle;
 
   /// No description provided for @seeAll.
@@ -6283,25 +6283,25 @@ abstract class AppLocalizations {
   /// No description provided for @proDiscoveryDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Decouvrez les professionnels disponibles'**
+  /// **'Découvrez les professionnels disponibles'**
   String get proDiscoveryDesc;
 
   /// No description provided for @proDiscoveryEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Aucun professionnel trouve'**
+  /// **'Aucun professionnel trouvé'**
   String get proDiscoveryEmpty;
 
   /// No description provided for @proDiscoveryEmptyDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Essayez d\'elargir vos filtres ou de modifier votre recherche'**
+  /// **'Essayez d\'élargir vos filtres ou de modifier votre recherche'**
   String get proDiscoveryEmptyDesc;
 
   /// No description provided for @proSearchHint.
   ///
   /// In fr, this message translates to:
-  /// **'Nom, specialite, genre...'**
+  /// **'Nom, spécialité, genre...'**
   String get proSearchHint;
 
   /// No description provided for @proFilterTitle.
@@ -6319,7 +6319,7 @@ abstract class AppLocalizations {
   /// No description provided for @proFilterRemoteOnly.
   ///
   /// In fr, this message translates to:
-  /// **'A distance uniquement'**
+  /// **'À distance uniquement'**
   String get proFilterRemoteOnly;
 
   /// No description provided for @proFilterRemoteDesc.
@@ -6355,7 +6355,7 @@ abstract class AppLocalizations {
   /// No description provided for @proDetailSpecialties.
   ///
   /// In fr, this message translates to:
-  /// **'Specialites'**
+  /// **'Spécialités'**
   String get proDetailSpecialties;
 
   /// No description provided for @proDetailGenres.
@@ -6397,13 +6397,13 @@ abstract class AppLocalizations {
   /// No description provided for @proResultCount.
   ///
   /// In fr, this message translates to:
-  /// **'{count} pros trouves'**
+  /// **'{count} pros trouvés'**
   String proResultCount(int count);
 
   /// No description provided for @proBookingTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Reserver {proName}'**
+  /// **'Réserver {proName}'**
   String proBookingTitle(String proName);
 
   /// No description provided for @proBookingDesc.
@@ -6445,13 +6445,13 @@ abstract class AppLocalizations {
   /// No description provided for @proBookingRemote.
   ///
   /// In fr, this message translates to:
-  /// **'Session a distance'**
+  /// **'Session à distance'**
   String get proBookingRemote;
 
   /// No description provided for @proBookingSummary.
   ///
   /// In fr, this message translates to:
-  /// **'Recapitulatif'**
+  /// **'Récapitulatif'**
   String get proBookingSummary;
 
   /// No description provided for @proBookingSend.
@@ -6463,7 +6463,7 @@ abstract class AppLocalizations {
   /// No description provided for @proBookingSent.
   ///
   /// In fr, this message translates to:
-  /// **'Demande envoyee !'**
+  /// **'Demande envoyée !'**
   String get proBookingSent;
 
   /// No description provided for @proBookingSelectDate.

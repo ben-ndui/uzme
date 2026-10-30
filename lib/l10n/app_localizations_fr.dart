@@ -3217,7 +3217,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proProfileSetupDesc =>
-      'Proposez vos services aux artistes et studios sur UZME. Remplissez votre profil pour apparaitre dans la marketplace.';
+      'Proposez vos services aux artistes et studios sur UZME. Remplissez votre profil pour apparaître dans la marketplace.';
 
   @override
   String get proProfileActivate => 'Activer mon profil pro';
@@ -3257,16 +3257,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proProfileCityHelper =>
-      'Utilisee pour vous positionner sur la carte';
+      'Utilisée pour vous positionner sur la carte';
 
   @override
   String get proProfileWebsite => 'Site web';
 
   @override
-  String get proProfilePhone => 'Telephone';
+  String get proProfilePhone => 'Téléphone';
 
   @override
-  String get proProfileSpecialties => 'Specialites';
+  String get proProfileSpecialties => 'Spécialités';
 
   @override
   String get proProfileSpecialtiesHint => 'Ex: Mix voix, Mastering...';
@@ -3290,7 +3290,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proProfileDawsHint => 'Ex: Pro Tools, Logic Pro...';
 
   @override
-  String get proProfileRemote => 'Services a distance';
+  String get proProfileRemote => 'Services à distance';
 
   @override
   String get proProfileRemoteDesc => 'Vous acceptez des missions en remote';
@@ -3326,13 +3326,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proProfilePhotoDesc =>
-      'Choisissez la photo affichee sur votre profil pro';
+      'Choisissez la photo affichée sur votre profil pro';
 
   @override
   String get proDetailPortfolio => 'Portfolio';
 
   @override
-  String get proDetailPaymentMethods => 'Moyens de paiement acceptes';
+  String get proDetailPaymentMethods => 'Moyens de paiement acceptés';
 
   @override
   String get requiredField => 'Ce champ est requis';
@@ -3344,23 +3344,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proDiscoveryTitle => 'Trouver un pro';
 
   @override
-  String get proDiscoverySubtitle => 'Ingenieurs, producteurs & plus';
+  String get proDiscoverySubtitle => 'Ingénieurs, producteurs & plus';
 
   @override
   String get seeAll => 'Voir tout';
 
   @override
-  String get proDiscoveryDesc => 'Decouvrez les professionnels disponibles';
+  String get proDiscoveryDesc => 'Découvrez les professionnels disponibles';
 
   @override
-  String get proDiscoveryEmpty => 'Aucun professionnel trouve';
+  String get proDiscoveryEmpty => 'Aucun professionnel trouvé';
 
   @override
   String get proDiscoveryEmptyDesc =>
-      'Essayez d\'elargir vos filtres ou de modifier votre recherche';
+      'Essayez d\'élargir vos filtres ou de modifier votre recherche';
 
   @override
-  String get proSearchHint => 'Nom, specialite, genre...';
+  String get proSearchHint => 'Nom, spécialité, genre...';
 
   @override
   String get proFilterTitle => 'Filtrer les pros';
@@ -3369,7 +3369,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proFilterDesc => 'Affinez votre recherche';
 
   @override
-  String get proFilterRemoteOnly => 'A distance uniquement';
+  String get proFilterRemoteOnly => 'À distance uniquement';
 
   @override
   String get proFilterRemoteDesc => 'Pros acceptant les missions remote';
@@ -3387,7 +3387,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proDetailRate => 'Tarif';
 
   @override
-  String get proDetailSpecialties => 'Specialites';
+  String get proDetailSpecialties => 'Spécialités';
 
   @override
   String get proDetailGenres => 'Genres';
@@ -3409,12 +3409,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String proResultCount(int count) {
-    return '$count pros trouves';
+    return '$count pros trouvés';
   }
 
   @override
   String proBookingTitle(String proName) {
-    return 'Reserver $proName';
+    return 'Réserver $proName';
   }
 
   @override
@@ -3437,16 +3437,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proBookingNotesHint => 'Ex: Mix d\'un EP 5 titres, style R&B...';
 
   @override
-  String get proBookingRemote => 'Session a distance';
+  String get proBookingRemote => 'Session à distance';
 
   @override
-  String get proBookingSummary => 'Recapitulatif';
+  String get proBookingSummary => 'Récapitulatif';
 
   @override
   String get proBookingSend => 'Envoyer la demande';
 
   @override
-  String get proBookingSent => 'Demande envoyee !';
+  String get proBookingSent => 'Demande envoyée !';
 
   @override
   String get proBookingSelectDate => 'Veuillez sélectionner une date';
