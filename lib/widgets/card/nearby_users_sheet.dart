@@ -13,6 +13,7 @@ import 'package:uzme/core/models/card_config.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/widgets/card/holo_card.dart';
 import 'package:uzme/widgets/card/scanned_contact_sheet.dart';
+import 'package:uzme/widgets/common/permission_dialog.dart';
 
 /// Bottom sheet showing nearby UZME users with their HoloCards.
 class NearbyUsersSheet extends StatefulWidget {
@@ -66,18 +67,23 @@ class _NearbyUsersSheetState extends State<NearbyUsersSheet> {
         : '';
 
     try {
-      // Get current position
-      final permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        final requested = await Geolocator.requestPermission();
-        if (requested == LocationPermission.denied ||
-            requested == LocationPermission.deniedForever) {
+      // Explication maison AVANT le popup système (Apple Review 5.1.1) —
+      // relevé le 30/10/2026 : c'était le seul endroit de l'app à appeler
+      // Geolocator.requestPermission() directement, sans le soft-ask déjà
+      // posé partout ailleurs (PermissionDialog).
+      if (!mounted) return;
+      final granted = await PermissionDialog.requestPermission(
+        context,
+        type: AppPermissionType.location,
+      );
+      if (!granted) {
+        if (mounted) {
           setState(() {
             _error = 'locationDenied';
             _isLoading = false;
           });
-          return;
         }
+        return;
       }
 
       final position = await Geolocator.getCurrentPosition(

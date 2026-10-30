@@ -35,7 +35,10 @@ class _StudioDashboardBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isWide = context.isTabletOrLarger;
-    final bottomPadding = isWide ? 16.0 : Responsive.fabBottomOffset;
+    // La barre flottante est désormais présente sur TOUTES les largeurs
+    // (DA 2026-2027, audit 2026-10-30 : plus de NavigationRail sur tablette)
+    // — toujours réserver l'espace en bas pour ne pas passer dessous.
+    final bottomPadding = Responsive.fabBottomOffset;
 
     return BlocListener<MapBloc, MapState>(
       listenWhen: (prev, curr) =>

@@ -8,6 +8,14 @@ import 'package:flutter/material.dart';
 /// disponible (ses onglets inactifs gardent leur plancher tactile fixe) :
 /// sur un iPad en paysage, le libellé actif se retrouve perdu au milieu
 /// d'une pilule de près de 1000px.
+///
+/// ⚠️ `Center`/`Align` sont PROSCRITS ici (régression Ben, 30/10/2026) :
+/// posé comme `Scaffold.bottomNavigationBar`, ce slot reçoit des contraintes
+/// « loose » mais BORNÉES (max = hauteur du body) — `Center` s'étire alors
+/// sur toute cette hauteur pour centrer son enfant DEDANS, et la barre se
+/// retrouve au milieu de l'écran au lieu du bas. `Row` ne fait jamais ça :
+/// en axe transverse (la hauteur, ici), un `Flex` se cale TOUJOURS sur la
+/// taille de son enfant, quelles que soient les contraintes entrantes.
 class BoundedBottomNav extends StatelessWidget {
   const BoundedBottomNav({super.key, required this.child});
 
@@ -17,11 +25,14 @@ class BoundedBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: maxWidth),
-        child: child,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: maxWidth),
+          child: child,
+        ),
+      ],
     );
   }
 }
