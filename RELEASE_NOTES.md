@@ -1,7 +1,11 @@
 # UZME — Notes de version
 
 Ce fichier compile les changements user-facing depuis la dernière version
-publiée en prod (**v1.3.0**) jusqu'à la version actuelle (**v1.5.23**).
+publiée en prod (**v1.3.0**) jusqu'à la version actuelle (**v1.5.28**).
+
+> ⚠️ Trou non documenté entre v1.5.24 et v1.5.27 : ces versions ont été
+> taguées sans section ici (voir l'historique git pour le détail si besoin
+> un jour). Pas comblé — pas bloquant pour publier v1.5.28.
 
 À utiliser pour :
 - Description Play Store / TestFlight
@@ -42,6 +46,30 @@ Voir `scripts/extract_release_notes.sh` pour le parser exact.
 Si une section ou une locale manque, Fastlane skip le upload des notes
 sans casser le deploy → release notes restent celles de la version
 précédente sur le store.
+
+---
+
+## v1.5.28
+
+### FR
+- Nouveau : le dossier d'enregistrement — choisis dans les Réglages le dossier où tu enregistres tes sessions (ordinateur, téléphone ou tablette) et envoie un fichier à un artiste en un geste, sans ouvrir un autre outil.
+- Messagerie : un message qui ne part pas affiche maintenant une erreur claire au lieu de disparaître en silence.
+- Fix : l'application ne crashait plus au lancement sur Mac dans de rares cas.
+- Fix : la barre de navigation reste bien en bas sur iPad et grand écran.
+- Fix : le fond de l'écran de discussion ne devenait plus noir en thème clair.
+
+### EN
+- New: recording folder — pick the folder where you record your sessions (computer, phone, or tablet) in Settings, and send a file to an artist in one tap.
+- Messaging: a message that fails to send now shows a clear error instead of silently disappearing.
+- Fix: the app no longer crashed on launch on Mac in rare cases.
+- Fix: the navigation bar now stays at the bottom on iPad and large screens.
+- Fix: the chat screen background no longer turned black in light mode.
+
+### SG
+📁 Fini : dossier tî enregistrement — choisi na Réglages dossier so mo-yêkë enregistrer sessions tî mo (ordinateur, téléphone wala tablette), tokua fichier na artiste na mbeni geste.
+💬 Messagerie : message so a-yêkë pars pëpe a-yêkë montrer erreur, a-disparaître na silence pëpe.
+🐛 Fix : app a-yêkë crash na lancement na Mac pëpe mbeni fois.
+🐛 Fix : barre tî navigation a-yêkë ngbâ na bas na iPad na grand écran.
 
 ---
 
