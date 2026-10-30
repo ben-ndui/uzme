@@ -1588,6 +1588,8 @@ PODS:
     - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - Flutter
+  - smoothandesign_folder_watcher (0.0.1):
+    - Flutter
   - Stripe (24.23.3):
     - StripeApplePay (= 24.23.3)
     - StripeCore (= 24.23.3)
@@ -1682,6 +1684,7 @@ DEPENDENCIES:
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
+  - smoothandesign_folder_watcher (from `.symlinks/plugins/smoothandesign_folder_watcher/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
@@ -1805,6 +1808,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sign_in_with_apple:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
+  smoothandesign_folder_watcher:
+    :path: ".symlinks/plugins/smoothandesign_folder_watcher/ios"
   stripe_ios:
     :path: ".symlinks/plugins/stripe_ios/ios"
   url_launcher_ios:
@@ -1884,6 +1889,7 @@ SPEC CHECKSUMS:
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sign_in_with_apple: c5dcc141574c8c54d5ac99dd2163c0c72ad22418
+  smoothandesign_folder_watcher: b4754a5f1824b35fb88f4aa9fbb6fbcbf6754baf
   Stripe: a4b6584549bac3698733ed564e55b0b067cfda8a
   stripe_ios: b720131bae6025a497bf7bb030e238a1a2781f18
   StripeApplePay: c8b005f1b5a242c455f76b42eda08660e9e33102
