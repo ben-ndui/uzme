@@ -2437,5 +2437,5 @@
     "placeholders": {"error": {"type": "String"}}
   },
   "studioFolderNoConversations": "Aucune conversation pour l'instant — envoie d'abord un message à l'artiste.",
-  "studioFolderMacOSOnly": "Disponible uniquement sur l'app Mac"
+  "studioFolderPollingNotice": "Les nouveaux fichiers peuvent mettre quelques secondes à apparaître ici."
 }

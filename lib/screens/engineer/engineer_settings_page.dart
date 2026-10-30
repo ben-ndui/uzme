@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,15 +62,15 @@ class EngineerSettingsPage extends StatelessWidget {
               subtitle: l10n.pendingInvitations,
               onTap: () => context.push(AppRoutes.engineerInvitations),
             ),
-          // Dossier d'enregistrement : macOS uniquement, un chemin de
-          // disque n'a aucun sens sur iOS/Android (audit 30/10/2026).
-          if (Platform.isMacOS)
-            SettingsTile(
-              icon: FontAwesomeIcons.folderOpen,
-              title: l10n.studioFolderSettingsTitle,
-              subtitle: l10n.studioFolderSettingsSubtitle,
-              onTap: () => context.push(AppRoutes.studioFolder),
-            ),
+          // Dossier d'enregistrement : macOS, iOS et Android (package
+          // smoothandesign_folder_watcher v0.3.0, 30/10/2026). Pas de
+          // surveillance en temps réel hors macOS (polling), voir l'écran.
+          SettingsTile(
+            icon: FontAwesomeIcons.folderOpen,
+            title: l10n.studioFolderSettingsTitle,
+            subtitle: l10n.studioFolderSettingsSubtitle,
+            onTap: () => context.push(AppRoutes.studioFolder),
+          ),
 
           const Divider(height: 32),
 

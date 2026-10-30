@@ -13,16 +13,18 @@ import 'package:uzme/widgets/common/app_loader.dart';
 import 'package:uzme/widgets/common/studio_folder_file_tile.dart';
 import 'package:uzme/widgets/messaging/conversation_picker_sheet.dart';
 
-/// Dossier d'enregistrement surveillé — macOS uniquement
+/// Dossier d'enregistrement surveillé — macOS, iOS, Android
 /// (DirectorySurveillance / Xplor, repris le 30/10/2026).
 ///
 /// Ouvert depuis les réglages ingénieur OU studio (Ben, 30/10/2026 : « c'est
-/// une fonctionnalité qui peut être utilisée par les studios aussi ») —
-/// n'importe quel compte peut enregistrer et envoyer ses fichiers, le
-/// dossier choisi est scopé par uid, pas par rôle.
+/// une fonctionnalité qui peut être utilisée par les studios aussi, si
+/// l'ingé son est sur son téléphone ») — n'importe quel compte peut
+/// enregistrer et envoyer ses fichiers, le dossier choisi est scopé par
+/// uid, pas par rôle.
 ///
-/// Choisir un dossier, voir les fichiers apparaître en direct, les envoyer
-/// à un artiste sans ouvrir le chat.
+/// Choisir un dossier, voir les fichiers apparaître (en direct sur macOS,
+/// par polling ~5s ailleurs — [SmoothFolderWatcher.supportsLiveWatch]), les
+/// envoyer à un artiste sans ouvrir le chat.
 class StudioFolderScreen extends StatefulWidget {
   const StudioFolderScreen({super.key});
 
@@ -32,6 +34,7 @@ class StudioFolderScreen extends StatefulWidget {
 
 class _StudioFolderScreenState extends State<StudioFolderScreen> {
   String? _path;
+  Uint8List? _bookmark;
   List<WatchedFile> _files = const [];
   bool _loading = true;
   StreamSubscription<FolderFileChange>? _changesSubscription;
@@ -73,6 +76,7 @@ class _StudioFolderScreenState extends State<StudioFolderScreen> {
   Future<void> _watch(String path, Uint8List bookmark) async {
     setState(() {
       _path = path;
+      _bookmark = bookmark;
       _loading = true;
     });
 
@@ -100,11 +104,21 @@ class _StudioFolderScreenState extends State<StudioFolderScreen> {
       context,
       currentUserId: _currentUserId,
     );
-    if (conversation == null || !mounted) return;
+    if (conversation == null || !mounted || _bookmark == null) return;
+
+    // Chemin disque réel avant envoi : sur Android file.path est une
+    // content:// URI (jamais un chemin disque), et sur iOS l'accès
+    // security-scoped de listFiles() est déjà refermé — resolveLocalPath
+    // copie le fichier si besoin. Sans effet sur macOS (déjà un vrai chemin).
+    final localPath = await SmoothFolderWatcher.resolveLocalPath(
+      bookmark: _bookmark!,
+      file: file,
+    );
+    if (!mounted) return;
 
     // Ouvre le chat avec le fichier pré-attaché : ChatScreen l'envoie dès
     // que la conversation est effectivement ouverte (initialAttachmentPath).
-    context.push('/conversations/${conversation.id}', extra: file.path);
+    context.push('/conversations/${conversation.id}', extra: localPath);
   }
 
   @override
@@ -169,6 +183,16 @@ class _StudioFolderScreenState extends State<StudioFolderScreen> {
             ],
           ),
         ),
+        if (!SmoothFolderWatcher.supportsLiveWatch)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              l10n.studioFolderPollingNotice,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
         Expanded(
           child: _files.isEmpty
               ? Center(

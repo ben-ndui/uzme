@@ -1765,11 +1765,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.2.0"
-      resolved-ref: "157558b7542211c73b84d3ac25570e9189e3d04d"
+      ref: "v0.3.0"
+      resolved-ref: "01f0f487c7da0ff3933a859d3ee7a7e6905799ea"
       url: "https://github.com/ben-ndui/smoothandesign_folder_watcher.git"
     source: git
-    version: "0.2.0"
+    version: "0.3.0"
   smoothandesign_package:
     dependency: "direct main"
     description:

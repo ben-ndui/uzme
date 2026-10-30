@@ -28,11 +28,11 @@ dependencies:
       url: https://github.com/ben-ndui/smoothandesign_auth_biometric.git
       ref: v0.1.0
 
-  # Smooth & Design Folder Watcher (dossier d'enregistrement, macOS uniquement)
+  # Smooth & Design Folder Watcher (dossier d'enregistrement)
   smoothandesign_folder_watcher:
     git:
       url: https://github.com/ben-ndui/smoothandesign_folder_watcher.git
-      ref: v0.2.0
+      ref: v0.3.0
 
   cupertino_icons: ^1.0.8
   intl: ^0.20.0

@@ -9862,11 +9862,11 @@ abstract class AppLocalizations {
   /// **'Aucune conversation pour l\'instant — envoie d\'abord un message à l\'artiste.'**
   String get studioFolderNoConversations;
 
-  /// No description provided for @studioFolderMacOSOnly.
+  /// No description provided for @studioFolderPollingNotice.
   ///
   /// In fr, this message translates to:
-  /// **'Disponible uniquement sur l\'app Mac'**
-  String get studioFolderMacOSOnly;
+  /// **'Les nouveaux fichiers peuvent mettre quelques secondes à apparaître ici.'**
+  String get studioFolderPollingNotice;
 }
 
 class _AppLocalizationsDelegate

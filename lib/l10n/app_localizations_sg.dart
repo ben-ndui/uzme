@@ -5332,5 +5332,6 @@ class AppLocalizationsSg extends AppLocalizations {
       'Aucune conversation pour l\'instant — envoie d\'abord un message à l\'artiste.';
 
   @override
-  String get studioFolderMacOSOnly => 'Disponible uniquement sur l\'app Mac';
+  String get studioFolderPollingNotice =>
+      'Les nouveaux fichiers peuvent mettre quelques secondes à apparaître ici.';
 }

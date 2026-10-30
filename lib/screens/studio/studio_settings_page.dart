@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -79,18 +77,17 @@ class _StudioSettingsPageState extends State<StudioSettingsPage> {
           _buildCalendarSection(l10n),
           const Divider(height: 32),
 
-          // Dossier d'enregistrement : macOS uniquement, un chemin de
-          // disque n'a aucun sens sur iOS/Android (audit 30/10/2026).
-          // Ben, 30/10/2026 : « c'est une fonctionnalité qui peut être
-          // utilisée par les studios aussi » — partagée avec l'ingénieur.
-          if (Platform.isMacOS)
-            SettingsTile(
-              icon: FontAwesomeIcons.folderOpen,
-              title: l10n.studioFolderSettingsTitle,
-              subtitle: l10n.studioFolderSettingsSubtitle,
-              onTap: () => context.push(AppRoutes.studioFolder),
-            ),
-          if (Platform.isMacOS) const Divider(height: 32),
+          // Dossier d'enregistrement : macOS, iOS et Android (package
+          // smoothandesign_folder_watcher v0.3.0, 30/10/2026). Ben,
+          // 30/10/2026 : « c'est une fonctionnalité qui peut être utilisée
+          // par les studios aussi » — partagée avec l'ingénieur.
+          SettingsTile(
+            icon: FontAwesomeIcons.folderOpen,
+            title: l10n.studioFolderSettingsTitle,
+            subtitle: l10n.studioFolderSettingsSubtitle,
+            onTap: () => context.push(AppRoutes.studioFolder),
+          ),
+          const Divider(height: 32),
 
           // Application settings
           AppSettingsSection(userId: _userId),
