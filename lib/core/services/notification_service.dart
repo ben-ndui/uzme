@@ -73,8 +73,18 @@ class UseMeNotificationService {
     _tokenRefreshSubscription =
         FirebaseMessaging.instance.onTokenRefresh.listen(_onTokenRefresh);
 
-    // Demander les permissions automatiquement
-    await requestPermissions();
+    // ⚠️ NE PAS demander la permission ici (audit Apple Review 5.1.1,
+    // 30/10/2026) : initialize() tourne à CHAQUE lancement de l'app, juste
+    // après runApp() — un appel inconditionnel à requestPermissions()
+    // déclenchait le popup système natif immédiatement, sans contexte, et
+    // en concurrence avec le soft-ask de l'onboarding (NotificationPermissionPage)
+    // qui ne s'affiche que plusieurs écrans plus tard. Seuls l'onboarding et
+    // les Réglages doivent déclencher la demande. Ici, on se contente de
+    // rafraîchir le token si la permission est DÉJÀ accordée (lancement
+    // normal d'un utilisateur déjà onboardé) — aucun popup dans ce cas.
+    if (await hasPermissions()) {
+      await _getTokenWithRetry();
+    }
     appLog('✅ Notifications initialisées, token: $fcmToken');
   }
 
