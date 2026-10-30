@@ -52,11 +52,9 @@ précédente sur le store.
 ## v1.5.28
 
 ### FR
-- Nouveau : le dossier d'enregistrement — choisis dans les Réglages le dossier où tu enregistres tes sessions (ordinateur, téléphone ou tablette) et envoie un fichier à un artiste en un geste, sans ouvrir un autre outil.
-- Messagerie : un message qui ne part pas affiche maintenant une erreur claire au lieu de disparaître en silence.
-- Fix : l'application ne crashait plus au lancement sur Mac dans de rares cas.
-- Fix : la barre de navigation reste bien en bas sur iPad et grand écran.
-- Fix : le fond de l'écran de discussion ne devenait plus noir en thème clair.
+- Nouveau : dossier d'enregistrement — choisis où tu enregistres tes sessions (ordinateur, téléphone, tablette) et envoie un fichier à un artiste en un geste.
+- Messagerie : un message qui ne part pas affiche une erreur claire au lieu de disparaître en silence.
+- Fix : crash rare au lancement sur Mac, barre de navigation sur iPad/grand écran, fond d'écran de discussion en thème clair.
 
 ### EN
 - New: recording folder — pick the folder where you record your sessions (computer, phone, or tablet) in Settings, and send a file to an artist in one tap.
