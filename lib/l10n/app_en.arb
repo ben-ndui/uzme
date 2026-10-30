@@ -2225,5 +2225,25 @@
   },
 
   "cardHoloIntensity": "Shine effect",
-  "cardHoloIntensityOff": "Off"
+  "cardHoloIntensityOff": "Off",
+
+  "studioFolderSettingsTitle": "Recording folder",
+  "studioFolderSettingsSubtitle": "Watch a folder and send files",
+  "studioFolderTitle": "Recording folder",
+  "studioFolderDescription": "Pick the folder where you record your sessions. Files that appear there can be sent directly to the artist.",
+  "studioFolderChoose": "Choose a folder",
+  "studioFolderChange": "Change folder",
+  "studioFolderEmpty": "No file detected yet",
+  "studioFolderSend": "Send",
+  "studioFolderSendTitle": "Send to…",
+  "studioFolderSendSuccess": "File sent to {name}",
+  "@studioFolderSendSuccess": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "studioFolderSendError": "Send failed: {error}",
+  "@studioFolderSendError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "studioFolderNoConversations": "No conversation yet — message the artist first.",
+  "studioFolderMacOSOnly": "Only available on the Mac app"
 }

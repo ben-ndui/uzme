@@ -46,6 +46,7 @@ class AppRoutes {
   static const String engineerSessionDetail = '/engineer/sessions/:id';
   static const String engineerAvailability = '/engineer/availability';
   static const String engineerInvitations = '/engineer/invitations';
+  static const String engineerStudioFolder = '/engineer/studio-folder';
 
   // Artist (Client) portal routes
   static const String artistPortal = '/artist';

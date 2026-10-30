@@ -9789,6 +9789,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Coupée'**
   String get cardHoloIntensityOff;
+
+  /// No description provided for @studioFolderSettingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier d\'enregistrement'**
+  String get studioFolderSettingsTitle;
+
+  /// No description provided for @studioFolderSettingsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surveiller un dossier et envoyer les fichiers'**
+  String get studioFolderSettingsSubtitle;
+
+  /// No description provided for @studioFolderTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier d\'enregistrement'**
+  String get studioFolderTitle;
+
+  /// No description provided for @studioFolderDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisis le dossier où tu enregistres tes sessions. Les fichiers qui y apparaissent peuvent être envoyés directement à l\'artiste.'**
+  String get studioFolderDescription;
+
+  /// No description provided for @studioFolderChoose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un dossier'**
+  String get studioFolderChoose;
+
+  /// No description provided for @studioFolderChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de dossier'**
+  String get studioFolderChange;
+
+  /// No description provided for @studioFolderEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun fichier détecté pour l\'instant'**
+  String get studioFolderEmpty;
+
+  /// No description provided for @studioFolderSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer'**
+  String get studioFolderSend;
+
+  /// No description provided for @studioFolderSendTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer à…'**
+  String get studioFolderSendTitle;
+
+  /// No description provided for @studioFolderSendSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier envoyé à {name}'**
+  String studioFolderSendSuccess(String name);
+
+  /// No description provided for @studioFolderSendError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échec de l\'envoi : {error}'**
+  String studioFolderSendError(String error);
+
+  /// No description provided for @studioFolderNoConversations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune conversation pour l\'instant — envoie d\'abord un message à l\'artiste.'**
+  String get studioFolderNoConversations;
+
+  /// No description provided for @studioFolderMacOSOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible uniquement sur l\'app Mac'**
+  String get studioFolderMacOSOnly;
 }
 
 class _AppLocalizationsDelegate

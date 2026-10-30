@@ -2417,5 +2417,25 @@
   },
 
   "cardHoloIntensity": "Surbrillance",
-  "cardHoloIntensityOff": "Coupée"
+  "cardHoloIntensityOff": "Coupée",
+
+  "studioFolderSettingsTitle": "Dossier d'enregistrement",
+  "studioFolderSettingsSubtitle": "Surveiller un dossier et envoyer les fichiers",
+  "studioFolderTitle": "Dossier d'enregistrement",
+  "studioFolderDescription": "Choisis le dossier où tu enregistres tes sessions. Les fichiers qui y apparaissent peuvent être envoyés directement à l'artiste.",
+  "studioFolderChoose": "Choisir un dossier",
+  "studioFolderChange": "Changer de dossier",
+  "studioFolderEmpty": "Aucun fichier détecté pour l'instant",
+  "studioFolderSend": "Envoyer",
+  "studioFolderSendTitle": "Envoyer à…",
+  "studioFolderSendSuccess": "Fichier envoyé à {name}",
+  "@studioFolderSendSuccess": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "studioFolderSendError": "Échec de l'envoi : {error}",
+  "@studioFolderSendError": {
+    "placeholders": {"error": {"type": "String"}}
+  },
+  "studioFolderNoConversations": "Aucune conversation pour l'instant — envoie d'abord un message à l'artiste.",
+  "studioFolderMacOSOnly": "Disponible uniquement sur l'app Mac"
 }

@@ -5314,4 +5314,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cardHoloIntensityOff => 'Off';
+
+  @override
+  String get studioFolderSettingsTitle => 'Recording folder';
+
+  @override
+  String get studioFolderSettingsSubtitle => 'Watch a folder and send files';
+
+  @override
+  String get studioFolderTitle => 'Recording folder';
+
+  @override
+  String get studioFolderDescription =>
+      'Pick the folder where you record your sessions. Files that appear there can be sent directly to the artist.';
+
+  @override
+  String get studioFolderChoose => 'Choose a folder';
+
+  @override
+  String get studioFolderChange => 'Change folder';
+
+  @override
+  String get studioFolderEmpty => 'No file detected yet';
+
+  @override
+  String get studioFolderSend => 'Send';
+
+  @override
+  String get studioFolderSendTitle => 'Send to…';
+
+  @override
+  String studioFolderSendSuccess(String name) {
+    return 'File sent to $name';
+  }
+
+  @override
+  String studioFolderSendError(String error) {
+    return 'Send failed: $error';
+  }
+
+  @override
+  String get studioFolderNoConversations =>
+      'No conversation yet — message the artist first.';
+
+  @override
+  String get studioFolderMacOSOnly => 'Only available on the Mac app';
 }

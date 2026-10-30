@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -61,6 +63,15 @@ class EngineerSettingsPage extends StatelessWidget {
               title: l10n.teamInvitations,
               subtitle: l10n.pendingInvitations,
               onTap: () => context.push(AppRoutes.engineerInvitations),
+            ),
+          // Dossier d'enregistrement : macOS uniquement, un chemin de
+          // disque n'a aucun sens sur iOS/Android (audit 30/10/2026).
+          if (Platform.isMacOS)
+            SettingsTile(
+              icon: FontAwesomeIcons.folderOpen,
+              title: l10n.studioFolderSettingsTitle,
+              subtitle: l10n.studioFolderSettingsSubtitle,
+              onTap: () => context.push(AppRoutes.engineerStudioFolder),
             ),
 
           const Divider(height: 32),

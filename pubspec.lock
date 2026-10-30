@@ -1761,6 +1761,15 @@ packages:
       url: "https://github.com/ben-ndui/smoothandesign_auth_biometric.git"
     source: git
     version: "0.1.0"
+  smoothandesign_folder_watcher:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "v0.2.0"
+      resolved-ref: "157558b7542211c73b84d3ac25570e9189e3d04d"
+      url: "https://github.com/ben-ndui/smoothandesign_folder_watcher.git"
+    source: git
+    version: "0.2.0"
   smoothandesign_package:
     dependency: "direct main"
     description:

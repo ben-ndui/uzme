@@ -1,27 +1,35 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import '../../config/responsive_config.dart';
 import '../../widgets/common/app_loader.dart';
 import '../../widgets/common/gradient_scaffold.dart';
-import '../../widgets/common/permission_dialog.dart';
 import '../../widgets/common/snackbar/app_snackbar.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/messaging/chat_payment_banner.dart';
 import '../../widgets/messaging/messaging_widgets_exports.dart';
 import '../../core/blocs/session/session_bloc.dart';
 import '../../core/blocs/booking/booking_exports.dart';
+import 'chat_app_bar.dart';
+import 'chat_business_object_card.dart';
+import 'chat_input_controller.dart';
 
 /// Écran de chat pour une conversation.
 class ChatScreen extends StatefulWidget {
   final String conversationId;
 
-  const ChatScreen({super.key, required this.conversationId});
+  /// Fichier local à envoyer dès que la conversation s'ouvre, sans passer
+  /// par le sélecteur de fichier — utilisé par le dossier d'enregistrement
+  /// (StudioFolderScreen) pour un envoi direct à l'artiste.
+  final String? initialAttachmentPath;
+
+  const ChatScreen({
+    super.key,
+    required this.conversationId,
+    this.initialAttachmentPath,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -29,29 +37,27 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late final MessagingBloc _messagingBloc;
-  final MessagingStorageService _storageService = MessagingStorageService();
-
-  // Audio recording
-  final AudioRecordService _audioService = AudioRecordService();
-  bool _isRecording = false;
-  int _recordingDuration = 0;
-  Timer? _recordingTimer;
-  String? _recordedAudioPath;
-  bool _showAudioPreview = false;
-  bool _isUploading = false;
+  late final ChatInputController _input;
+  bool _initialAttachmentSent = false;
 
   @override
   void initState() {
     super.initState();
     _messagingBloc = context.read<MessagingBloc>();
+    _input = ChatInputController(conversationId: widget.conversationId)
+      ..addListener(_onInputChanged);
     _messagingBloc.add(OpenConversationEvent(conversationId: widget.conversationId));
+  }
+
+  void _onInputChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
     _messagingBloc.add(const CloseConversationEvent());
-    _recordingTimer?.cancel();
-    _audioService.dispose();
+    _input.removeListener(_onInputChanged);
+    _input.dispose();
     super.dispose();
   }
 
@@ -65,15 +71,26 @@ class _ChatScreenState extends State<ChatScreen> {
     return BlocConsumer<MessagingBloc, MessagingState>(
       // sendError est transitoire (émis puis aussitôt cleared par le bloc) :
       // sans ce feedback, un envoi qui échoue (offline, rules) perd le
-      // message en silence.
+      // message en silence. Même listener déclenche l'envoi automatique du
+      // fichier du dossier d'enregistrement, une fois la conversation
+      // effectivement ouverte (StudioFolderScreen → initialAttachmentPath).
       listenWhen: (prev, curr) =>
-          curr is ChatOpenState && curr.sendError != null,
+          (curr is ChatOpenState && curr.sendError != null) ||
+          (widget.initialAttachmentPath != null &&
+              !_initialAttachmentSent &&
+              curr is ChatOpenState),
       listener: (context, state) {
-        final error = (state as ChatOpenState).sendError;
-        AppSnackBar.error(
-          context,
-          AppLocalizations.of(context)!.messageSendFailed(error ?? ''),
-        );
+        if (state is! ChatOpenState) return;
+        if (state.sendError != null) {
+          AppSnackBar.error(
+            context,
+            AppLocalizations.of(context)!.messageSendFailed(state.sendError ?? ''),
+          );
+        }
+        if (widget.initialAttachmentPath != null && !_initialAttachmentSent) {
+          _initialAttachmentSent = true;
+          _input.sendAttachment(context, File(widget.initialAttachmentPath!));
+        }
       },
       builder: (context, state) {
         if (state is MessagingLoadingState) {
@@ -116,7 +133,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildChatScaffold(ChatOpenState state) {
     return GradientScaffold(
-      appBar: _buildAppBar(state.conversation),
+      appBar: ChatAppBar(conversation: state.conversation, currentUserId: _currentUserId),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: Responsive.maxContentWidth),
@@ -133,24 +150,24 @@ class _ChatScreenState extends State<ChatScreen> {
         isLoadingMore: state.isLoadingMore,
         hasMoreMessages: state.hasMoreMessages,
         isSending: state.isSending,
-        isRecording: _isRecording,
-        showAudioPreview: _showAudioPreview,
-        audioPreviewWidget: _showAudioPreview && _recordedAudioPath != null
+        isRecording: _input.isRecording,
+        showAudioPreview: _input.showAudioPreview,
+        audioPreviewWidget: _input.showAudioPreview && _input.recordedAudioPath != null
             ? AudioPreviewWidget(
-                audioPath: _recordedAudioPath!,
-                duration: _recordingDuration,
-                onSend: _sendAudioMessage,
-                onDelete: _cancelAudioPreview,
+                audioPath: _input.recordedAudioPath!,
+                duration: _input.recordingDuration,
+                onSend: () => _input.sendAudioMessage(context),
+                onDelete: _input.cancelAudioPreview,
               )
             : null,
-        recordingOverlay: AudioRecordingOverlay(duration: _recordingDuration),
+        recordingOverlay: AudioRecordingOverlay(duration: _input.recordingDuration),
         onSendText: (text) => context.read<MessagingBloc>().add(SendTextMessageEvent(text: text)),
         onLoadMore: () => context.read<MessagingBloc>().add(const LoadMoreMessagesEvent()),
         onMessageLongPress: (message) => _showMessageOptions(message, state),
         onAttachmentTap: _handleAttachmentTap,
-        onMicLongPressStart: _startRecording,
-        onMicLongPressEnd: _stopRecording,
-        businessObjectBuilder: _buildBusinessObjectCard,
+        onMicLongPressStart: () => _input.startRecording(context),
+        onMicLongPressEnd: () => _input.stopRecording(context),
+        businessObjectBuilder: (bo, isMe) => businessObjectCard(context, bo, isMe),
         reactionBuilder: (reactions, userId) => ReactionDisplay(
           reactions: reactions,
           currentUserId: userId,
@@ -171,54 +188,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppBar(BaseConversation conversation) {
-    final theme = Theme.of(context);
-    final displayName = conversation.getDisplayName(_currentUserId);
-    final avatarUrl = conversation.getAvatarUrl(_currentUserId);
-
-    return AppBar(
-      titleSpacing: 0,
-      title: Row(
-        children: [
-          _buildAvatar(displayName, avatarUrl),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(displayName, style: theme.textTheme.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
-                if (conversation.type == ConversationType.group)
-                  Text(
-                    AppLocalizations.of(context)!.participants(conversation.participantIds.length),
-                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          onPressed: () => context.push('/conversations/${conversation.id}/settings'),
-          icon: const FaIcon(FontAwesomeIcons.circleInfo, size: 20),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvatar(String name, String? avatarUrl) {
-    final theme = Theme.of(context);
-    if (avatarUrl != null && avatarUrl.isNotEmpty) {
-      return CircleAvatar(radius: 20, backgroundImage: NetworkImage(avatarUrl));
-    }
-    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
-    return CircleAvatar(
-      radius: 20,
-      backgroundColor: theme.colorScheme.primaryContainer,
-      child: Text(initial, style: TextStyle(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w600)),
     );
   }
 
@@ -249,23 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _showFilePicker() {
     FilePickerBottomSheet.show(
       context,
-      onFilePicked: (result) async {
-        setState(() => _isUploading = true);
-        try {
-          final uploadResult = await _storageService.uploadFile(
-            file: result.file,
-            conversationId: widget.conversationId,
-          );
-          if (!mounted) return;
-          if (uploadResult.isSuccess && uploadResult.data != null) {
-            context.read<MessagingBloc>().add(SendAttachmentMessageEvent(attachment: uploadResult.data!));
-          } else {
-            AppSnackBar.error(context, uploadResult.message);
-          }
-        } finally {
-          if (mounted) setState(() => _isUploading = false);
-        }
-      },
+      onFilePicked: (result) => _input.sendAttachment(context, result.file),
     );
   }
 
@@ -283,114 +236,4 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildBusinessObjectCard(BusinessObjectAttachment bo, bool isMe) {
-    switch (bo.objectType) {
-      case 'session':
-        return SessionMessageCard(businessObject: bo, isMe: isMe);
-      case 'booking':
-        return BookingMessageCard(businessObject: bo, isMe: isMe);
-      default:
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(bo.title),
-        );
-    }
-  }
-
-  Future<void> _startRecording() async {
-    final granted = await PermissionDialog.requestPermission(
-      context,
-      type: AppPermissionType.microphone,
-    );
-    if (!granted) return;
-
-    try {
-      final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
-      await _audioService.startRecording(filePath);
-
-      setState(() {
-        _isRecording = true;
-        _recordingDuration = 0;
-      });
-
-      _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (mounted) setState(() => _recordingDuration++);
-      });
-    } catch (e) {
-      if (mounted) {
-        AppSnackBar.error(context, 'Erreur enregistrement: $e');
-      }
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    if (!_isRecording) return;
-    _recordingTimer?.cancel();
-
-    try {
-      final path = await _audioService.stopRecording();
-      setState(() {
-        _isRecording = false;
-        _recordedAudioPath = path;
-        _showAudioPreview = path != null && _recordingDuration >= 1;
-      });
-
-      if (_recordingDuration < 1) {
-        _cancelAudioPreview();
-        if (mounted) {
-          AppSnackBar.warning(context, AppLocalizations.of(context)!.recordingTooShort);
-        }
-      }
-    } catch (e) {
-      setState(() => _isRecording = false);
-      if (mounted) {
-        AppSnackBar.error(context, 'Erreur arrêt enregistrement: $e');
-      }
-    }
-  }
-
-  Future<void> _sendAudioMessage() async {
-    if (_recordedAudioPath == null || _isUploading) return;
-    setState(() => _isUploading = true);
-
-    try {
-      final result = await _storageService.uploadAudio(
-        file: File(_recordedAudioPath!),
-        conversationId: widget.conversationId,
-        durationSeconds: _recordingDuration,
-      );
-
-      if (!mounted) return;
-
-      if (result.isSuccess && result.data != null) {
-        context.read<MessagingBloc>().add(SendAudioMessageEvent(audio: result.data!));
-        _cancelAudioPreview();
-      } else {
-        AppSnackBar.error(context, result.message);
-      }
-    } catch (e) {
-      if (mounted) {
-        AppSnackBar.error(context, 'Erreur envoi audio: $e');
-      }
-    } finally {
-      if (mounted) setState(() => _isUploading = false);
-    }
-  }
-
-  void _cancelAudioPreview() {
-    if (_recordedAudioPath != null) {
-      final file = File(_recordedAudioPath!);
-      if (file.existsSync()) file.deleteSync();
-    }
-    setState(() {
-      _recordedAudioPath = null;
-      _showAudioPreview = false;
-      _recordingDuration = 0;
-    });
-  }
 }
