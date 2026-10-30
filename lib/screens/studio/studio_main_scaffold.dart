@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smoothandesign_package/smoothandesign.dart';
 import 'package:uzme/config/responsive_config.dart';
 import 'package:uzme/core/blocs/blocs_exports.dart';
 import 'package:uzme/l10n/app_localizations.dart';
 import 'package:uzme/screens/shared/conversations_screen.dart';
-import 'package:uzme/widgets/common/app_navigation_rail.dart';
+import 'package:uzme/widgets/common/bounded_bottom_nav.dart';
 import 'package:uzme/widgets/common/gradient_surface.dart';
 import 'package:uzme/widgets/common/snackbar/app_snackbar.dart';
 import 'package:uzme/widgets/common/uzme_nav_bar.dart';
@@ -119,101 +118,63 @@ class _StudioMainScaffoldState extends State<StudioMainScaffold> {
               _syncMessagingUser(state.user);
             }
           },
-          child: isWide ? _buildWideScaffold(l10n) : _buildMobileScaffold(l10n),
+          child: Scaffold(
+            extendBody: true,
+            body: isWide
+                ? _tabAt(_currentIndex)
+                : PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) =>
+                        setState(() => _currentIndex = index),
+                    physics: _currentIndex == 0
+                        ? const NeverScrollableScrollPhysics()
+                        : const BouncingScrollPhysics(),
+                    children: [
+                      for (var i = 0; i < _pages.length; i++) _tabAt(i),
+                    ],
+                  ),
+            bottomNavigationBar: _buildNavBar(l10n, isWide: isWide),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildWideScaffold(AppLocalizations l10n) {
-    return Scaffold(
-      body: BlocBuilder<SessionBloc, SessionState>(
-        buildWhen: (prev, curr) => prev.pendingCount != curr.pendingCount,
-        builder: (context, sessionState) {
-          return Row(
-            children: [
-              AppNavigationRail(
-                selectedIndex: _currentIndex,
-                onDestinationSelected: _onNavTap,
-                items: studioRailItems(
-                  l10n,
-                  pendingCount: sessionState.pendingCount,
-                ),
+  /// Barre flottante commune aux deux largeurs (DA 2026-2027 : jamais de
+  /// barre latérale). Sur tablette/desktop, elle reste centrée et bornée
+  /// en largeur — voir [BoundedBottomNav].
+  Widget _buildNavBar(AppLocalizations l10n, {required bool isWide}) {
+    return BlocBuilder<SessionBloc, SessionState>(
+      buildWhen: (prev, curr) => prev.pendingCount != curr.pendingCount,
+      builder: (context, sessionState) {
+        return BlocBuilder<MessagingBloc, MessagingState>(
+          buildWhen: (previous, current) {
+            final prevCount = previous is ConversationsLoadedState
+                ? previous.totalUnreadCount
+                : 0;
+            final currCount = current is ConversationsLoadedState
+                ? current.totalUnreadCount
+                : 0;
+            return prevCount != currCount;
+          },
+          builder: (context, messagingState) {
+            final unreadCount = messagingState is ConversationsLoadedState
+                ? messagingState.totalUnreadCount
+                : 0;
+
+            final bar = UzmeNavBar.compact(
+              activeIndex: _currentIndex,
+              onChanged: _onNavTap,
+              items: studioNavItems(
+                l10n,
+                pendingCount: sessionState.pendingCount,
+                unreadCount: unreadCount,
               ),
-              Expanded(child: _tabAt(_currentIndex)),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildMobileScaffold(AppLocalizations l10n) {
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) => setState(() => _currentIndex = index),
-        physics: _currentIndex == 0
-            ? const NeverScrollableScrollPhysics()
-            : const BouncingScrollPhysics(),
-        children: [for (var i = 0; i < _pages.length; i++) _tabAt(i)],
-      ),
-      extendBody: true,
-      bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
-        buildWhen: (prev, curr) => prev.pendingCount != curr.pendingCount,
-        builder: (context, sessionState) {
-          return BlocBuilder<MessagingBloc, MessagingState>(
-            buildWhen: (previous, current) {
-              final prevCount = previous is ConversationsLoadedState
-                  ? previous.totalUnreadCount
-                  : 0;
-              final currCount = current is ConversationsLoadedState
-                  ? current.totalUnreadCount
-                  : 0;
-              return prevCount != currCount;
-            },
-            builder: (context, messagingState) {
-              final unreadCount = messagingState is ConversationsLoadedState
-                  ? messagingState.totalUnreadCount
-                  : 0;
-
-              return UzmeNavBar.compact(
-                activeIndex: _currentIndex,
-                onChanged: _onNavTap,
-                items: [
-                  UzmeNavItem(
-                    icon: FontAwesomeIcons.house,
-                    selectedIcon: FontAwesomeIcons.houseChimney,
-                    label: l10n.home,
-                  ),
-                  UzmeNavItem(
-                    icon: FontAwesomeIcons.calendar,
-                    selectedIcon: FontAwesomeIcons.solidCalendar,
-                    label: l10n.sessionsLabel,
-                    badgeCount: sessionState.pendingCount,
-                  ),
-                  UzmeNavItem(
-                    icon: FontAwesomeIcons.users,
-                    selectedIcon: FontAwesomeIcons.userGroup,
-                    label: l10n.artistsLabel,
-                  ),
-                  UzmeNavItem(
-                    icon: FontAwesomeIcons.comment,
-                    selectedIcon: FontAwesomeIcons.solidComment,
-                    label: l10n.messages,
-                    badgeCount: unreadCount,
-                  ),
-                  UzmeNavItem(
-                    icon: FontAwesomeIcons.gear,
-                    selectedIcon: FontAwesomeIcons.gears,
-                    label: l10n.settings,
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
+            );
+            return isWide ? BoundedBottomNav(child: bar) : bar;
+          },
+        );
+      },
     );
   }
 }

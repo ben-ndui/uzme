@@ -1,35 +1,37 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uzme/l10n/app_localizations.dart';
-import 'package:uzme/widgets/common/app_navigation_rail.dart';
+import 'package:uzme/widgets/common/uzme_nav_bar.dart';
 
-/// Éléments de la barre latérale (tablette/desktop) de [EngineerMainScaffold].
-List<AppNavRailItem> engineerRailItems(
+/// Onglets de la barre flottante (mobile ET tablette/desktop, DA 2026-2027)
+/// de [EngineerMainScaffold].
+List<UzmeNavItem> engineerNavItems(
   AppLocalizations l10n, {
   int pendingCount = 0,
+  int unreadCount = 0,
 }) => [
-  AppNavRailItem(
+  UzmeNavItem(
     icon: FontAwesomeIcons.house,
     selectedIcon: FontAwesomeIcons.houseChimney,
     label: l10n.home,
   ),
-  AppNavRailItem(
+  UzmeNavItem(
     icon: FontAwesomeIcons.calendarDays,
     selectedIcon: FontAwesomeIcons.calendarCheck,
     label: l10n.sessionsLabel,
     badgeCount: pendingCount,
   ),
-  AppNavRailItem(
+  UzmeNavItem(
     icon: FontAwesomeIcons.heart,
     selectedIcon: FontAwesomeIcons.solidHeart,
     label: l10n.favorites,
   ),
-  AppNavRailItem(
+  UzmeNavItem(
     icon: FontAwesomeIcons.comment,
     selectedIcon: FontAwesomeIcons.solidComment,
     label: l10n.messages,
-    isMessages: true,
+    badgeCount: unreadCount,
   ),
-  AppNavRailItem(
+  UzmeNavItem(
     icon: FontAwesomeIcons.gear,
     selectedIcon: FontAwesomeIcons.gears,
     label: l10n.settings,

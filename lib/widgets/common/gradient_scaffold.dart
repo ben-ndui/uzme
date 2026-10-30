@@ -31,9 +31,14 @@ class GradientScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // [GradientSurface] ne peint le dégradé qu'en thème sombre (en clair,
+    // elle renvoie `child` tel quel). Forcer `transparent` ici dans les DEUX
+    // thèmes laissait l'écran sans AUCUN fond en clair — noir par défaut
+    // (relevé par Ben le 30/10/2026 sur l'écran de chat).
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GradientSurface(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? Colors.transparent : null,
         appBar: appBar,
         body: body,
         bottomNavigationBar: bottomNavigationBar,

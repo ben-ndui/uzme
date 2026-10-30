@@ -165,6 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
         onReactionTap: (message, emoji) {
           context.read<MessagingBloc>().add(ToggleReactionEvent(messageId: message.id, emoji: emoji));
         },
+        floatingInput: true,
       )),
             ],
           ),
