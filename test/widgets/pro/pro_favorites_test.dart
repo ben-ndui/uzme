@@ -119,6 +119,40 @@ void main() {
     });
   });
 
+  group(
+    'ProCard avatar '
+    '(regression: initiale dessinée par-dessus la photo, Ben 29/10/2026)',
+    () {
+      testWidgets('shows the initial letter when there is no photo', (tester) async {
+        await tester.pumpWidget(buildTestApp(
+          authBloc: mockAuthBloc,
+          favoriteBloc: mockFavoriteBloc,
+          child: Scaffold(
+            body: ProCard(user: proUser, onTap: () {}),
+          ),
+        ));
+        await tester.pumpAndSettle();
+
+        expect(find.text('P'), findsOneWidget);
+      });
+
+      testWidgets('hides the initial letter when a photo is set', (tester) async {
+        final proUserWithPhoto = proUser.copyWith(photoURL: 'https://example.com/photo.jpg');
+
+        await tester.pumpWidget(buildTestApp(
+          authBloc: mockAuthBloc,
+          favoriteBloc: mockFavoriteBloc,
+          child: Scaffold(
+            body: ProCard(user: proUserWithPhoto, onTap: () {}),
+          ),
+        ));
+        await tester.pumpAndSettle();
+
+        expect(find.text('P'), findsNothing);
+      });
+    },
+  );
+
   group('FavoriteButtonCompact with pro type', () {
     testWidgets('renders with FavoriteType.pro', (tester) async {
       await tester.pumpWidget(buildTestApp(

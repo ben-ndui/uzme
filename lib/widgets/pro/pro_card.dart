@@ -68,17 +68,19 @@ class ProCard extends StatelessWidget {
               )
             : null,
       ),
-      child: Center(
-        child: Text(
-          _profile.displayName.isNotEmpty
-              ? _profile.displayName[0].toUpperCase()
-              : '?',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      child: user.displayPhotoUrl != null
+          ? null
+          : Center(
+              child: Text(
+                _profile.displayName.isNotEmpty
+                    ? _profile.displayName[0].toUpperCase()
+                    : '?',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
     );
   }
 

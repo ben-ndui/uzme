@@ -96,17 +96,19 @@ class ProProfileViewScreen extends StatelessWidget {
                     )
                   : null,
             ),
-            child: Center(
-              child: Text(
-                _profile.displayName.isNotEmpty
-                    ? _profile.displayName[0].toUpperCase()
-                    : '?',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            child: user.displayPhotoUrl != null
+                ? null
+                : Center(
+                    child: Text(
+                      _profile.displayName.isNotEmpty
+                          ? _profile.displayName[0].toUpperCase()
+                          : '?',
+                      style: theme.textTheme.headlineLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
           ),
           const SizedBox(width: 16),
           Expanded(

@@ -280,23 +280,11 @@ class _FavoriteCard extends StatelessWidget {
 
   Widget _buildAvatar(ThemeData theme) {
     if (favorite.targetPhotoUrl != null && favorite.targetPhotoUrl!.isNotEmpty) {
-      final initial = (favorite.targetName?.isNotEmpty == true)
-          ? favorite.targetName![0].toUpperCase()
-          : '?';
-
       return CircleAvatar(
         radius: 28,
         backgroundImage: NetworkImage(favorite.targetPhotoUrl!),
         onBackgroundImageError: (_, __) {},
         backgroundColor: theme.colorScheme.primaryContainer,
-        child: Text(
-          initial,
-          style: TextStyle(
-            color: theme.colorScheme.onPrimaryContainer,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
       );
     }
 

@@ -86,6 +86,25 @@ void main() {
       expect(find.text('DJ Alpha'), findsNWidgets(2));
     });
 
+    testWidgets('shows the initial letter in the header when there is no photo', (tester) async {
+      await tester.pumpWidget(buildScreen(makeUser()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('D'), findsOneWidget);
+    });
+
+    testWidgets(
+      'hides the initial letter when a photo is set '
+      '(regression: lettre dessinée par-dessus la photo, Ben 29/10/2026)',
+      (tester) async {
+        final userWithPhoto = makeUser().copyWith(photoURL: 'https://example.com/photo.jpg');
+        await tester.pumpWidget(buildScreen(userWithPhoto));
+        await tester.pumpAndSettle();
+
+        expect(find.text('D'), findsNothing);
+      },
+    );
+
     testWidgets('renders pro type label', (tester) async {
       await tester.pumpWidget(buildScreen(makeUser()));
       await tester.pumpAndSettle();

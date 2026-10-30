@@ -88,13 +88,15 @@ class StudioPreviewBottomSheet extends StatelessWidget {
               )
             : null,
       ),
-      child: Center(
-        child: FaIcon(
-          FontAwesomeIcons.buildingUser,
-          color: Colors.white,
-          size: 28,
-        ),
-      ),
+      child: studio.photoUrl != null
+          ? null
+          : const Center(
+              child: FaIcon(
+                FontAwesomeIcons.buildingUser,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
     );
   }
 
