@@ -107,6 +107,19 @@ void main() {
           options: DefaultFirebaseOptions.currentPlatform,
         );
         _bootLog('firebase:ok');
+      } on FirebaseException catch (e, st) {
+        // macOS (et parfois iOS en hot restart) : le SDK natif s'auto-
+        // initialise AVANT l'appel Dart via GoogleService-Info.plist —
+        // Firebase.initializeApp() échoue alors en duplicate-app alors que
+        // l'app par défaut est déjà prête à l'emploi. Un rethrow inconditionnel
+        // ici empêchait runApp() de tourner : écran noir au lancement macOS,
+        // relevé par Ben le 30/10/2026 (flutter run -d macos).
+        if (e.code != 'duplicate-app') {
+          _bootLog('firebase:FAIL: $e');
+          _bootLog('firebase:STACK: $st');
+          rethrow;
+        }
+        _bootLog('firebase:already-initialized');
       } catch (e, st) {
         _bootLog('firebase:FAIL: $e');
         _bootLog('firebase:STACK: $st');
