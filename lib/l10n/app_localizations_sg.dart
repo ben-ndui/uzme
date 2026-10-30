@@ -2130,6 +2130,13 @@ class AppLocalizationsSg extends AppLocalizations {
       'Na session ôke, bâa mbëtï: sêse, fichiers, remarques. Nzönî tî mo na artiste.';
 
   @override
+  String get tipRecordingFolderTitle => 'Dossier d\'enregistrement';
+
+  @override
+  String get tipRecordingFolderDesc =>
+      'Dans Réglages, choisissez le dossier où vous enregistrez vos sessions : vos fichiers apparaissent dans l\'app et s\'envoient à l\'artiste en un geste, sans passer par un autre outil.';
+
+  @override
   String get tipStayUpdatedTitle => 'Bâa sêse tî mo na lâ';
 
   @override

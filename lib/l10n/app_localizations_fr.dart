@@ -2149,6 +2149,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Après chaque session, ajoutez des notes : réglages utilisés, fichiers exportés, remarques. C\'est utile pour vous et pour l\'artiste.';
 
   @override
+  String get tipRecordingFolderTitle => 'Dossier d\'enregistrement';
+
+  @override
+  String get tipRecordingFolderDesc =>
+      'Dans Réglages, choisissez le dossier où vous enregistrez vos sessions : vos fichiers apparaissent dans l\'app et s\'envoient à l\'artiste en un geste, sans passer par un autre outil.';
+
+  @override
   String get tipStayUpdatedTitle => 'Restez à jour';
 
   @override

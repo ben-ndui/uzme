@@ -916,6 +916,8 @@
   "tipStartSessionDesc": "Le jour J, appuyez sur \"Démarrer\" pour lancer le chrono. À la fin, appuyez sur \"Terminer\" et ajoutez vos notes de session.",
   "tipSessionNotesTitle": "Notes de session",
   "tipSessionNotesDesc": "Après chaque session, ajoutez des notes : réglages utilisés, fichiers exportés, remarques. C'est utile pour vous et pour l'artiste.",
+  "tipRecordingFolderTitle": "Dossier d'enregistrement",
+  "tipRecordingFolderDesc": "Dans Réglages, choisissez le dossier où vous enregistrez vos sessions : vos fichiers apparaissent dans l'app et s'envoient à l'artiste en un geste, sans passer par un autre outil.",
   "tipStayUpdatedTitle": "Restez à jour",
   "tipStayUpdatedDesc": "Mettez à jour vos disponibilités régulièrement. Un planning à jour = plus de réservations pour vous !",
   "tipProfileMattersTitle": "Votre profil compte",

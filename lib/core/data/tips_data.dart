@@ -173,6 +173,12 @@ class TipsData {
           description: l10n.tipSessionNotesDesc,
           icon: FontAwesomeIcons.penToSquare,
         ),
+        TipItem(
+          title: l10n.tipRecordingFolderTitle,
+          description: l10n.tipRecordingFolderDesc,
+          icon: FontAwesomeIcons.folderOpen,
+          iconColor: Colors.teal,
+        ),
       ],
     ),
     TipSection(
@@ -291,6 +297,12 @@ class TipsData {
           title: l10n.tipTrackActivityTitle,
           description: l10n.tipTrackActivityDesc,
           icon: FontAwesomeIcons.chartLine,
+        ),
+        TipItem(
+          title: l10n.tipRecordingFolderTitle,
+          description: l10n.tipRecordingFolderDesc,
+          icon: FontAwesomeIcons.folderOpen,
+          iconColor: Colors.teal,
         ),
       ],
     ),

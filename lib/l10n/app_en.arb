@@ -752,6 +752,8 @@
   "tipStartSessionDesc": "On the day, tap \"Start\" to launch the timer. At the end, tap \"Finish\" and add your session notes.",
   "tipSessionNotesTitle": "Session notes",
   "tipSessionNotesDesc": "After each session, add notes: settings used, exported files, remarks. It's useful for you and the artist.",
+  "tipRecordingFolderTitle": "Recording folder",
+  "tipRecordingFolderDesc": "In Settings, pick the folder where you record your sessions: your files show up in the app and send to the artist in one tap, no other tool needed.",
   "tipStayUpdatedTitle": "Stay up to date",
   "tipStayUpdatedDesc": "Update your availability regularly. An up-to-date schedule = more bookings for you!",
   "tipProfileMattersTitle": "Your profile matters",
