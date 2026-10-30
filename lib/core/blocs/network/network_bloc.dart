@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uzme/core/services/network_service.dart';
 
@@ -14,7 +15,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
   NetworkBloc({NetworkService? networkService})
       : _networkService = networkService ?? NetworkService(),
         super(const NetworkState()) {
-    on<LoadContactsEvent>(_onLoadContacts);
+    on<LoadContactsEvent>(_onLoadContacts, transformer: restartable());
     on<AddPlatformContactEvent>(_onAddPlatformContact);
     on<AddOffPlatformContactEvent>(_onAddOffPlatformContact);
     on<UpdateContactEvent>(_onUpdateContact);

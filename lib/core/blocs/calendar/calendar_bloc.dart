@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -28,7 +29,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<ConnectGoogleCalendarEvent>(_onConnectGoogle);
     on<DisconnectCalendarEvent>(_onDisconnect);
     on<SyncCalendarEvent>(_onSync);
-    on<LoadUnavailabilitiesEvent>(_onLoadUnavailabilities);
+    on<LoadUnavailabilitiesEvent>(_onLoadUnavailabilities, transformer: restartable());
     on<UnavailabilitiesUpdatedEvent>(_onUnavailabilitiesUpdated);
     on<AddUnavailabilityEvent>(_onAddUnavailability);
     on<DeleteUnavailabilityEvent>(_onDeleteUnavailability);

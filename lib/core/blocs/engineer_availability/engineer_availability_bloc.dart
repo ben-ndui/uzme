@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uzme/core/blocs/engineer_availability/engineer_availability_event.dart';
 import 'package:uzme/core/blocs/engineer_availability/engineer_availability_state.dart';
@@ -16,7 +17,7 @@ class EngineerAvailabilityBloc
   EngineerAvailabilityBloc({EngineerAvailabilityService? service})
       : _service = service ?? EngineerAvailabilityService(),
         super(const EngineerAvailabilityInitialState()) {
-    on<LoadEngineerAvailabilityEvent>(_onLoadAvailability);
+    on<LoadEngineerAvailabilityEvent>(_onLoadAvailability, transformer: restartable());
     on<UpdateWorkingHoursEvent>(_onUpdateWorkingHours);
     on<UpdateDayScheduleEvent>(_onUpdateDaySchedule);
     on<AddTimeOffEvent>(_onAddTimeOff);
