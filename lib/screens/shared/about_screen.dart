@@ -140,8 +140,8 @@ class _AboutScreenState extends State<AboutScreen> {
             context,
             icon: FontAwesomeIcons.instagram,
             title: 'Instagram',
-            subtitle: '@useme.app',
-            onTap: () => _openUrl('https://instagram.com/useme.app'),
+            subtitle: '@uzme.app',
+            onTap: () => _openUrl('https://instagram.com/uzme.app'),
           ),
 
           const SizedBox(height: 32),
