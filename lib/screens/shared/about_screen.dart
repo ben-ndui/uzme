@@ -128,8 +128,8 @@ class _AboutScreenState extends State<AboutScreen> {
             context,
             icon: FontAwesomeIcons.envelope,
             title: l10n.contactUs,
-            subtitle: 'support@useme.app',
-            onTap: () => _openUrl('mailto:support@useme.app'),
+            subtitle: 'support@uzme.app',
+            onTap: () => _openUrl('mailto:support@uzme.app'),
           ),
 
           const Divider(height: 32),
